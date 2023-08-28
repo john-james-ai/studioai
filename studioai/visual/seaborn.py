@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Saturday August 26th 2023 06:25:27 am                                               #
-# Modified   : Monday August 28th 2023 07:41:05 am                                                 #
+# Modified   : Monday August 28th 2023 08:37:28 am                                                 #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -117,7 +117,7 @@ class SeabornCanvas(Canvas):
 class Visualizer(VisualizerABC):  # pragma: no cover
     """Wrapper for Seaborn plotizations."""
 
-    def __init__(self, canvas: SeabornCanvas = None):
+    def __init__(self, canvas: SeabornCanvas):
         super().__init__(canvas)
 
     def lineplot(
