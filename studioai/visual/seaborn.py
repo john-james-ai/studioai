@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Saturday August 26th 2023 06:25:27 am                                               #
-# Modified   : Monday August 28th 2023 05:52:59 am                                                 #
+# Modified   : Monday August 28th 2023 07:41:05 am                                                 #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -70,11 +70,12 @@ class SeabornCanvas(Canvas):
     width: int = 12  # The maximum width of the canvas
     height: int = 4  # The height of a single row.
     maxcols: int = 2  # The maximum number of columns in a multi-plot visualization.
+    color = Colors().dark_blue
     palette = Palettes().blues_r  # Seaborn palette or matplotlib colormap
     style: str = "whitegrid"  # A Seaborn aesthetic
     saturation: float = 0.5
     fontsize: int = 10
-    fontsize_title: int = 12
+    fontsize_title: int = 10
     colors: Colors = Colors()
     palettes: Palettes = Palettes()
 
@@ -114,9 +115,9 @@ class SeabornCanvas(Canvas):
 
 # ------------------------------------------------------------------------------------------------ #
 class Visualizer(VisualizerABC):  # pragma: no cover
-    """Wrapper for Seaborn plotiziations."""
+    """Wrapper for Seaborn plotizations."""
 
-    def __init__(self, canvas: SeabornCanvas):
+    def __init__(self, canvas: SeabornCanvas = None):
         super().__init__(canvas)
 
     def lineplot(

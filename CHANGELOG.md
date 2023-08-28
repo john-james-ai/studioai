@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## Unreleased
 
+### Change
+
+- Transpose descriptive statistics
+
+## 0.1.3 - 2023-08-28
+
+### Changed
+
+- Default value for Canvas in Visualizer to None as default will be inherited from base class.
+
 ## 0.1.1 - 2023-08-28
 
 ### Added
