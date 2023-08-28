@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Thursday August 10th 2023 08:29:08 pm                                               #
-# Modified   : Sunday August 27th 2023 07:09:12 pm                                                 #
+# Modified   : Monday August 28th 2023 05:43:30 am                                                 #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -21,10 +21,12 @@ from abc import ABC, abstractproperty
 import logging
 from typing import Callable, Union, List
 
-
+from dependency_injector.wiring import inject, Provide
 import pandas as pd
 
 from studioai.stats.descriptive.summary import SummaryStats
+from studioai.visual.base import Visualizer
+from studioai.visual.container import VisualizerContainer
 
 # ------------------------------------------------------------------------------------------------ #
 logger = logging.getLogger(__name__)
@@ -40,8 +42,12 @@ class Dataset(ABC):
         df (pd.DataFrame): Pandas DataFrame object.
     """
 
-    def __init__(self, df: pd.DataFrame) -> None:
+    @inject
+    def __init__(
+        self, df: pd.DataFrame, visualizer: Visualizer = Provide[VisualizerContainer.seaborn]
+    ) -> None:
         self._df = df
+        self._visualizer = visualizer
 
     def __len__(self):
         """Returns the length of the dataset."""
@@ -264,10 +270,10 @@ class Dataset(ABC):
             freq = self._format(freq)
         return freq
 
-    # # ------------------------------------------------------------------------------------------- #
-    # @property
-    # def plot(self) -> Visualizer:  # pragma: no cover
-    #     return Visualizer(df=self._df)
+    # ------------------------------------------------------------------------------------------- #
+    @property
+    def plot(self) -> Visualizer:  # pragma: no cover
+        return Visualizer(df=self._df)
 
     # ------------------------------------------------------------------------------------------- #
     #                                PRIVATE METHODS                                              #

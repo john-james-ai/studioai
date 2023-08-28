@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Saturday August 26th 2023 06:25:27 am                                               #
-# Modified   : Sunday August 27th 2023 08:01:35 pm                                                 #
+# Modified   : Monday August 28th 2023 05:52:59 am                                                 #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -121,7 +121,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
 
     def lineplot(
         self,
-        data: Union[pd.DataFrame, np.ndarray],
+        data: Union[pd.DataFrame, np.ndarray] = None,
         x: str = None,
         y: str = None,
         hue: str = None,
@@ -151,6 +151,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
 
         """
         palette = self._canvas.palette if hue is not None else None
+        data = data or self._data
 
         if ax is None:
             fig, ax = self._canvas.get_figaxes()
@@ -170,7 +171,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
 
     def scatterplot(
         self,
-        data: Union[pd.DataFrame, np.ndarray],
+        data: Union[pd.DataFrame, np.ndarray] = None,
         x: str = None,
         y: str = None,
         hue: str = None,
@@ -200,6 +201,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
 
         """
         palette = self._canvas.palette if hue is not None else None
+        data = data or self._data
 
         if ax is None:
             fig, ax = self._canvas.get_figaxes()
@@ -219,7 +221,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
 
     def histogram(
         self,
-        data: Union[pd.DataFrame, np.ndarray],
+        data: Union[pd.DataFrame, np.ndarray] = None,
         x: str = None,
         y: str = None,
         hue: str = None,
@@ -255,6 +257,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
 
         """
         palette = self._canvas.palette if hue is not None else None
+        data = data or self._data
 
         if ax is None:
             fig, ax = self._canvas.get_figaxes()
@@ -277,7 +280,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
 
     def boxplot(
         self,
-        data: Union[pd.DataFrame, np.ndarray],
+        data: Union[pd.DataFrame, np.ndarray] = None,
         x: str = None,
         y: str = None,
         hue: str = None,
@@ -306,6 +309,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
 
         """
         palette = self._canvas.palette if hue is not None else None
+        data = data or self._data
 
         if ax is None:
             fig, ax = self._canvas.get_figaxes()
@@ -325,7 +329,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
 
     def kdeplot(
         self,
-        data: Union[pd.DataFrame, np.ndarray],
+        data: Union[pd.DataFrame, np.ndarray] = None,
         x: str = None,
         y: str = None,
         hue: str = None,
@@ -352,6 +356,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
 
         """
         palette = self._canvas.palette if hue is not None else None
+        data = data or self._data
 
         if ax is None:
             fig, ax = self._canvas.get_figaxes()
@@ -371,7 +376,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
 
     def ecdfplot(
         self,
-        data: Union[pd.DataFrame, np.ndarray],
+        data: Union[pd.DataFrame, np.ndarray] = None,
         x: str = None,
         y: str = None,
         hue: str = None,
@@ -401,6 +406,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
 
         """
         palette = self._canvas.palette if hue is not None else None
+        data = data or self._data
 
         if ax is None:
             fig, ax = self._canvas.get_figaxes()
@@ -420,7 +426,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
 
     def barplot(
         self,
-        data: Union[pd.DataFrame, np.ndarray],
+        data: Union[pd.DataFrame, np.ndarray] = None,
         x: str = None,
         y: str = None,
         hue: str = None,
@@ -447,6 +453,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
 
         """
         palette = self._canvas.palette if hue is not None else None
+        data = data or self._data
 
         if ax is None:
             fig, ax = self._canvas.get_figaxes()
@@ -469,7 +476,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
 
     def violinplot(
         self,
-        data: Union[pd.DataFrame, np.ndarray],
+        data: Union[pd.DataFrame, np.ndarray] = None,
         x: str = None,
         y: str = None,
         hue: str = None,
@@ -498,6 +505,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
 
         """
         palette = self._canvas.palette if hue is not None else None
+        data = data or self._data
 
         if ax is None:
             fig, ax = self._canvas.get_figaxes()
@@ -517,7 +525,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
 
     def regplot(
         self,
-        data: Union[pd.DataFrame, np.ndarray],
+        data: Union[pd.DataFrame, np.ndarray] = None,
         x: str = None,
         y: str = None,
         title: str = None,
@@ -537,6 +545,8 @@ class Visualizer(VisualizerABC):  # pragma: no cover
 
 
         """
+        data = data or self._data
+
         if ax is None:
             fig, ax = self._canvas.get_figaxes()
 
@@ -555,7 +565,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
 
     def pdfcdfplot(
         self,
-        data: Union[pd.DataFrame, np.ndarray],
+        data: Union[pd.DataFrame, np.ndarray] = None,
         x: str = None,
         y: str = None,
         title: str = None,
@@ -579,6 +589,8 @@ class Visualizer(VisualizerABC):  # pragma: no cover
 
 
         """
+        data = data or self._data
+
         if ax is None:
             fig, ax1 = self._canvas.get_figaxes()
 
@@ -613,7 +625,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
 
     def pairplot(
         self,
-        data: Union[pd.DataFrame, np.ndarray],
+        data: Union[pd.DataFrame, np.ndarray] = None,
         vars: list = None,
         hue: str = None,
         title: str = None,
@@ -642,6 +654,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
 
         """
         palette = self._canvas.palette if hue is not None else None
+        data = data or self._data
 
         g = sns.pairplot(
             data=data,
@@ -657,7 +670,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
 
     def jointplot(
         self,
-        data: Union[pd.DataFrame, np.ndarray],
+        data: Union[pd.DataFrame, np.ndarray] = None,
         x: str = None,
         y: str = None,
         hue: str = None,
@@ -679,6 +692,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         """
 
         palette = self._canvas.palette if hue is not None else None
+        data = data or self._data
 
         g = sns.jointplot(
             data=data,

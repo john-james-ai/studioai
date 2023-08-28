@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Saturday August 26th 2023 06:22:05 am                                               #
-# Modified   : Saturday August 26th 2023 10:23:25 am                                               #
+# Modified   : Monday August 28th 2023 05:49:30 am                                                 #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -19,6 +19,7 @@
 from dataclasses import dataclass
 from abc import ABC, abstractmethod
 
+import pandas as pd
 import seaborn as sns
 
 from studioai.data.dataclass import DataClass
@@ -70,8 +71,17 @@ class Visualizer(ABC):  # pragma: no cover
     def __init__(self, canvas: Canvas, *args, **kwargs) -> None:  # pragma: no cover
         """Defines the construction requirement for Visualizers"""
         self._canvas = canvas
+        self._data = None
         sns.set_style(style=self._canvas.style)
         sns.set_palette(palette=self._canvas.palette)
+
+    @property
+    def data(self) -> pd.DataFrame:
+        return self._data
+
+    @data.setter
+    def data(self, data: pd.DataFrame) -> None:
+        self._data = data
 
     @property
     def canvas(self) -> Canvas:
