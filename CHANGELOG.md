@@ -10,6 +10,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 - Transpose descriptive statistics
 
+# 0.1.6 - 2023-08-28
+
+### Fixed
+
+- dtypes property groupby added to avoid duplicate rows for data types.
 
 ## 0.1.5 - 2023-08-28
 
