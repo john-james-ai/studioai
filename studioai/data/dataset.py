@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Thursday August 10th 2023 08:29:08 pm                                               #
-# Modified   : Monday August 28th 2023 04:15:32 pm                                                 #
+# Modified   : Monday August 28th 2023 04:25:36 pm                                                 #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -67,6 +67,7 @@ class Dataset(ABC):
         """Returns the count of data types in the dataset."""
         dtypes = self._df.dtypes.value_counts().reset_index()
         dtypes.columns = ["Data Type", "Count"]
+        dtypes["Data Type"] = dtypes["Data Type"].astype(str)
         dtypes = dtypes.groupby(by="Data Type").sum()
         return dtypes
 
