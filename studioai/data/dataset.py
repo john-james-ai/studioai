@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Thursday August 10th 2023 08:29:08 pm                                               #
-# Modified   : Monday August 28th 2023 07:28:16 am                                                 #
+# Modified   : Monday August 28th 2023 09:14:23 am                                                 #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -281,7 +281,7 @@ class Dataset(ABC):
     # ------------------------------------------------------------------------------------------- #
     def _format(self, df: pd.DataFrame) -> pd.DataFrame:
         """Returns the resulting dataframe with capitalized column names."""
-        df.columns = [col.capitalize() for col in df.columns]
+        # df.columns = [col.capitalize() for col in df.columns]
         df = df.apply(self._show_thousands_separator)
         return df
 

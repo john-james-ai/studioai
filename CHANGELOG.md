@@ -10,6 +10,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 - Transpose descriptive statistics
 
+
+## 0.1.5 - 2023-08-28
+
+### Fixed
+
+- Removed capitalization from dataset format method.
+
 ## 0.1.4 - 2023-08-28
 
 ### Fixed
