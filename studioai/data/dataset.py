@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Thursday August 10th 2023 08:29:08 pm                                               #
-# Modified   : Monday August 28th 2023 05:43:30 am                                                 #
+# Modified   : Monday August 28th 2023 06:14:36 am                                                 #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -26,7 +26,7 @@ import pandas as pd
 
 from studioai.stats.descriptive.summary import SummaryStats
 from studioai.visual.base import Visualizer
-from studioai.visual.container import VisualizerContainer
+from studioai.container import VisualizerContainer
 
 # ------------------------------------------------------------------------------------------------ #
 logger = logging.getLogger(__name__)
@@ -273,7 +273,8 @@ class Dataset(ABC):
     # ------------------------------------------------------------------------------------------- #
     @property
     def plot(self) -> Visualizer:  # pragma: no cover
-        return Visualizer(df=self._df)
+        self._visualizer.data = self._df
+        return self._visualizer
 
     # ------------------------------------------------------------------------------------------- #
     #                                PRIVATE METHODS                                              #

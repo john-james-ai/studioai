@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Tuesday June 6th 2023 01:45:05 am                                                   #
-# Modified   : Sunday August 27th 2023 08:36:18 pm                                                 #
+# Modified   : Monday August 28th 2023 06:14:39 am                                                 #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -23,7 +23,7 @@ import numpy as np
 from scipy import stats
 from dependency_injector.wiring import inject, Provide
 
-from studioai.visual.container import VisualizerContainer
+from studioai.container import VisualizerContainer
 from studioai.visual.seaborn import Visualizer
 from studioai.stats.inferential.profile import StatTestProfile
 from studioai.stats.inferential.base import (
