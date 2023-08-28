@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Wednesday June 7th 2023 08:15:08 pm                                                 #
-# Modified   : Wednesday August 23rd 2023 09:55:27 am                                              #
+# Modified   : Sunday August 27th 2023 08:36:31 pm                                                 #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -22,12 +22,10 @@ from typing import Union
 import numpy as np
 import pandas as pd
 from scipy import stats
-import seaborn as sns
-import matplotlib.pyplot as plt
 from dependency_injector.wiring import inject, Provide
 
-from studioai.visual import Canvas
-from studioai.visual.container import VisualContainer
+from studioai.visual.seaborn import Visualizer
+from studioai.visual.container import VisualizerContainer
 from studioai.stats.inferential.profile import StatTestProfile
 from studioai.stats.inferential.base import (
     StatTestResult,
@@ -45,38 +43,11 @@ class PearsonCorrelationResult(StatTestResult):
     b: str = None
 
     @inject
-    def __post_init__(self, canvas: Canvas = Provide[VisualContainer.canvas]) -> None:
-        super().__post_init__(canvas=canvas)
-        self._ax = None
+    def __post_init__(self, visualizer: Visualizer = Provide[VisualizerContainer.seaborn]) -> None:
+        self.visualizer = visualizer
 
-    def plot(self, ax: plt.Axes = None) -> None:  # pragma: no cover
-        """Plots the data.
-
-        Args:
-            ax (plt.Axes): Matplotlib axes object. Optional. If provided, this will override the current
-                value of the axes designated for this plot, if any. Otherwise, if the axes is
-                None, one is provided by the canvas object.
-        """
-
-        if ax is not None:
-            self._ax = ax
-        elif self._ax is None:
-            _, self._ax = self._canvas.get_figaxes()
-
-        self._ax = sns.regplot(
-            data=self.data,
-            x=self.a,
-            y=self.b,
-            ax=self._ax,
-            fit_reg=True,
-        )
-
-        self._ax.set_title(
-            f"{self.result}",
-            fontsize=self._canvas.fontsize_title,
-        )
-
-        plt.tight_layout()
+    def plot(self) -> None:  # pragma: no cover
+        self.visualizer.regplot(data=self.data, x=self.a, y=self.b, title=self.result)
 
 
 # ------------------------------------------------------------------------------------------------ #

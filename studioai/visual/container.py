@@ -4,25 +4,27 @@
 # Project    : Artificial Intelligence & Data Science Studio                                       #
 # Version    : 0.1.0                                                                               #
 # Python     : 3.10.12                                                                             #
-# Filename   : /studioai/data/entity.py                                                            #
+# Filename   : /studioai/visual/container.py                                                       #
 # ------------------------------------------------------------------------------------------------ #
 # Author     : John James                                                                          #
 # Email      : john.james.ai.studio@gmail.com                                                      #
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
-# Created    : Saturday August 19th 2023 09:17:13 pm                                               #
-# Modified   : Wednesday August 23rd 2023 05:58:10 am                                              #
+# Created    : Saturday August 26th 2023 09:31:46 am                                               #
+# Modified   : Saturday August 26th 2023 09:37:39 am                                               #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
 # ================================================================================================ #
-from dataclasses import dataclass
+"""Framework Dependency Container"""
+from dependency_injector import containers, providers
 
-
-from studioai.data.dataclass import DataClass
+from studioai.visual.seaborn import SeabornCanvas, Visualizer
 
 
 # ------------------------------------------------------------------------------------------------ #
-@dataclass
-class Entity(DataClass):  # noqa
-    """Base Class for Data Transfer Objects"""
+#                                    VISUALIZER CONTAINER                                          #
+# ------------------------------------------------------------------------------------------------ #
+class VisualizerContainer(containers.DeclarativeContainer):
+    canvas = providers.Factory(SeabornCanvas)
+    seaborn = providers.Factory(Visualizer, canvas=canvas)

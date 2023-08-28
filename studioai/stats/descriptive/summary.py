@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Wednesday August 23rd 2023 12:15:10 am                                              #
-# Modified   : Wednesday August 23rd 2023 05:45:02 am                                              #
+# Modified   : Saturday August 26th 2023 05:19:30 am                                               #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -107,9 +107,6 @@ class SummaryStats(DescriptiveStats):
     ) -> pd.DataFrame:
         """Computes summary statistics for categorical variables."""
 
-        logger.debug(f"\n\nInclude: {include}\n: Exclude{exclude}\n")
-        logger.debug(data.head())
-
         # If inclusion/exclusion not specified, we describe objects
         if include is None and exclude is None:
             include = NON_NUMERIC_TYPES
@@ -134,8 +131,8 @@ class SummaryStats(DescriptiveStats):
 
         try:
             return data.describe(include=include, exclude=exclude)
-        except ValueError as e:
-            msg = f"Invalid input to describe method.\n{e}"
+        except ValueError:
+            msg = "No categorical values to describe"
             logger.debug(msg)
             return None
 
@@ -146,8 +143,6 @@ class SummaryStats(DescriptiveStats):
         exclude: Union[str, list[str]] = None,
     ) -> pd.DataFrame:
         """Computes summary statistics for numeric variables."""
-
-        logger.debug(f"\n\nInclude: {include}\nExclude: {exclude}\n")
 
         # If inclusion/exclusion not specified, we describe numbers
         if include is None and exclude is None:
@@ -175,7 +170,7 @@ class SummaryStats(DescriptiveStats):
 
         try:
             return data.describe(include=include, exclude=exclude)
-        except ValueError as e:
-            msg = f"Invalid input to describe method.\n{e}"
+        except ValueError:
+            msg = "No numeric values to describe"
             logger.debug(msg)
             return None

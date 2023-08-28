@@ -11,54 +11,22 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Wednesday August 23rd 2023 05:56:02 am                                              #
-# Modified   : Wednesday August 23rd 2023 05:58:21 am                                              #
+# Modified   : Sunday August 27th 2023 08:19:36 pm                                                 #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
 # ================================================================================================ #
 from __future__ import annotations
-from dataclasses import dataclass
 
 import pandas as pd
 
 from studioai.data.dataset import Dataset
-from studioai.data.entity import Entity
-
-
-# ------------------------------------------------------------------------------------------------ #
-@dataclass
-class Consumer(Entity):
-    Gender: str
-    Age: int
-    Children: int
-    MaritalStatus: str
-    Own: str
-    Education: int
-    Income: float
-    CreditRating: str
-
-    @classmethod
-    def from_df(cls, df: pd.DataFrame) -> Consumer:
-        return cls(
-            Gender=df["Gender"],
-            Age=df["Age"],
-            Children=df["Children"],
-            MaritalStatus=df["Marital Status"],
-            Own=df["Own"],
-            Education=df["Education"],
-            Income=df["Income"],
-            CreditRating=df["Credit Rating"],
-        )
 
 
 # ------------------------------------------------------------------------------------------------ #
 class CreditScoreDataset(Dataset):
     def __init__(self, df: pd.DataFrame) -> None:
         super().__init__(df=df)
-
-    def __getitem__(self, idx: int) -> pd.Series:
-        df = self._df.iloc[idx]
-        return Consumer.from_df(df=df)
 
     @property
     def summary(self) -> pd.DataFrame:

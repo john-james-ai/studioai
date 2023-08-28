@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Tuesday August 22nd 2023 06:29:55 pm                                                #
-# Modified   : Wednesday August 23rd 2023 03:56:17 am                                              #
+# Modified   : Saturday August 26th 2023 05:19:55 am                                               #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -60,7 +60,4 @@ NUMERIC_TYPES = [
 ]
 
 # ------------------------------------------------------------------------------------------------ #
-NON_NUMERIC_TYPES = [
-    "category",
-    "object",
-]
+NON_NUMERIC_TYPES = ["category", "object"]

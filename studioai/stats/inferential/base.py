@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Tuesday August 22nd 2023 07:44:59 pm                                                #
-# Modified   : Tuesday August 22nd 2023 08:28:51 pm                                                #
+# Modified   : Saturday August 26th 2023 10:11:02 am                                               #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -21,12 +21,10 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 import logging
 from dataclasses import dataclass
-import seaborn as sns
 
 from studioai.stats.inferential.profile import StatTestProfile
 from studioai.data.dataclass import DataClass
 from studioai.service.io import IOService
-from studioai.visual import Canvas
 
 # ------------------------------------------------------------------------------------------------ #
 logger = logging.getLogger(__name__)
@@ -51,15 +49,6 @@ class StatTestResult(DataClass):
     alpha: float = 0.05
     result: str = None
     interpretation: str = None
-
-    def __post_init__(self, canvas: Canvas) -> None:
-        self._canvas = canvas
-        sns.set_style(self._canvas.style)
-        sns.set_palette(self._canvas.palette)
-
-    @abstractmethod
-    def plot(self, *args, **kwargs) -> None:
-        """Renders plots of test statistics, pdf, cdf, data, etc..."""
 
 
 # ------------------------------------------------------------------------------------------------ #

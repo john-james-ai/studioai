@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Thursday June 8th 2023 02:56:56 am                                                  #
-# Modified   : Wednesday August 23rd 2023 12:43:49 am                                              #
+# Modified   : Saturday August 26th 2023 11:04:10 am                                               #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -39,7 +39,6 @@ class CategoricalStats(DataClass):
 
     @classmethod
     def describe(cls, x: Union[pd.Series, np.ndarray], name: str = None) -> None:
-        name = name or cls.get_name(x=x)
         return cls(
             name=name,
             length=len(x),

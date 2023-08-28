@@ -11,19 +11,19 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Thursday August 10th 2023 08:29:08 pm                                               #
-# Modified   : Wednesday August 23rd 2023 07:01:27 am                                              #
+# Modified   : Sunday August 27th 2023 07:09:12 pm                                                 #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
 # ================================================================================================ #
 from __future__ import annotations
-from abc import ABC, abstractmethod, abstractproperty
+from abc import ABC, abstractproperty
 import logging
-from typing import Any, Callable, Union, List
+from typing import Callable, Union, List
+
 
 import pandas as pd
 
-from studioai.visual.seaborn import Visualizer
 from studioai.stats.descriptive.summary import SummaryStats
 
 # ------------------------------------------------------------------------------------------------ #
@@ -46,10 +46,6 @@ class Dataset(ABC):
     def __len__(self):
         """Returns the length of the dataset."""
         return len(self._df)
-
-    @abstractmethod
-    def __getitem__(self, idx: int) -> Any:
-        """Returns an entity at the designated index"""
 
     @abstractproperty
     def summary(self) -> pd.DataFrame:
@@ -268,10 +264,10 @@ class Dataset(ABC):
             freq = self._format(freq)
         return freq
 
-    # ------------------------------------------------------------------------------------------- #
-    @property
-    def plot(self) -> Visualizer:  # pragma: no cover
-        return Visualizer(df=self._df)
+    # # ------------------------------------------------------------------------------------------- #
+    # @property
+    # def plot(self) -> Visualizer:  # pragma: no cover
+    #     return Visualizer(df=self._df)
 
     # ------------------------------------------------------------------------------------------- #
     #                                PRIVATE METHODS                                              #

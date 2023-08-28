@@ -10,40 +10,118 @@
 # Email      : john.james.ai.studio@gmail.com                                                      #
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
-# Created    : Tuesday August 22nd 2023 06:53:03 pm                                                #
-# Modified   : Wednesday August 23rd 2023 07:31:12 am                                              #
+# Created    : Saturday August 26th 2023 06:25:27 am                                               #
+# Modified   : Sunday August 27th 2023 08:01:35 pm                                                 #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
 # ================================================================================================ #
-"""Wrapper for several  plotting functions."""
+"""Wrapper for several Seaborn plotting functions."""
+from __future__ import annotations
+from dataclasses import dataclass
 from typing import List, Union
+import math
 
 import pandas as pd
 import numpy as np
+from scipy import stats
 import seaborn as sns
 import matplotlib.pyplot as plt
-from dependency_injector.wiring import inject, Provide
+from matplotlib.gridspec import GridSpec
 
-from studioai.visual.container import VisualContainer
-from studioai.visual.base import Visualizer as BaseVisualizer
+from studioai.visual.base import Canvas, Colors
+from studioai.visual.base import Visualizer as VisualizerABC
+from studioai.data.dataclass import DataClass
 
 
 # ------------------------------------------------------------------------------------------------ #
-class Visualizer(BaseVisualizer):  # pragma: no cover
-    """Wrapper for plotiziations."""
+#                                            PALETTES                                              #
+# ------------------------------------------------------------------------------------------------ #
+@dataclass
+class Palettes(DataClass):
+    blues: str = "Blues"
+    blues_r: str = "Blues_r"
+    mako: str = "mako"
+    bluegreen: str = "crest"
+    paired: str = "Paired"
+    dark: str = "dark"
+    colorblind: str = "colorblind"
+    darkblue = sns.dark_palette("#69d", reverse=False, as_cmap=False)
+    darkblue_r = sns.dark_palette("#69d", reverse=True, as_cmap=False)
+    winter_blue = sns.color_palette(
+        [Colors.cool_black, Colors.police_blue, Colors.teal_blue, Colors.pale_robin_egg_blue],
+        as_cmap=True,
+    )
+    blue_orange = sns.color_palette(
+        [Colors.russian_violet, Colors.dark_cornflower_blue, Colors.meat_brown, Colors.peach],
+        as_cmap=True,
+    )
 
-    @inject
-    def __init__(self, df: pd.DataFrame = None, canvas=Provide[VisualContainer.canvas]):
+
+# ------------------------------------------------------------------------------------------------ #
+#                                            CANVAS                                                #
+# ------------------------------------------------------------------------------------------------ #
+
+
+@dataclass
+class SeabornCanvas(Canvas):
+    """SeabornCanvas class encapsulating figure level configuration."""
+
+    width: int = 12  # The maximum width of the canvas
+    height: int = 4  # The height of a single row.
+    maxcols: int = 2  # The maximum number of columns in a multi-plot visualization.
+    palette = Palettes().blues_r  # Seaborn palette or matplotlib colormap
+    style: str = "whitegrid"  # A Seaborn aesthetic
+    saturation: float = 0.5
+    fontsize: int = 10
+    fontsize_title: int = 12
+    colors: Colors = Colors()
+    palettes: Palettes = Palettes()
+
+    def get_figaxes(
+        self, nplots: int = 1, figsize: tuple = None
+    ) -> SeabornCanvas:  # pragma: no cover
+        """Configures the figure and axes objects.
+
+        Args:
+            nplots (int): The number of plots to be rendered on the canvas.
+            figsize (tuple[int,int]): Plot width and row height.
+        """
+        figsize = figsize or (self.width, self.height)
+
+        if nplots == 1:
+            fig, axes = plt.subplots(figsize=figsize)
+        else:
+            nrows = math.ceil(nplots / self.maxcols)
+            ncols = min(self.maxcols, nplots)
+
+            fig = plt.figure(layout="constrained", figsize=figsize)
+            gs = GridSpec(nrows=nrows, ncols=ncols, figure=fig)
+
+            axes = []
+            for idx in range(nplots):
+                row = int(idx / ncols)
+                col = idx % ncols
+
+                if idx < nplots - 1:
+                    ax = fig.add_subplot(gs[row, col])
+                else:
+                    ax = fig.add_subplot(gs[row, col:])
+                axes.append(ax)
+
+        return fig, axes
+
+
+# ------------------------------------------------------------------------------------------------ #
+class Visualizer(VisualizerABC):  # pragma: no cover
+    """Wrapper for Seaborn plotiziations."""
+
+    def __init__(self, canvas: SeabornCanvas):
         super().__init__(canvas)
-        self._df = df
-        self._canvas = canvas
-        sns.set_style(style=self._canvas.style)
-        sns.set_palette(palette=self._canvas.palette)
 
     def lineplot(
         self,
-        data: Union[pd.DataFrame, np.ndarray] = None,
+        data: Union[pd.DataFrame, np.ndarray],
         x: str = None,
         y: str = None,
         hue: str = None,
@@ -72,12 +150,10 @@ class Visualizer(BaseVisualizer):  # pragma: no cover
 
 
         """
-        data = data or self._df
+        palette = self._canvas.palette if hue is not None else None
+
         if ax is None:
             fig, ax = self._canvas.get_figaxes()
-
-        # Seaborn renders a warning that palette is ignored when hue is not provided.
-        palette = self._canvas.palette if hue is not None else None
 
         sns.lineplot(
             data=data,
@@ -94,7 +170,7 @@ class Visualizer(BaseVisualizer):  # pragma: no cover
 
     def scatterplot(
         self,
-        data: Union[pd.DataFrame, np.ndarray] = None,
+        data: Union[pd.DataFrame, np.ndarray],
         x: str = None,
         y: str = None,
         hue: str = None,
@@ -123,13 +199,10 @@ class Visualizer(BaseVisualizer):  # pragma: no cover
 
 
         """
-        data = data or self._df
+        palette = self._canvas.palette if hue is not None else None
 
         if ax is None:
             fig, ax = self._canvas.get_figaxes()
-
-        # Seaborn renders a warning that palette is ignored when hue is not provided.
-        palette = self._canvas.palette if hue is not None else None
 
         sns.scatterplot(
             data=data,
@@ -146,7 +219,7 @@ class Visualizer(BaseVisualizer):  # pragma: no cover
 
     def histogram(
         self,
-        data: Union[pd.DataFrame, np.ndarray] = None,
+        data: Union[pd.DataFrame, np.ndarray],
         x: str = None,
         y: str = None,
         hue: str = None,
@@ -181,13 +254,10 @@ class Visualizer(BaseVisualizer):  # pragma: no cover
 
 
         """
-        data = data or self._df
+        palette = self._canvas.palette if hue is not None else None
 
         if ax is None:
             fig, ax = self._canvas.get_figaxes()
-
-        # Seaborn renders a warning that palette is ignored when hue is not provided.
-        palette = self._canvas.palette if hue is not None else None
 
         sns.histplot(
             data=data,
@@ -207,7 +277,7 @@ class Visualizer(BaseVisualizer):  # pragma: no cover
 
     def boxplot(
         self,
-        data: Union[pd.DataFrame, np.ndarray] = None,
+        data: Union[pd.DataFrame, np.ndarray],
         x: str = None,
         y: str = None,
         hue: str = None,
@@ -235,13 +305,10 @@ class Visualizer(BaseVisualizer):  # pragma: no cover
 
 
         """
-        data = data or self._df
+        palette = self._canvas.palette if hue is not None else None
 
         if ax is None:
             fig, ax = self._canvas.get_figaxes()
-
-        # Seaborn renders a warning that palette is ignored when hue is not provided.
-        palette = self._canvas.palette if hue is not None else None
 
         sns.boxplot(
             data=data,
@@ -258,7 +325,7 @@ class Visualizer(BaseVisualizer):  # pragma: no cover
 
     def kdeplot(
         self,
-        data: Union[pd.DataFrame, np.ndarray] = None,
+        data: Union[pd.DataFrame, np.ndarray],
         x: str = None,
         y: str = None,
         hue: str = None,
@@ -284,13 +351,10 @@ class Visualizer(BaseVisualizer):  # pragma: no cover
 
 
         """
-        data = data or self._df
+        palette = self._canvas.palette if hue is not None else None
 
         if ax is None:
             fig, ax = self._canvas.get_figaxes()
-
-        # Seaborn renders a warning that palette is ignored when hue is not provided.
-        palette = self._canvas.palette if hue is not None else None
 
         sns.kdeplot(
             data=data,
@@ -307,7 +371,7 @@ class Visualizer(BaseVisualizer):  # pragma: no cover
 
     def ecdfplot(
         self,
-        data: Union[pd.DataFrame, np.ndarray] = None,
+        data: Union[pd.DataFrame, np.ndarray],
         x: str = None,
         y: str = None,
         hue: str = None,
@@ -336,13 +400,10 @@ class Visualizer(BaseVisualizer):  # pragma: no cover
             ax: (plt.Axes): A matplotlib Axes object. Optional. If not provide, one will be obtained from the canvas.
 
         """
-        data = data or self._df
+        palette = self._canvas.palette if hue is not None else None
 
         if ax is None:
             fig, ax = self._canvas.get_figaxes()
-
-        # Seaborn renders a warning that palette is ignored when hue is not provided.
-        palette = self._canvas.palette if hue is not None else None
 
         sns.ecdfplot(
             data=data,
@@ -359,7 +420,7 @@ class Visualizer(BaseVisualizer):  # pragma: no cover
 
     def barplot(
         self,
-        data: Union[pd.DataFrame, np.ndarray] = None,
+        data: Union[pd.DataFrame, np.ndarray],
         x: str = None,
         y: str = None,
         hue: str = None,
@@ -385,13 +446,10 @@ class Visualizer(BaseVisualizer):  # pragma: no cover
             ax: (plt.Axes): A matplotlib Axes object. Optional. If not provide, one will be obtained from the canvas.
 
         """
-        data = data or self._df
+        palette = self._canvas.palette if hue is not None else None
 
         if ax is None:
             fig, ax = self._canvas.get_figaxes()
-
-        # Seaborn renders a warning that palette is ignored when hue is not provided.
-        palette = self._canvas.palette if hue is not None else None
 
         sns.barplot(
             data=data,
@@ -411,7 +469,7 @@ class Visualizer(BaseVisualizer):  # pragma: no cover
 
     def violinplot(
         self,
-        data: Union[pd.DataFrame, np.ndarray] = None,
+        data: Union[pd.DataFrame, np.ndarray],
         x: str = None,
         y: str = None,
         hue: str = None,
@@ -439,13 +497,10 @@ class Visualizer(BaseVisualizer):  # pragma: no cover
 
 
         """
-        data = data or self._df
+        palette = self._canvas.palette if hue is not None else None
 
         if ax is None:
             fig, ax = self._canvas.get_figaxes()
-
-        # Seaborn renders a warning that palette is ignored when hue is not provided.
-        palette = self._canvas.palette if hue is not None else None
 
         sns.violinplot(
             data=data,
@@ -460,9 +515,9 @@ class Visualizer(BaseVisualizer):  # pragma: no cover
         if title is not None:
             ax.set_title(title)
 
-    def histpdfplot(
+    def regplot(
         self,
-        data: Union[pd.DataFrame, np.ndarray] = None,
+        data: Union[pd.DataFrame, np.ndarray],
         x: str = None,
         y: str = None,
         title: str = None,
@@ -470,12 +525,7 @@ class Visualizer(BaseVisualizer):  # pragma: no cover
         *args,
         **kwargs,
     ) -> None:
-        """Draw a combination of a histogram and the theoretical probability density function.
-
-        This 'goodness of fit' visualization reveals the contrast between an empirical distribution
-        and a theoretical probability distribution, estimated using the parameters from the data.
-        The histogram renders counts from the data value. The values for the theoretical probability
-        density function, x_pdf, and y_pdf is rendered on a shared x-axis.
+        """Plot data and a linear regression model fit.
 
         Args:
             data (Union[pd.DataFrame, np.ndarray]): Input data structure. Either a long-form
@@ -487,30 +537,25 @@ class Visualizer(BaseVisualizer):  # pragma: no cover
 
 
         """
-        data = data or self._df
-
         if ax is None:
             fig, ax = self._canvas.get_figaxes()
 
-        ax = sns.histplot(
+        sns.regplot(
             data=data,
             x=x,
             y=y,
-            stat="density",
-            element="bars",
-            fill=True,
-            kde=True,
-            color=self._canvas.colors.dark_blue,
             ax=ax,
-            label="Empirical Distribution",
-            legend=True,
+            fit_reg=True,
+            color=self._canvas.colors.dark_blue,
+            *args,
+            **kwargs,
         )
         if title is not None:
             ax.set_title(title)
 
     def pdfcdfplot(
         self,
-        data: Union[pd.DataFrame, np.ndarray] = None,
+        data: Union[pd.DataFrame, np.ndarray],
         x: str = None,
         y: str = None,
         title: str = None,
@@ -534,8 +579,6 @@ class Visualizer(BaseVisualizer):  # pragma: no cover
 
 
         """
-        data = data or self._df
-
         if ax is None:
             fig, ax1 = self._canvas.get_figaxes()
 
@@ -570,7 +613,7 @@ class Visualizer(BaseVisualizer):  # pragma: no cover
 
     def pairplot(
         self,
-        data: Union[pd.DataFrame, np.ndarray] = None,
+        data: Union[pd.DataFrame, np.ndarray],
         vars: list = None,
         hue: str = None,
         title: str = None,
@@ -598,9 +641,6 @@ class Visualizer(BaseVisualizer):  # pragma: no cover
 
 
         """
-        data = data or self._df
-
-        # Seaborn renders a warning that palette is ignored when hue is not provided.
         palette = self._canvas.palette if hue is not None else None
 
         g = sns.pairplot(
@@ -617,7 +657,7 @@ class Visualizer(BaseVisualizer):  # pragma: no cover
 
     def jointplot(
         self,
-        data: Union[pd.DataFrame, np.ndarray] = None,
+        data: Union[pd.DataFrame, np.ndarray],
         x: str = None,
         y: str = None,
         hue: str = None,
@@ -637,9 +677,7 @@ class Visualizer(BaseVisualizer):  # pragma: no cover
 
 
         """
-        data = data or self._df
 
-        # Seaborn renders a warning that palette is ignored when hue is not provided.
         palette = self._canvas.palette if hue is not None else None
 
         g = sns.jointplot(
@@ -655,80 +693,318 @@ class Visualizer(BaseVisualizer):  # pragma: no cover
             g.fig.suptitle(title)
         g.fig.tight_layout()
 
-    def topn_plot(
+    def ttestplot(
         self,
-        data: Union[pd.DataFrame, np.ndarray] = None,
-        x: str = None,
-        n: list[int] = [5, 10, 20, 50, 100],
-        hue: str = None,
+        statistic: float,
+        dof: int,
+        result: str = None,
+        alpha: float = 0.05,
         title: str = None,
         ax: plt.Axes = None,
         *args,
         **kwargs,
     ) -> None:
-        """Bar plot showing the top n values for a continuous or discrete variable.
-
-        Plots a range of top n values in the logspace for the designated column. Top n
-        values are displayed as percent of total value and percent of observations
-        represented by the top n group.
+        """Draw the results of a t-test with the statistic and reject regions.
 
         Args:
-            data (Union[pd.DataFrame, np.ndarray]): Input data structure. Either a long-form
-                collection of vectors that can be assigned to named variables or a wide-form dataset
-                that will be internally reshaped
-            x (str): Keys in data.
-            n (list(int)): List of top n values to report.
-            hue (str): Grouping variable that will produce lines with different colors. Can be either categorical or numeric, although color mapping will behave differently in latter case.
+            statistic (float): The student's t test statistic
+            dof (int): Degrees of freedom
+            alpha (float): The statistical significance. Default is 0.05.
             title (str): Title for the plot. Optional
             ax: (plt.Axes): A matplotlib Axes object. Optional. If not provide, one will be obtained from the canvas.
 
-        """
-        data = data or self._df
 
+        """
         if ax is None:
             fig, ax = self._canvas.get_figaxes()
 
-        palette = self._canvas.palette if hue is not None else None
+        # Render the probability distribution
+        x = np.linspace(stats.t.ppf(0.001, dof), stats.t.ppf(0.999, dof), 500)
+        y = stats.t.pdf(x, dof)
+        ax = sns.lineplot(x=x, y=y, markers=False, dashes=False, sort=True, ax=ax)
 
-        values = []
-        total = data[x].sum(axis=0)
-        sorted = data.sort_values(by=x, ascending=False, axis=0)
+        # Compute reject region
+        lower = x[0]
+        upper = x[-1]
+        lower_alpha = alpha / 2
+        upper_alpha = 1 - (alpha / 2)
+        lower_critical = stats.t.ppf(lower_alpha, dof)
+        upper_critical = stats.t.ppf(upper_alpha, dof)
 
-        n = np.array(n)
-
-        for idx in n:
-            values.append(sorted[x][:idx].sum())
-
-        # Normalize the values and counts by total and number of observations.
-        values_pct = values / total * 100
-        obs_pct = n / data.shape[0] * 100
-
-        d = {"Top-N": n, "% Total": np.round(values_pct, 2), "% Observations": np.round(obs_pct, 2)}
-        df = pd.DataFrame(data=d)
-
-        ax = sns.barplot(
-            data=df,
-            x="Top-N",
-            y="% Total",
-            ax=ax,
-            color=self._canvas.colors.dark_blue,
-            palette=palette,
-            *args,
-            **kwargs,
+        # Fill lower tail
+        xlower = np.arange(lower, lower_critical, 0.001)
+        ax.fill_between(
+            x=xlower,
+            y1=0,
+            y2=stats.t.pdf(xlower, dof),
+            color=self._canvas.colors.orange,
         )
-        title = title or f"Top-N {x.capitalize()} Analysis"
-        if title is not None:
-            ax.set_title(title)
 
-        for idx, bar in enumerate(ax.patches):
-            ax.annotate(
-                f"{np.round(values_pct[idx],2)}% ({np.round(obs_pct[idx],2)}%)",
-                (bar.get_x() + bar.get_width() / 2, bar.get_height()),
-                ha="center",
-                va="center",
-                xytext=(0, 10),
-                textcoords="offset points",
+        # Fill Upper Tail
+        xupper = np.arange(upper_critical, upper, 0.001)
+        ax.fill_between(
+            x=xupper,
+            y1=0,
+            y2=stats.t.pdf(xupper, dof),
+            color=self._canvas.colors.orange,
+        )
+
+        # Plot the statistic
+        line = ax.lines[0]
+        xdata = line.get_xydata()[:, 0]
+        ydata = line.get_xydata()[:, 1]
+        statistic = round(statistic, 4)
+
+        try:
+            idx = np.where(xdata > statistic)[0][0]
+            x = xdata[idx]
+            y = ydata[idx]
+            _ = sns.regplot(
+                x=np.array([x]),
+                y=np.array([y]),
+                scatter=True,
+                fit_reg=False,
+                marker="o",
+                scatter_kws={"s": 100},
+                ax=ax,
+                color=self._canvas.colors.dark_blue,
             )
+            ytext = 10
+            if np.isclose(statistic, 0, atol=1e-1):
+                ytext *= -2
+
+            ax.annotate(
+                f"t = {str(statistic)}",
+                (x, y),
+                textcoords="offset points",
+                xytext=(0, ytext),
+                ha="center",
+            )
+        except IndexError:
+            pass
+
+        ax.annotate(
+            "Critical Value",
+            (lower_critical, 0),
+            textcoords="offset points",
+            xytext=(20, 15),
+            ha="left",
+            arrowprops={"width": 2, "headwidth": 4, "shrink": 0.05},
+        )
+
+        ax.annotate(
+            "Critical Value",
+            (upper_critical, 0),
+            xycoords="data",
+            textcoords="offset points",
+            xytext=(-20, 15),
+            ha="right",
+            arrowprops={"width": 2, "headwidth": 4, "shrink": 0.05},
+        )
+
+        ax.set_title(
+            f"{result}",
+            fontsize=self._canvas.fontsize_title,
+        )
+
+        plt.tight_layout()
+
+    def x2testplot(
+        self,
+        statistic: float,
+        dof: int,
+        result: str = None,
+        alpha: float = 0.05,
+        title: str = None,
+        ax: plt.Axes = None,
+        *args,
+        **kwargs,
+    ) -> None:
+        if ax is None:
+            fig, ax = self._canvas.get_figaxes()
+
+        # Render the probability distribution
+        x = np.linspace(stats.chi2.ppf(0.01, dof), stats.chi2.ppf(0.99, dof), 100)
+        y = stats.chi2.pdf(x, dof)
+        ax = sns.lineplot(x=x, y=y, markers=False, dashes=False, sort=True, ax=ax)
+
+        # Compute reject region
+        upper = x[-1]
+        upper_alpha = 1 - alpha
+        critical = stats.chi2.ppf(upper_alpha, dof)
+
+        # Fill Upper Tail
+        x = np.arange(critical, upper, 0.001)
+        ax.fill_between(
+            x=x,
+            y1=0,
+            y2=stats.chi2.pdf(x, dof),
+            color=self._canvas.colors.orange,
+        )
+
+        # Plot the statistic
+        line = ax.lines[0]
+        xdata = line.get_xydata()[:, 0]
+        ydata = line.get_xydata()[:, 1]
+        statistic = round(statistic, 4)
+        try:
+            idx = np.where(xdata > statistic)[0][0]
+            x = xdata[idx]
+            y = ydata[idx]
+            _ = sns.regplot(
+                x=np.array([x]),
+                y=np.array([y]),
+                scatter=True,
+                fit_reg=False,
+                marker="o",
+                scatter_kws={"s": 100},
+                ax=ax,
+                color=self._canvas.colors.dark_blue,
+            )
+            ax.annotate(
+                rf"$X^2$ = {str(statistic)}",
+                (x, y),
+                textcoords="offset points",
+                xytext=(0, 20),
+                ha="center",
+            )
+        except IndexError:
+            pass
+
+        ax.annotate(
+            "Critical Value",
+            (critical, 0),
+            xycoords="data",
+            textcoords="offset points",
+            xytext=(-20, 15),
+            ha="right",
+            arrowprops={"width": 2, "headwidth": 4, "shrink": 0.05},
+        )
+
+        ax.set_title(
+            f"{result}",
+            fontsize=self._canvas.fontsize_title,
+        )
+
+        ax.set_xlabel(r"$X^2$")
+        ax.set_ylabel("Probability Density")
+        plt.tight_layout()
+
+    def kstestplot(
+        self,
+        statistic: float,
+        n: int,
+        result: str = None,
+        alpha: float = 0.05,
+        title: str = None,
+        ax: plt.Axes = None,
+        *args,
+        **kwargs,
+    ) -> None:
+        """Draw the results of a t-test with the statistic and reject regions.
+
+        Args:
+            statistic (float): The student's t test statistic
+            dof (int): Degrees of freedom
+            alpha (float): The statistical significance. Default is 0.05.
+            title (str): Title for the plot. Optional
+            ax: (plt.Axes): A matplotlib Axes object. Optional. If not provide, one will be obtained from the canvas.
+
+
+        """
+        if ax is None:
+            fig, ax = self._canvas.get_figaxes()
+
+        # Render the probability distribution
+        x = np.linspace(stats.kstwo.ppf(0.001, n), stats.kstwo.ppf(0.999, n), 500)
+        y = stats.kstwo.pdf(x, n)
+        ax = sns.lineplot(x=x, y=y, markers=False, dashes=False, sort=True, ax=ax)
+
+        # Compute reject region
+        lower = x[0]
+        upper = x[-1]
+        lower_alpha = alpha / 2
+        upper_alpha = 1 - (alpha / 2)
+        lower_critical = stats.kstwo.ppf(lower_alpha, n)
+        upper_critical = stats.kstwo.ppf(upper_alpha, n)
+
+        # Fill lower tail
+        xlower = np.arange(lower, lower_critical, 0.001)
+        ax.fill_between(
+            x=xlower,
+            y1=0,
+            y2=stats.kstwo.pdf(xlower, n),
+            color=self._canvas.colors.orange,
+        )
+
+        # Fill Upper Tail
+        xupper = np.arange(upper_critical, upper, 0.001)
+        ax.fill_between(
+            x=xupper,
+            y1=0,
+            y2=stats.kstwo.pdf(xupper, n),
+            color=self._canvas.colors.orange,
+        )
+
+        # Plot the statistic
+        line = ax.lines[0]
+        xdata = line.get_xydata()[:, 0]
+        ydata = line.get_xydata()[:, 1]
+        statistic = round(statistic, 4)
+
+        try:
+            idx = np.where(xdata > statistic)[0][0]
+            x = xdata[idx]
+            y = ydata[idx]
+            _ = sns.regplot(
+                x=np.array([x]),
+                y=np.array([y]),
+                scatter=True,
+                fit_reg=False,
+                marker="o",
+                scatter_kws={"s": 100},
+                ax=ax,
+                color=self._canvas.colors.dark_blue,
+            )
+            ytext = 10
+            if np.isclose(statistic, 0, atol=1e-1):
+                ytext *= -2
+
+            ax.annotate(
+                f"t = {str(statistic)}",
+                (x, y),
+                textcoords="offset points",
+                xytext=(0, ytext),
+                ha="center",
+            )
+        except IndexError:
+            pass
+
+        ax.annotate(
+            "Critical Value",
+            (lower_critical, 0),
+            textcoords="offset points",
+            xytext=(20, 15),
+            ha="left",
+            arrowprops={"width": 2, "headwidth": 4, "shrink": 0.05},
+        )
+
+        ax.annotate(
+            "Critical Value",
+            (upper_critical, 0),
+            xycoords="data",
+            textcoords="offset points",
+            xytext=(-20, 15),
+            ha="right",
+            arrowprops={"width": 2, "headwidth": 4, "shrink": 0.05},
+        )
+
+        ax.set_title(
+            f"{result}",
+            fontsize=self._canvas.fontsize_title,
+        )
+
+        plt.tight_layout()
 
     def _wrap_ticklabels(
         self, axis: str, axes: List[plt.Axes], fontsize: int = 8

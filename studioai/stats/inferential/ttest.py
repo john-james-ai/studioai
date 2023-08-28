@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Wednesday June 7th 2023 11:41:00 pm                                                 #
-# Modified   : Wednesday August 23rd 2023 09:55:27 am                                              #
+# Modified   : Sunday August 27th 2023 08:36:46 pm                                                 #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -20,12 +20,10 @@ from dataclasses import dataclass
 
 import numpy as np
 from scipy import stats
-import seaborn as sns
-import matplotlib.pyplot as plt
 from dependency_injector.wiring import inject, Provide
 
-from studioai.visual.container import VisualContainer
-from studioai.visual import Canvas
+from studioai.visual.container import VisualizerContainer
+from studioai.visual.seaborn import Visualizer
 from studioai.stats.inferential.profile import StatTestProfile
 from studioai.stats.inferential.base import (
     StatTestResult,
@@ -43,133 +41,21 @@ class TTestResult(StatTestResult):
     dof: int = None
     homoscedastic: bool = None
     a: np.ndarray = None
+    a_name: str = None
     b: np.ndarray = None
+    b_name: str = None
+    varname: str = None
     a_stats: ContinuousStats = None
     b_stats: ContinuousStats = None
 
     @inject
-    def __post_init__(self, canvas: Canvas = Provide[VisualContainer.canvas]) -> None:
-        super().__post_init__(canvas=canvas)
-        _, self._ax = self._canvas.get_figaxes()
+    def __post_init__(self, visualizer: Visualizer = Provide[VisualizerContainer.seaborn]) -> None:
+        self.visualizer = visualizer
 
     def plot(self) -> None:  # pragma: no cover
-        """Plots the test statistic and reject region"""
-
-        # Render the probability distribution
-        x = np.linspace(stats.t.ppf(0.001, self.dof), stats.t.ppf(0.999, self.dof), 500)
-        y = stats.t.pdf(x, self.dof)
-        self._ax = sns.lineplot(x=x, y=y, markers=False, dashes=False, sort=True, ax=self._ax)
-
-        # Compute reject region
-        lower = x[0]
-        upper = x[-1]
-        lower_alpha = self.alpha / 2
-        upper_alpha = 1 - (self.alpha / 2)
-        lower_critical = stats.t.ppf(lower_alpha, self.dof)
-        upper_critical = stats.t.ppf(upper_alpha, self.dof)
-
-        self._fill_reject_region(
-            lower=lower, upper=upper, lower_critical=lower_critical, upper_critical=upper_critical
+        self.visualizer.ttestplot(
+            statistic=self.value, dof=self.dof, result=self.result, alpha=self.alpha
         )
-
-        self._ax.set_title(
-            "Independent Samples T-Test",
-            fontsize=self._canvas.fontsize_title,
-        )
-
-        # ax.set_xlabel(r"$X^2$")
-        self._ax.set_ylabel("Probability Density")
-        plt.tight_layout()
-
-    def _fill_reject_region(
-        self,
-        lower: float,
-        upper: float,
-        lower_critical: float,
-        upper_critical: float,
-    ) -> None:  # pragma: no cover
-        """Fills the area under the curve at the value of the hypothesis test statistic."""
-
-        # Fill lower tail
-        xlower = np.arange(lower, lower_critical, 0.001)
-        self._ax.fill_between(
-            x=xlower,
-            y1=0,
-            y2=stats.t.pdf(xlower, self.dof),
-            color=self._canvas.colors.orange,
-        )
-
-        # Fill Upper Tail
-        xupper = np.arange(upper_critical, upper, 0.001)
-        self._ax.fill_between(
-            x=xupper,
-            y1=0,
-            y2=stats.t.pdf(xupper, self.dof),
-            color=self._canvas.colors.orange,
-        )
-
-        # Plot the statistic
-        line = self._ax.lines[0]
-        xdata = line.get_xydata()[:, 0]
-        ydata = line.get_xydata()[:, 1]
-        statistic = round(self.value, 4)
-        try:
-            idx = np.where(xdata > self.value)[0][0]
-            x = xdata[idx]
-            y = ydata[idx]
-            _ = sns.regplot(
-                x=np.array([x]),
-                y=np.array([y]),
-                scatter=True,
-                fit_reg=False,
-                marker="o",
-                scatter_kws={"s": 100},
-                ax=self._ax,
-                color=self._canvas.colors.dark_blue,
-            )
-            ytext = 10
-            if np.isclose(statistic, 0, atol=1e-1):
-                ytext *= -2
-
-            self._ax.annotate(
-                f"t = {str(statistic)}",
-                (x, y),
-                textcoords="offset points",
-                xytext=(0, ytext),
-                ha="center",
-            )
-
-            self._ax.annotate(
-                "Critical Value",
-                (lower_critical, 0),
-                textcoords="offset points",
-                xytext=(20, 15),
-                ha="left",
-                arrowprops={"width": 2, "headwidth": 4, "shrink": 0.05},
-            )
-
-            self._ax.annotate(
-                "Critical Value",
-                (upper_critical, 0),
-                xycoords="data",
-                textcoords="offset points",
-                xytext=(-20, 15),
-                ha="right",
-                arrowprops={"width": 2, "headwidth": 4, "shrink": 0.05},
-            )
-
-            self._ax.text(
-                0.5,
-                0.5,
-                self.result,
-                horizontalalignment="center",
-                verticalalignment="center",
-                transform=self._ax.transAxes,
-            )
-        except IndexError:
-            pass
-
-        plt.tight_layout()
 
 
 # ------------------------------------------------------------------------------------------------ #
@@ -194,11 +80,21 @@ class TTest(StatisticalTest):
     __id = "t2"
 
     def __init__(
-        self, a: np.ndarray, b: np.ndarray, alpha: float = 0.05, homoscedastic: bool = False
+        self,
+        a: np.ndarray,
+        b: np.ndarray,
+        varname: str = None,
+        a_name: str = None,
+        b_name: str = None,
+        alpha: float = 0.05,
+        homoscedastic: bool = True,
     ) -> None:
         super().__init__()
         self._a = a
         self._b = b
+        self._varname = varname
+        self._a_name = a_name
+        self._b_name = b_name
         self._alpha = alpha
         self._homoscedastic = homoscedastic
         self._profile = StatTestProfile.create(self.__id)
@@ -219,8 +115,8 @@ class TTest(StatisticalTest):
 
         statistic, pvalue = stats.ttest_ind(a=self._a, b=self._b, equal_var=self._homoscedastic)
 
-        a_stats = ContinuousStats.describe(self._a)
-        b_stats = ContinuousStats.describe(self._b)
+        a_stats = ContinuousStats.describe(x=self._a, name=self._a_name)
+        b_stats = ContinuousStats.describe(x=self._b, name=self._b_name)
 
         dof = len(self._a) + len(self._b) - 2
 
@@ -243,7 +139,10 @@ class TTest(StatisticalTest):
             pvalue=pvalue,
             result=result,
             a=self._a,
+            a_name=self._a_name,
             b=self._b,
+            b_name=self._b_name,
+            varname=self._varname,
             a_stats=a_stats,
             b_stats=b_stats,
             inference=inference,

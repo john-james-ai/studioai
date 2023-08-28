@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Tuesday June 6th 2023 01:45:05 am                                                   #
-# Modified   : Wednesday August 23rd 2023 09:55:28 am                                              #
+# Modified   : Sunday August 27th 2023 08:36:18 pm                                                 #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -20,19 +20,16 @@ from dataclasses import dataclass
 from typing import Union
 
 import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
 from scipy import stats
 from dependency_injector.wiring import inject, Provide
 
-from studioai.visual.container import VisualContainer
-from studioai.visual import Canvas
+from studioai.visual.container import VisualizerContainer
+from studioai.visual.seaborn import Visualizer
 from studioai.stats.inferential.profile import StatTestProfile
 from studioai.stats.inferential.base import (
     StatTestResult,
     StatisticalTest,
 )
-from studioai.data.distribution import RVSDistribution
 
 
 # ------------------------------------------------------------------------------------------------ #
@@ -44,267 +41,26 @@ class KSTestResult(StatTestResult):
 
     a: np.ndarray = None
     b: Union[np.ndarray, str] = None
-    a_name: str = "Sample 1"  # Name of Sample
-    b_name: str = "Sample 2"  # Name of Sample 2 if two sample test
 
     @inject
-    def __post_init__(
-        self, canvas: Canvas = Provide[VisualContainer.canvas]
-    ) -> None:  # pragma: no cover
-        super().__post_init__(canvas=canvas)
-        self._ax1 = None
-        self._ax2 = None
-        self._ax3 = None
+    def __post_init__(self, visualizer: Visualizer = Provide[VisualizerContainer.seaborn]) -> None:
+        self.visualizer = visualizer
 
     def plot(self) -> None:  # pragma: no cover
-        self._fig, (self._ax1, self._ax2, self._ax3) = plt.subplots(
-            nrows=3, ncols=1, figsize=(12, 12)
+        self.visualizer.kstestplot(
+            statistic=self.value, n=len(self.a), result=self.result, alpha=self.alpha
         )
-        self.plot_statistic()
-        self.plot_cdf()
-        self.plot_pdf()
-
-    def plot_statistic(self, ax: plt.Axes = None) -> None:  # pragma: no cover
-        """Plots the test statistic and reject region
-
-        Args:
-            ax (plt.Axes): Matplotlib axes object. Optional. If provided, this will override the current
-                value of the axes designated for this plot, if any. Otherwise, if the axes is
-                None, one is provided by the canvas object.
-        """
-
-        if ax is not None:
-            self._ax1 = ax
-        elif self._ax1 is None:
-            _, self._ax1 = self._canvas.get_figaxes()
-
-        n = len(self.a)
-
-        # Render the probability distribution
-        x = np.linspace(stats.kstwo.ppf(0.001, n), stats.kstwo.ppf(0.999, n), 500)
-        y = stats.kstwo.pdf(x, n)
-        self._ax1 = sns.lineplot(x=x, y=y, markers=False, dashes=False, sort=True, ax=self._ax1)
-
-        # Compute reject region
-        lower = x[0]
-        upper = x[-1]
-        lower_alpha = self.alpha / 2
-        upper_alpha = 1 - (self.alpha / 2)
-        lower_critical = stats.kstwo.ppf(lower_alpha, n)
-        upper_critical = stats.kstwo.ppf(upper_alpha, n)
-
-        self._fill_reject_region(
-            n=n,
-            lower=lower,
-            upper=upper,
-            lower_critical=lower_critical,
-            upper_critical=upper_critical,
-        )
-
-        self._ax1.set_title(
-            f"Kolmogorov-Smirnov Goodness of Fit\n{self.result}",
-            fontsize=self._canvas.fontsize_title,
-        )
-
-        self._ax1.set_ylabel("Probability Density")
-        plt.tight_layout()
-
-    def _fill_reject_region(
-        self,
-        n: int,
-        lower: float,
-        upper: float,
-        lower_critical: float,
-        upper_critical: float,
-    ) -> None:  # pragma: no cover
-        """Fills the area under the curve at the value of the hypothesis test statistic."""
-
-        # Fill lower tail
-        xlower = np.arange(lower, lower_critical, 0.001)
-        self._ax1.fill_between(
-            x=xlower,
-            y1=0,
-            y2=stats.kstwo.pdf(xlower, n),
-            color=self._canvas.colors.orange,
-        )
-
-        # Fill Upper Tail
-        xupper = np.arange(upper_critical, upper, 0.001)
-        self._ax1.fill_between(
-            x=xupper,
-            y1=0,
-            y2=stats.kstwo.pdf(xupper, n),
-            color=self._canvas.colors.orange,
-        )
-
-        # Plot the statistic
-        line = self._ax1.lines[0]
-        xdata = line.get_xydata()[:, 0]
-        ydata = line.get_xydata()[:, 1]
-        statistic = round(self.value, 4)
-        try:
-            idx = np.where(xdata > self.value)[0][0]
-            x = xdata[idx]
-            y = ydata[idx]
-            _ = sns.regplot(
-                x=np.array([x]),
-                y=np.array([y]),
-                scatter=True,
-                fit_reg=False,
-                marker="o",
-                scatter_kws={"s": 100},
-                ax=self._ax1,
-                color=self._canvas.colors.dark_blue,
-            )
-            self._ax1.annotate(
-                f"D = {str(statistic)}",
-                (x, y),
-                textcoords="offset points",
-                xytext=(0, 10),
-                ha="center",
-            )
-
-            self._ax1.annotate(
-                "Critical Value",
-                (lower_critical, 0),
-                textcoords="offset points",
-                xytext=(20, 15),
-                ha="left",
-                arrowprops={"width": 2, "headwidth": 4, "shrink": 0.05},
-            )
-
-            self._ax1.annotate(
-                "Critical Value",
-                (upper_critical, 0),
-                xycoords="data",
-                textcoords="offset points",
-                xytext=(-20, 15),
-                ha="right",
-                arrowprops={"width": 2, "headwidth": 4, "shrink": 0.05},
-            )
-        except IndexError:
-            pass
-
-    def plot_cdf(self, ax: plt.Axes = None) -> None:  # pragma: no cover
-        """Plots the cumulative distribution function for two samples or the sample and the theoretical distribution.
-
-        Args:
-            ax (plt.Axes): Matplotlib axes object. Optional. If provided, this will override the current
-                value of the axes designated for this plot, if any. Otherwise, if the axes is
-                None, one is provided by the canvas object.
-        """
-        if ax is not None:
-            self._ax1 = ax
-        elif self._ax2 is None:
-            _, self._ax2 = self._canvas.get_figaxes()
-
-        x = self.a
-
-        if isinstance(self.b, str):
-            title = "Theoretical and Empirical Cumulative Distribution Function"
-            self._ax2 = sns.ecdfplot(
-                x=x,
-                stat="proportion",
-                ax=self._ax2,
-                label=f"Empirical Cumulative Distribution Function: {self.a_name}",
-                legend=True,
-            )
-            d = RVSDistribution()
-            cdf = d(data=x, distribution=self.b).cdf
-            self._ax2 = sns.lineplot(
-                x=cdf.x,
-                y=cdf.y,
-                ax=self._ax2,
-                color=self._canvas.colors.orange,
-                label=f"Cumulative Distribution Function: {cdf.name}",
-                legend=True,
-            )
-        else:
-            title = "Two Sample Cumulative Distribution Function"
-            x2 = self.b
-            self._ax2 = sns.ecdfplot(
-                x=x,
-                stat="proportion",
-                ax=self._ax2,
-                label=f"Empirical Cumulative Distribution Function: {self.a_name}",
-                legend=True,
-            )
-            self._ax2 = sns.ecdfplot(
-                x=x2,
-                stat="proportion",
-                ax=self._ax2,
-                color=self._canvas.colors.orange,
-                label=f"Empirical Cumulative Distribution Function: {self.b_name}",
-                legend=True,
-            )
-
-            h2, l2 = self._ax2.get_legend_handles_labels()
-            self._ax2.legend(handles=h2, labels=l2, loc="upper left")
-
-        self._ax2.set_title(title, fontsize=self._canvas.fontsize_title)
-        plt.tight_layout()
-
-    def plot_pdf(self, ax: plt.Axes = None) -> None:  # pragma: no cover
-        """Plots the probability density function for the two samples or sample and theoretical distriubtion.
-
-        Args:
-            ax (plt.Axes): Matplotlib axes object. Optional. If provided, this will override the current
-                value of the axes designated for this plot, if any. Otherwise, if the axes is
-                None, one is provided by the canvas object.
-        """
-        if ax is not None:
-            self._ax3 = ax
-        elif self._ax3 is None:
-            _, self._ax3 = self._canvas.get_figaxes()
-
-        x = self.a
-
-        if isinstance(self.b, str):
-            title = "Theoretical and Empirical Probability Density Function"
-            self._ax3 = sns.kdeplot(
-                x=x,
-                ax=self._ax3,
-                label=f"Empirical Probability Density Function: {self.a_name}",
-                legend=True,
-            )
-            d = RVSDistribution()
-            pdf = d(data=x, distribution=self.b).pdf
-            self._ax3 = sns.lineplot(
-                x=pdf.x,
-                y=pdf.y,
-                ax=self._ax3,
-                color=self._canvas.colors.orange,
-                label=f"Probability Density Function: {pdf.name} ",
-                legend=True,
-            )
-        else:
-            title = "Two Sample Probability Density Function"
-            x2 = self.b
-            self._ax3 = sns.kdeplot(
-                x=x,
-                ax=self._ax3,
-                label=f"Empirical Probability Density Function: {self.a_name}",
-                legend=True,
-            )
-            self._ax3 = sns.kdeplot(
-                x=x2,
-                ax=self._ax3,
-                color=self._canvas.colors.orange,
-                label=f"Empirical Probability Density Function: {self.b_name}",
-                legend=True,
-            )
-            h1, l1 = self._ax3.get_legend_handles_labels()
-            self._ax3.legend(handles=h1, labels=l1, loc="upper right")
-
-        self._ax3.set_title(title, fontsize=self._canvas.fontsize_title)
-        plt.tight_layout()
 
 
 # ------------------------------------------------------------------------------------------------ #
 #                                          TEST                                                    #
 # ------------------------------------------------------------------------------------------------ #
 class KSTest(StatisticalTest):
-    """Performs the statistical test and creates a result object.
+    """Performs the (one-sample or two-sample) Kolmogorov-Smirnov test for goodness of fit.
+
+    The one-sample test compares the underlying distribution F(x) of a sample against a given
+    distribution G(x). The two-sample test compares the underlying distributions of
+    two independent samples. Both tests are valid only for continuous distributions.
 
     Args:
         a (np.ndarray): 1D Numpy array of data to be tested.
@@ -322,15 +78,11 @@ class KSTest(StatisticalTest):
         self,
         a: np.ndarray,
         b: Union[str, np.ndarray],
-        a_name: str = "Sample 1",
-        b_name: str = "Sample 2",
         alpha: float = 0.05,
     ) -> None:
         super().__init__()
         self._a = a
         self._b = b
-        self._a_name = a_name
-        self._b_name = b_name
         self._alpha = alpha
         self._profile = StatTestProfile.create(self.__id)
         self._result = None
@@ -379,8 +131,6 @@ class KSTest(StatisticalTest):
             result=self._report_results(n=n, statistic=result.statistic, pvalue=result.pvalue),
             a=self._a,
             b=self._b,
-            a_name=self._a_name,
-            b_name=self._b_name,
             inference=inference,
             interpretation=interpretation,
             alpha=self._alpha,
@@ -402,5 +152,7 @@ class KSTest(StatisticalTest):
 
     def _report_results(self, n: int, statistic: float, pvalue: float) -> str:
         """Reports the result in APA style."""
-        result = f"D({n})={round(statistic,4)}, p={round(pvalue,3)}"
+        result = (
+            f"Kolmogorov-Smirnov Goodness of Fit\nD({n})={round(statistic,4)}, p={round(pvalue,3)}"
+        )
         return result
