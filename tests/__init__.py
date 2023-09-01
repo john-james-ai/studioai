@@ -11,13 +11,13 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Tuesday August 22nd 2023 05:55:50 pm                                                #
-# Modified   : Friday September 1st 2023 03:24:18 am                                               #
+# Modified   : Friday September 1st 2023 03:36:51 am                                               #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
 # ================================================================================================ #
-from studioai.visual.container import VisualizerContainer
+from studioai.container import StudioAIContainer
 
-container = VisualizerContainer()
+container = StudioAIContainer()
 container.init_resources()
 container.wire(packages=["appstore.data.dataset"])

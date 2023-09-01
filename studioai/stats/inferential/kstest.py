@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Tuesday June 6th 2023 01:45:05 am                                                   #
-# Modified   : Monday August 28th 2023 07:28:18 am                                                 #
+# Modified   : Friday September 1st 2023 03:36:51 am                                               #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -23,7 +23,7 @@ import numpy as np
 from scipy import stats
 from dependency_injector.wiring import inject, Provide
 
-from studioai.visual.container import VisualizerContainer
+from studioai.container import StudioAIContainer
 from studioai.visual.seaborn import Visualizer
 from studioai.stats.inferential.profile import StatTestProfile
 from studioai.stats.inferential.base import (
@@ -43,7 +43,7 @@ class KSTestResult(StatTestResult):
     b: Union[np.ndarray, str] = None
 
     @inject
-    def __post_init__(self, visualizer: Visualizer = Provide[VisualizerContainer.seaborn]) -> None:
+    def __post_init__(self, visualizer: Visualizer = Provide[StudioAIContainer.seaborn]) -> None:
         self.visualizer = visualizer
 
     def plot(self) -> None:  # pragma: no cover

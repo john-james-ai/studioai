@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Wednesday June 7th 2023 08:15:08 pm                                                 #
-# Modified   : Monday August 28th 2023 07:28:20 am                                                 #
+# Modified   : Friday September 1st 2023 03:36:51 am                                               #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -22,7 +22,7 @@ from scipy import stats
 from dependency_injector.wiring import inject, Provide
 
 from studioai.visual.seaborn import Visualizer
-from studioai.visual.container import VisualizerContainer
+from studioai.container import StudioAIContainer
 from studioai.stats.inferential.profile import StatTestProfile
 from studioai.stats.inferential.base import (
     StatTestResult,
@@ -41,7 +41,7 @@ class SpearmanCorrelationResult(StatTestResult):
     dof: float = None
 
     @inject
-    def __post_init__(self, visualizer: Visualizer = Provide[VisualizerContainer.seaborn]) -> None:
+    def __post_init__(self, visualizer: Visualizer = Provide[StudioAIContainer.seaborn]) -> None:
         self.visualizer = visualizer
 
     def plot(self) -> None:  # pragma: no cover

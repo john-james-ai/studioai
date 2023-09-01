@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Thursday August 10th 2023 08:29:08 pm                                               #
-# Modified   : Thursday August 31st 2023 07:59:24 pm                                               #
+# Modified   : Friday September 1st 2023 03:47:02 am                                               #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -21,12 +21,10 @@ from abc import ABC, abstractproperty
 import logging
 from typing import Callable, Union, List
 
-from dependency_injector.wiring import inject, Provide
 import pandas as pd
 
 from studioai.stats.descriptive.summary import SummaryStats
 from studioai.visual.base import Visualizer
-from studioai.visual.container import VisualizerContainer
 
 # ------------------------------------------------------------------------------------------------ #
 logger = logging.getLogger(__name__)
@@ -42,12 +40,9 @@ class Dataset(ABC):
         df (pd.DataFrame): Pandas DataFrame object.
     """
 
-    @inject
-    def __init__(
-        self, df: pd.DataFrame, visualizer: Visualizer = Provide[VisualizerContainer.seaborn]
-    ) -> None:
+    def __init__(self, df: pd.DataFrame, visualizer: Visualizer = Visualizer) -> None:
         self._df = df
-        self._visualizer = visualizer
+        self._visualizer = visualizer()
 
     def __len__(self):
         """Returns the length of the dataset."""
