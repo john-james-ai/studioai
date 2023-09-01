@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Thursday August 10th 2023 08:29:08 pm                                               #
-# Modified   : Friday September 1st 2023 03:47:02 am                                               #
+# Modified   : Friday September 1st 2023 03:54:13 am                                               #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -40,9 +40,9 @@ class Dataset(ABC):
         df (pd.DataFrame): Pandas DataFrame object.
     """
 
-    def __init__(self, df: pd.DataFrame, visualizer: Visualizer = Visualizer) -> None:
+    def __init__(self, df: pd.DataFrame) -> None:
         self._df = df
-        self._visualizer = visualizer()
+        self._visualizer = Visualizer()
 
     def __len__(self):
         """Returns the length of the dataset."""
