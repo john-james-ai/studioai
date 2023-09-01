@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Saturday August 26th 2023 06:25:27 am                                               #
-# Modified   : Monday August 28th 2023 08:37:28 am                                                 #
+# Modified   : Friday September 1st 2023 04:02:43 am                                               #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -316,6 +316,51 @@ class Visualizer(VisualizerABC):  # pragma: no cover
             fig, ax = self._canvas.get_figaxes()
 
         sns.boxplot(
+            data=data,
+            x=x,
+            y=y,
+            hue=hue,
+            ax=ax,
+            palette=palette,
+            *args,
+            **kwargs,
+        )
+        if title is not None:
+            ax.set_title(title)
+
+    def countplot(
+        self,
+        data: Union[pd.DataFrame, np.ndarray] = None,
+        x: str = None,
+        y: str = None,
+        hue: str = None,
+        title: str = None,
+        ax: plt.Axes = None,
+        *args,
+        **kwargs,
+    ) -> None:
+        """Show the counts of observations in each categorical bin using bars.
+
+        A count plot can be thought of as a histogram across a categorical, instead of quantitative, variable. The basic API and options are identical to those for barplot(), so you can compare counts across nested variables.
+
+        Args:
+            data (Union[pd.DataFrame, np.ndarray]): Input data structure. Either a long-form
+                collection of vectors that can be assigned to named variables or a wide-form dataset
+                that will be internally reshaped
+            x,y (str): Keys in data.
+            hue (str): Grouping variable that will produce lines with different colors. Can be either categorical or numeric, although color mapping will behave differently in latter case.
+            title (str): Title for the plot. Optional
+            ax: (plt.Axes): A matplotlib Axes object. Optional. If not provide, one will be obtained from the canvas.
+
+
+        """
+        palette = self._canvas.palette if hue is not None else None
+        data = data or self._data
+
+        if ax is None:
+            fig, ax = self._canvas.get_figaxes()
+
+        sns.countplot(
             data=data,
             x=x,
             y=y,
