@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Thursday August 10th 2023 08:29:08 pm                                               #
-# Modified   : Monday August 28th 2023 04:25:36 pm                                                 #
+# Modified   : Thursday August 31st 2023 07:59:24 pm                                               #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -61,6 +61,11 @@ class Dataset(ABC):
     def columns(self) -> list:
         """Returns a list containing the names of the columns in the dataset."""
         return self._df.columns
+
+    @property
+    def shape(self) -> list:
+        """Returns the shape of the dataset"""
+        return self._df.shape
 
     @property
     def dtypes(self) -> list:
