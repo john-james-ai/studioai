@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Saturday August 26th 2023 06:25:27 am                                               #
-# Modified   : Friday September 1st 2023 04:02:43 am                                               #
+# Modified   : Friday September 1st 2023 04:15:39 am                                               #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -354,7 +354,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
 
 
         """
-        palette = self._canvas.palette if hue is not None else None
+        palette = self._canvas.palette if hue is not None else "Blues_r"
         data = data or self._data
 
         if ax is None:
