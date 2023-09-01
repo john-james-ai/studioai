@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Thursday August 10th 2023 08:29:08 pm                                               #
-# Modified   : Friday September 1st 2023 03:57:19 am                                               #
+# Modified   : Friday September 1st 2023 03:59:15 am                                               #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -24,7 +24,7 @@ from typing import Callable, Union, List
 import pandas as pd
 
 from studioai.stats.descriptive.summary import SummaryStats
-from studioai.visual.seaborn import Visualizer
+from studioai.visual.seaborn import Visualizer, SeabornCanvas
 
 # ------------------------------------------------------------------------------------------------ #
 logger = logging.getLogger(__name__)
@@ -42,7 +42,7 @@ class Dataset(ABC):
 
     def __init__(self, df: pd.DataFrame) -> None:
         self._df = df
-        self._visualizer = Visualizer()
+        self._visualizer = Visualizer(canvas=SeabornCanvas())
 
     def __len__(self):
         """Returns the length of the dataset."""
