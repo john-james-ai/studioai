@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Saturday August 26th 2023 06:25:27 am                                               #
-# Modified   : Sunday September 3rd 2023 10:15:37 pm                                               #
+# Modified   : Monday September 4th 2023 01:34:00 am                                               #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -21,6 +21,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import List, Union
 import math
+import logging
 
 import pandas as pd
 import numpy as np
@@ -32,6 +33,9 @@ from matplotlib.gridspec import GridSpec
 from studioai.visual.base import Canvas, Colors
 from studioai.visual.base import Visualizer as VisualizerABC
 from studioai.data.dataclass import DataClass
+
+# ------------------------------------------------------------------------------------------------ #
+logger = logging.getLogger(__name__)
 
 
 # ------------------------------------------------------------------------------------------------ #
@@ -334,6 +338,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         x: str = None,
         y: str = None,
         hue: str = None,
+        orient: str = None,
         title: str = None,
         ax: plt.Axes = None,
         *args,
@@ -348,7 +353,11 @@ class Visualizer(VisualizerABC):  # pragma: no cover
                 collection of vectors that can be assigned to named variables or a wide-form dataset
                 that will be internally reshaped
             x,y (str): Keys in data.
-            hue (str): Grouping variable that will produce lines with different colors. Can be either categorical or numeric, although color mapping will behave differently in latter case.
+            hue (str): Grouping variable that will produce lines with different colors. Can be either categorical or
+                numeric, although color mapping will behave differently in latter case.
+            orient (str): 'v' or 'h'. Orientation of the plot (vertical or horizontal). This is usually
+                inferred based on the type of the input variables, but it can be used to resolve ambiguity
+                when both x and y are numeric or when plotting wide-form data.
             title (str): Title for the plot. Optional
             ax: (plt.Axes): A matplotlib Axes object. Optional. If not provide, one will be obtained from the canvas.
 
@@ -356,6 +365,12 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         """
         palette = self._canvas.palette if hue is not None else "Blues_r"
         data = data if data is not None else self._data
+        total = len(data)
+        if orient is None:
+            if x is None and y is not None:
+                orient = "h"
+            else:
+                orient = "v"
 
         if ax is None:
             fig, ax = self._canvas.get_figaxes()
@@ -370,8 +385,83 @@ class Visualizer(VisualizerABC):  # pragma: no cover
             *args,
             **kwargs,
         )
+        if orient == "v":
+            for p in ax.patches:
+                x = p.get_bbox().get_points()[:, 0]
+                y = p.get_bbox().get_points()[1, 1]
+                ax.annotate(
+                    text=f"{round(y,0)}\n({round(y/total*100,1)}%)",
+                    xy=(x.mean(), y),
+                    ha="center",
+                    va="bottom",
+                )
+        else:
+            for p in ax.patches:
+                x = p.get_x() + p.get_width() / 2
+                y = p.get_y() + p.get_height() / 2
+                ax.annotate(
+                    text=f"{round(p.get_width(),0)} ({round(p.get_width()/total*100,1)}%)",
+                    xy=(x, y),
+                    va="center",
+                )
+
         if title is not None:
             ax.set_title(title)
+
+    def barplot(
+        self,
+        data: Union[pd.DataFrame, np.ndarray] = None,
+        x: str = None,
+        y: str = None,
+        hue: str = None,
+        orient: str = None,
+        title: str = None,
+        ax: plt.Axes = None,
+        *args,
+        **kwargs,
+    ) -> None:
+        """Show point estimates and errors as rectangular bars.
+
+        A bar plot represents an estimate of central tendency for a numeric variable with the height of each
+        rectangle and provides some indication of the uncertainty around that estimate using error bars. Bar
+        plots include 0 in the quantitative axis range, and they are a good choice when 0 is a meaningful
+        value for the quantitative variable, and you want to make comparisons against it.
+
+        Args:
+            data (Union[pd.DataFrame, np.ndarray]): Input data structure. Either a long-form
+                collection of vectors that can be assigned to named variables or a wide-form dataset
+                that will be internally reshaped
+            x,y (str): Keys in data.
+            hue (str): Grouping variable that will produce lines with different colors. Can be either categorical or numeric, although color mapping will behave differently in latter case.
+            orient (str): 'v' or 'h'. Orientation of the plot (vertical or horizontal). This is usually
+                inferred based on the type of the input variables, but it can be used to resolve ambiguity
+                when both x and y are numeric or when plotting wide-form data.
+            title (str): Title for the plot. Optional
+            ax: (plt.Axes): A matplotlib Axes object. Optional. If not provide, one will be obtained from the canvas.
+
+        """
+        palette = self._canvas.palette if hue is not None else None
+        data = data if data is not None else self._data
+
+        if ax is None:
+            fig, ax = self._canvas.get_figaxes()
+
+        sns.barplot(
+            data=data,
+            x=x,
+            y=y,
+            hue=hue,
+            ax=ax,
+            palette=palette,
+            *args,
+            **kwargs,
+        )
+
+        if title is not None:
+            ax.set_title(title)
+
+        if hue is not None:
+            plt.legend(loc="upper right")
 
     def kdeplot(
         self,
@@ -469,56 +559,6 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         )
         if title is not None:
             ax.set_title(title)
-
-    def barplot(
-        self,
-        data: Union[pd.DataFrame, np.ndarray] = None,
-        x: str = None,
-        y: str = None,
-        hue: str = None,
-        title: str = None,
-        ax: plt.Axes = None,
-        *args,
-        **kwargs,
-    ) -> None:
-        """Show point estimates and errors as rectangular bars.
-
-        A bar plot represents an estimate of central tendency for a numeric variable with the height of each
-        rectangle and provides some indication of the uncertainty around that estimate using error bars. Bar
-        plots include 0 in the quantitative axis range, and they are a good choice when 0 is a meaningful
-        value for the quantitative variable, and you want to make comparisons against it.
-
-        Args:
-            data (Union[pd.DataFrame, np.ndarray]): Input data structure. Either a long-form
-                collection of vectors that can be assigned to named variables or a wide-form dataset
-                that will be internally reshaped
-            x,y (str): Keys in data.
-            hue (str): Grouping variable that will produce lines with different colors. Can be either categorical or numeric, although color mapping will behave differently in latter case.
-            title (str): Title for the plot. Optional
-            ax: (plt.Axes): A matplotlib Axes object. Optional. If not provide, one will be obtained from the canvas.
-
-        """
-        palette = self._canvas.palette if hue is not None else None
-        data = data if data is not None else self._data
-
-        if ax is None:
-            fig, ax = self._canvas.get_figaxes()
-
-        sns.barplot(
-            data=data,
-            x=x,
-            y=y,
-            hue=hue,
-            ax=ax,
-            palette=palette,
-            *args,
-            **kwargs,
-        )
-        if title is not None:
-            ax.set_title(title)
-
-        if hue is not None:
-            plt.legend(loc="upper right")
 
     def violinplot(
         self,
