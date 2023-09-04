@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Saturday August 26th 2023 06:25:27 am                                               #
-# Modified   : Sunday September 3rd 2023 10:09:21 pm                                               #
+# Modified   : Sunday September 3rd 2023 10:15:37 pm                                               #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -152,7 +152,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
 
         """
         palette = self._canvas.palette if hue is not None else None
-        data = data.any() or self._data.any()
+        data = data if data is not None else self._data
 
         if ax is None:
             fig, ax = self._canvas.get_figaxes()
@@ -202,7 +202,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
 
         """
         palette = self._canvas.palette if hue is not None else None
-        data = data.any() or self._data.any()
+        data = data if data is not None else self._data
 
         if ax is None:
             fig, ax = self._canvas.get_figaxes()
@@ -258,7 +258,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
 
         """
         palette = self._canvas.palette if hue is not None else None
-        data = data.any() or self._data.any()
+        data = data if data is not None else self._data
 
         if ax is None:
             fig, ax = self._canvas.get_figaxes()
@@ -310,7 +310,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
 
         """
         palette = self._canvas.palette if hue is not None else None
-        data = data.any() or self._data.any()
+        data = data if data is not None else self._data
 
         if ax is None:
             fig, ax = self._canvas.get_figaxes()
@@ -355,7 +355,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
 
         """
         palette = self._canvas.palette if hue is not None else "Blues_r"
-        data = data.any() or self._data.any()
+        data = data if data is not None else self._data
 
         if ax is None:
             fig, ax = self._canvas.get_figaxes()
@@ -402,7 +402,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
 
         """
         palette = self._canvas.palette if hue is not None else None
-        data = data.any() or self._data.any()
+        data = data if data is not None else self._data
 
         if ax is None:
             fig, ax = self._canvas.get_figaxes()
@@ -452,7 +452,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
 
         """
         palette = self._canvas.palette if hue is not None else None
-        data = data.any() or self._data.any()
+        data = data if data is not None else self._data
 
         if ax is None:
             fig, ax = self._canvas.get_figaxes()
@@ -499,7 +499,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
 
         """
         palette = self._canvas.palette if hue is not None else None
-        data = data.any() or self._data.any()
+        data = data if data is not None else self._data
 
         if ax is None:
             fig, ax = self._canvas.get_figaxes()
@@ -551,7 +551,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
 
         """
         palette = self._canvas.palette if hue is not None else None
-        data = data.any() or self._data.any()
+        data = data if data is not None else self._data
 
         if ax is None:
             fig, ax = self._canvas.get_figaxes()
@@ -591,7 +591,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
 
 
         """
-        data = data.any() or self._data.any()
+        data = data if data is not None else self._data
 
         if ax is None:
             fig, ax = self._canvas.get_figaxes()
@@ -635,7 +635,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
 
 
         """
-        data = data.any() or self._data.any()
+        data = data if data is not None else self._data
 
         if ax is None:
             fig, ax1 = self._canvas.get_figaxes()
@@ -700,7 +700,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
 
         """
         palette = self._canvas.palette if hue is not None else None
-        data = data.any() or self._data.any()
+        data = data if data is not None else self._data
 
         g = sns.pairplot(
             data=data,
@@ -738,7 +738,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         """
 
         palette = self._canvas.palette if hue is not None else None
-        data = data.any() or self._data.any()
+        data = data if data is not None else self._data
 
         g = sns.jointplot(
             data=data,
