@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Tuesday August 22nd 2023 07:44:59 pm                                                #
-# Modified   : Saturday August 26th 2023 10:11:02 am                                               #
+# Modified   : Sunday September 17th 2023 07:16:20 pm                                              #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -67,6 +67,43 @@ class StatisticalTest(ABC):
     @property
     @abstractmethod
     def result(self) -> StatTestResult:
+        """Returns a Statistical Test Result object."""
+
+    @abstractmethod
+    def run(self) -> None:
+        """Performs the statistical test and creates a result object."""
+
+    def _report_pvalue(self, pvalue: float) -> str:
+        """Rounds the pvalue in accordance with the APA Style Guide 7th Edition"""
+        if pvalue < 0.001:
+            return "p<.001"
+        else:
+            return "p=" + str(round(pvalue, 4))
+
+    def _report_alpha(self) -> str:
+        a = int(self._alpha * 100)
+        return f"significant at {a}%."
+
+
+# ------------------------------------------------------------------------------------------------ #
+@dataclass
+class StatMeasure(DataClass):
+    name: str = None
+    value: float = 0
+    interpretation: str = None
+
+
+# ------------------------------------------------------------------------------------------------ #
+class StatAnalysis(ABC):
+    """Base class for Statistical Measurer classes"""
+
+    def __init__(self, io: IOService = IOService, *args, **kwargs) -> None:
+        self._io = io
+        self._logger = logging.getLogger(f"{self.__class__.__name__}")
+
+    @property
+    @abstractmethod
+    def measure(self) -> StatMeasure:
         """Returns a Statistical Test Result object."""
 
     @abstractmethod

@@ -4,14 +4,14 @@
 # Project    : Artificial Intelligence & Data Science Studio                                       #
 # Version    : 0.1.0                                                                               #
 # Python     : 3.10.12                                                                             #
-# Filename   : /studioai/visual/seaborn.py                                                         #
+# Filename   : /studioai/visual/visualizer.py                                                      #
 # ------------------------------------------------------------------------------------------------ #
 # Author     : John James                                                                          #
 # Email      : john.james.ai.studio@gmail.com                                                      #
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Saturday August 26th 2023 06:25:27 am                                               #
-# Modified   : Monday September 4th 2023 01:34:00 am                                               #
+# Modified   : Monday September 18th 2023 03:10:11 am                                              #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -27,6 +27,7 @@ import pandas as pd
 import numpy as np
 from scipy import stats
 import seaborn as sns
+import plotly.graph_objects as go
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
 
@@ -121,7 +122,7 @@ class SeabornCanvas(Canvas):
 class Visualizer(VisualizerABC):  # pragma: no cover
     """Wrapper for Seaborn plotizations."""
 
-    def __init__(self, canvas: SeabornCanvas):
+    def __init__(self, canvas: SeabornCanvas = SeabornCanvas()):
         super().__init__(canvas)
 
     def lineplot(
@@ -1105,6 +1106,82 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         )
 
         plt.tight_layout()
+
+    def cramersv(
+        self,
+        data: pd.DataFrame,
+        value: float,
+        thresholds: np.array,
+        interpretation: str,
+        title: str = None,
+        *args,
+        **kwargs,
+    ) -> None:
+        default_title = f"Cramer's V Measure of Association between {data.index.name.capitalize()} & {data.columns.name.capitalize()} is {interpretation}"
+
+        title = f"{title}\n{interpretation}" if title else default_title
+
+        fig = go.Figure(
+            go.Indicator(
+                mode="gauge+number",
+                value=value,
+                gauge={
+                    "axis": {"range": [0, 1]},
+                    "bar": {"color": "#122740"},
+                    "steps": [
+                        {"range": [0, thresholds[1]], "color": "#84B29E"},
+                        {"range": [thresholds[1], thresholds[2]], "color": "#568F8B"},
+                        {"range": [thresholds[2], thresholds[3]], "color": "#326B77"},
+                        {"range": [thresholds[3], thresholds[4]], "color": "#1B485E"},
+                    ],
+                },
+                domain={"x": [0, 1], "y": [0, 1]},
+                title={"text": title},
+            )
+        )
+        fig.show()
+
+    def kendallstau(
+        self,
+        data: pd.DataFrame,
+        a: str,
+        b: str,
+        value: float,
+        thresholds: np.array,
+        interpretation: str,
+        title: str = None,
+        *args,
+        **kwargs,
+    ) -> None:
+        default_title = f"Measure of Association between {a.capitalize()} & {b.capitalize()} is {interpretation}"
+
+        title = f"{title}\n{interpretation}" if title else default_title
+
+        fig = go.Figure(
+            go.Indicator(
+                mode="gauge+number",
+                value=value,
+                gauge={
+                    "axis": {"range": [-1, 1]},
+                    "bar": {"color": "#122740"},
+                    "steps": [
+                        {"range": [thresholds[0], thresholds[1]], "color": "#1B485E"},
+                        {"range": [thresholds[1], thresholds[2]], "color": "#2e6280"},
+                        {"range": [thresholds[2], thresholds[3]], "color": "#528a9c"},
+                        {"range": [thresholds[3], thresholds[4]], "color": "#79b3b7"},
+                        {"range": [thresholds[4], thresholds[5]], "color": "#aaddd0"},
+                        {"range": [thresholds[5], thresholds[6]], "color": "#ffcca5"},
+                        {"range": [thresholds[6], thresholds[7]], "color": "#f59973"},
+                        {"range": [thresholds[7], thresholds[8]], "color": "#de684e"},
+                        {"range": [thresholds[8], thresholds[9]], "color": "#be383a"},
+                        {"range": [thresholds[9], thresholds[10]], "color": "#93003a"},
+                    ],
+                },
+                domain={"x": [0, 1], "y": [0, 1]},
+                title={"text": title},
+            )
+        )
+        fig.show()
 
     def _wrap_ticklabels(
         self, axis: str, axes: List[plt.Axes], fontsize: int = 8

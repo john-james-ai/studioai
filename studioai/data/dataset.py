@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Thursday August 10th 2023 08:29:08 pm                                               #
-# Modified   : Friday September 1st 2023 03:59:15 am                                               #
+# Modified   : Sunday September 17th 2023 04:40:36 pm                                              #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -24,7 +24,7 @@ from typing import Callable, Union, List
 import pandas as pd
 
 from studioai.stats.descriptive.summary import SummaryStats
-from studioai.visual.seaborn import Visualizer, SeabornCanvas
+from studioai.visual.visualizer import Visualizer, SeabornCanvas
 
 # ------------------------------------------------------------------------------------------------ #
 logger = logging.getLogger(__name__)

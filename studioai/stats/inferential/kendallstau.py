@@ -4,14 +4,14 @@
 # Project    : Artificial Intelligence & Data Science Studio                                       #
 # Version    : 0.1.0                                                                               #
 # Python     : 3.10.11                                                                             #
-# Filename   : /studioai/stats/inferential/chisquare.py                                            #
+# Filename   : /studioai/stats/inferential/kendallstau.py                                          #
 # ------------------------------------------------------------------------------------------------ #
 # Author     : John James                                                                          #
 # Email      : john.james.ai.studio@gmail.com                                                      #
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Monday May 29th 2023 03:00:39 am                                                    #
-# Modified   : Sunday September 17th 2023 05:52:04 pm                                              #
+# Modified   : Sunday September 17th 2023 10:34:42 pm                                              #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -19,27 +19,31 @@
 from dataclasses import dataclass
 
 import pandas as pd
+import numpy as np
 from scipy import stats
 from dependency_injector.wiring import inject, Provide
 
 from studioai.container import StudioAIContainer
 from studioai.visual.visualizer import Visualizer
-from studioai.stats.inferential.profile import StatTestProfile
 from studioai.stats.inferential.base import (
-    StatTestResult,
-    StatisticalTest,
+    StatMeasure,
+    StatAnalysis,
 )
 
 
 # ------------------------------------------------------------------------------------------------ #
-#                                     TEST RESULT                                                  #
+#                                 KENDALL'S TAU MEASURE OF CORRELATION                             #
 # ------------------------------------------------------------------------------------------------ #
 @dataclass
-class ChiSquareIndependenceResult(StatTestResult):
-    dof: int = None
+class KendallsTau(StatMeasure):
+    name: str = "Kendall's Tau"
     data: pd.DataFrame = None
     a: str = None
     b: str = None
+    thresholds: np.array = None
+    interpretation: str = None
+    pvalue: float = None
+    result: str = None
     visualizer: Visualizer = None
 
     @inject
@@ -47,21 +51,30 @@ class ChiSquareIndependenceResult(StatTestResult):
         self.visualizer = visualizer
 
     def plot(self) -> None:  # pragma: no cover
-        self.visualizer.x2testplot(
-            statistic=self.value, dof=self.dof, result=self.result, alpha=self.alpha
+        self.visualizer.kendallstau(
+            data=self.data,
+            a=self.a,
+            b=self.b,
+            value=self.value,
+            thresholds=self.thresholds,
+            interpretation=self.interpretation,
         )
 
 
 # ------------------------------------------------------------------------------------------------ #
-#                                          TEST                                                    #
+#                                   CRAMERS V ANALYSIS                                             #
 # ------------------------------------------------------------------------------------------------ #
-class ChiSquareIndependenceTest(StatisticalTest):
-    """Chi-Square Test of Independence
+class KendallsTauAnalysis(StatAnalysis):
+    """Kendall's Tau Measures the degree of correlation between two ordinal variables.
 
-    The Chi-Square test of independence is used to determine if there is a significant relationship between two nominal (categorical) variables.  The frequency of each category for one nominal variable is compared across the categories of the second nominal variable.
+    Args:
+        data (pd.DataFrame): The DataFrame containing the variables of interest.
+        a (str): The name of an ordinal variable in data.
+        b (str): The name of an ordinal variable in data.
+
     """
 
-    __id = "x2ind"
+    __id = "kendallstau"
 
     @inject
     def __init__(
@@ -69,58 +82,59 @@ class ChiSquareIndependenceTest(StatisticalTest):
         data: pd.DataFrame,
         a: str = None,
         b: str = None,
-        alpha: float = 0.05,
+        variant: str = "c",
+        alternative: str = "two-sided",
     ) -> None:
         super().__init__()
         self._data = data
         self._a = a
         self._b = b
-        self._alpha = alpha
-        self._profile = StatTestProfile.create(self.__id)
-        self._result = None
+        self._variant = variant
+        self._alternative = alternative
+        self._thresholds = np.array(
+            [-1, -0.71, -0.49, -0.26, -0.06, 0.00, 0.06, 0.26, 0.49, 0.71, 1.0]
+        )
+        self._labels = [
+            "Very Strong",
+            "Strong",
+            "Moderate",
+            "Weak",
+            "Negligible",
+            "Negligible",
+            "Weak",
+            "Moderate",
+            "Strong",
+            "Very Strong",
+        ]
 
     @property
-    def profile(self) -> StatTestProfile:
-        """Returns the statistical test profile."""
-        return self._profile
-
-    @property
-    def result(self) -> StatTestResult:
-        """Returns a Statistical Test Result object."""
-        return self._result
+    def measure(self) -> KendallsTau:
+        """Returns the Cramer's V Measure object."""
+        return self._measure
 
     def run(self) -> None:
         """Performs the statistical test and creates a result object."""
 
-        n = len(self._data)
+        a = self._data[self._a].values
+        b = self._data[self._b].values
 
-        obs = stats.contingency.crosstab(self._data[self._a], self._data[self._b])
+        statistic, pvalue = stats.kendalltau(
+            x=a, y=b, variant=self._variant, alternative=self._alternative
+        )
 
-        statistic, pvalue, dof, exp = stats.chi2_contingency(obs[1])
-
-        result = self._report_results(statistic=statistic, pvalue=pvalue, dof=dof, n=n)
-
-        if pvalue > self._alpha:  # pragma: no cover
-            inference = f"The pvalue {round(pvalue,2)} is greater than level of significance {int(self._alpha*100)}%; therefore, the null hypothesis is not rejected. The evidence against independence of {self._a} and {self._b} is not significant."
-        else:
-            inference = f"The pvalue {round(pvalue,2)} is less than level of significance {int(self._alpha*100)}%; therefore, the null hypothesis is rejected. The evidence against independence of {self._a} and {self._b} is significant."
+        interpretation = self._labels[np.where(self._thresholds < statistic)[-1][-1]]
 
         # Create the result object.
-        self._result = ChiSquareIndependenceResult(
-            test=self._profile.name,
-            H0=self._profile.H0,
-            statistic="X\u00b2",
-            hypothesis=self._profile.hypothesis,
-            dof=dof,
-            value=statistic,
-            pvalue=pvalue,
-            result=result,
+        self._measure = KendallsTau(
             data=self._data,
             a=self._a,
             b=self._b,
-            inference=inference,
-            alpha=self._alpha,
+            value=statistic,
+            interpretation=interpretation,
+            thresholds=self._thresholds,
+            pvalue=pvalue,
+            result=self._report_results(statistic=statistic, pvalue=pvalue),
         )
 
-    def _report_results(self, statistic: float, pvalue: float, dof: float, n: int) -> str:
-        return f"X\u00b2 Test of Independence\n{self._a.capitalize()} and {self._b.capitalize()}\nX\u00b2({dof}, N={n})={round(statistic,2)}, {self._report_pvalue(pvalue)}."
+    def _report_results(self, statistic: float, pvalue: float) -> str:
+        return f"Kendall's Tau Test of Correlation\n{self._a.capitalize()} and {self._b.capitalize()}\n\u03C4={statistic},{self._report_pvalue(pvalue)}."
