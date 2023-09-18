@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Monday May 29th 2023 03:00:39 am                                                    #
-# Modified   : Sunday September 17th 2023 10:34:42 pm                                              #
+# Modified   : Monday September 18th 2023 05:18:32 am                                              #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -91,20 +91,14 @@ class KendallsTauAnalysis(StatAnalysis):
         self._b = b
         self._variant = variant
         self._alternative = alternative
-        self._thresholds = np.array(
-            [-1, -0.71, -0.49, -0.26, -0.06, 0.00, 0.06, 0.26, 0.49, 0.71, 1.0]
-        )
+        self._thresholds = np.array([-1, -0.5, -0.3, 0.0, 0.3, 0.5, 1.0])
         self._labels = [
-            "Very Strong",
             "Strong",
             "Moderate",
             "Weak",
-            "Negligible",
-            "Negligible",
             "Weak",
             "Moderate",
             "Strong",
-            "Very Strong",
         ]
 
     @property

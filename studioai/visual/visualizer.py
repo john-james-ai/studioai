@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Saturday August 26th 2023 06:25:27 am                                               #
-# Modified   : Monday September 18th 2023 03:10:11 am                                              #
+# Modified   : Monday September 18th 2023 05:24:42 am                                              #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -80,7 +80,7 @@ class SeabornCanvas(Canvas):
     style: str = "whitegrid"  # A Seaborn aesthetic
     saturation: float = 0.5
     fontsize: int = 10
-    fontsize_title: int = 10
+    fontsize_title: int = 16
     colors: Colors = Colors()
     palettes: Palettes = Palettes()
 
@@ -1153,7 +1153,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         *args,
         **kwargs,
     ) -> None:
-        default_title = f"Measure of Association between {a.capitalize()} & {b.capitalize()} is {interpretation}"
+        default_title = f"Kendall's Tau-C Measure of Correlation between {a.capitalize()} & {b.capitalize()} is {interpretation}"
 
         title = f"{title}\n{interpretation}" if title else default_title
 
@@ -1162,19 +1162,37 @@ class Visualizer(VisualizerABC):  # pragma: no cover
                 mode="gauge+number",
                 value=value,
                 gauge={
-                    "axis": {"range": [-1, 1]},
-                    "bar": {"color": "#122740"},
+                    "bar": {"thickness": 0},
+                    "axis": {
+                        "range": [-1, 1],
+                        "tickmode": "array",
+                        "tickvals": [-1, -0.5, -0.3, 0, 0.3, 0.5, 1],
+                    },
                     "steps": [
-                        {"range": [thresholds[0], thresholds[1]], "color": "#1B485E"},
-                        {"range": [thresholds[1], thresholds[2]], "color": "#2e6280"},
-                        {"range": [thresholds[2], thresholds[3]], "color": "#528a9c"},
-                        {"range": [thresholds[3], thresholds[4]], "color": "#79b3b7"},
-                        {"range": [thresholds[4], thresholds[5]], "color": "#aaddd0"},
-                        {"range": [thresholds[5], thresholds[6]], "color": "#ffcca5"},
-                        {"range": [thresholds[6], thresholds[7]], "color": "#f59973"},
-                        {"range": [thresholds[7], thresholds[8]], "color": "#de684e"},
-                        {"range": [thresholds[8], thresholds[9]], "color": "#be383a"},
-                        {"range": [thresholds[9], thresholds[10]], "color": "#93003a"},
+                        {
+                            "range": [thresholds[0], thresholds[1]],
+                            "color": "#003c65",
+                        },
+                        {
+                            "range": [thresholds[1], thresholds[2]],
+                            "color": "#457c93",
+                        },
+                        {
+                            "range": [thresholds[2], thresholds[3]],
+                            "color": "#88c1bf",
+                        },
+                        {
+                            "range": [thresholds[3], thresholds[4]],
+                            "color": "#88c1bf",
+                        },
+                        {
+                            "range": [thresholds[4], thresholds[5]],
+                            "color": "#457c93",
+                        },
+                        {
+                            "range": [thresholds[5], thresholds[6]],
+                            "color": "#003c65",
+                        },
                     ],
                 },
                 domain={"x": [0, 1], "y": [0, 1]},

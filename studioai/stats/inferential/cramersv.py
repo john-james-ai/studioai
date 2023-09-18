@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Monday May 29th 2023 03:00:39 am                                                    #
-# Modified   : Sunday September 17th 2023 10:10:19 pm                                              #
+# Modified   : Monday September 18th 2023 05:21:37 am                                              #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -59,6 +59,14 @@ class CramersV(StatMeasure):
             value=self.value,
             thresholds=self.thresholds,
             interpretation=self.interpretation,
+        )
+
+    def plot_x2(self) -> None:  # pragma: no cover
+        self.visualizer.x2testplot(
+            statistic=self.x2,
+            dof=self.x2dof,
+            result=self.x2result,
+            alpha=self.x2alpha,
         )
 
 
