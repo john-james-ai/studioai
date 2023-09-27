@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Wednesday June 7th 2023 09:15:17 pm                                                 #
-# Modified   : Saturday August 26th 2023 05:47:27 am                                               #
+# Modified   : Wednesday September 27th 2023 06:12:54 am                                           #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -40,7 +40,7 @@ single_line = f"\n{100 * '-'}"
 @pytest.mark.pearson
 class TestPearson:  # pragma: no cover
     # ============================================================================================ #
-    def test_positive(self, dataset, caplog):
+    def test_positive(self, credit, caplog):
         start = datetime.now()
         logger.info(
             "\n\nStarted {} {} at {} on {}".format(
@@ -80,7 +80,7 @@ class TestPearson:  # pragma: no cover
         logger.info(single_line)
 
     # ============================================================================================ #
-    def test_negative(self, dataset, caplog):
+    def test_negative(self, credit, caplog):
         start = datetime.now()
         logger.info(
             "\n\nStarted {} {} at {} on {}".format(
@@ -124,7 +124,7 @@ class TestPearson:  # pragma: no cover
         logger.info(single_line)
 
     # ============================================================================================ #
-    def test_invalid_args(self, dataset, caplog):
+    def test_invalid_args(self, credit, caplog):
         start = datetime.now()
         logger.info(
             "\n\nStarted {} {} at {} on {}".format(

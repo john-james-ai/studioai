@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Tuesday August 15th 2023 05:59:13 pm                                                #
-# Modified   : Sunday August 27th 2023 07:10:02 pm                                                 #
+# Modified   : Wednesday September 27th 2023 06:12:54 am                                           #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -36,7 +36,7 @@ single_line = f"\n{100 * '-'}"
 @pytest.mark.dataset
 class TestDataset:  # pragma: no cover
     # ============================================================================================ #
-    def test_length(self, dataset, caplog):
+    def test_length(self, credit, caplog):
         start = datetime.now()
         logger.info(
             "\n\nStarted {} {} at {} on {}".format(
@@ -66,7 +66,7 @@ class TestDataset:  # pragma: no cover
         logger.info(single_line)
 
     # ============================================================================================ #
-    def test_size(self, dataset, caplog):
+    def test_size(self, credit, caplog):
         start = datetime.now()
         logger.info(
             "\n\nStarted {} {} at {} on {}".format(
@@ -97,7 +97,7 @@ class TestDataset:  # pragma: no cover
         logger.info(single_line)
 
     # ============================================================================================ #
-    def test_get_columns(self, dataset, caplog):
+    def test_get_columns(self, credit, caplog):
         start = datetime.now()
         logger.info(
             "\n\nStarted {} {} at {} on {}".format(
@@ -128,7 +128,7 @@ class TestDataset:  # pragma: no cover
         logger.info(single_line)
 
     # ============================================================================================ #
-    def test_summary(self, dataset, caplog):
+    def test_summary(self, credit, caplog):
         start = datetime.now()
         logger.info(
             "\n\nStarted {} {} at {} on {}".format(
@@ -159,7 +159,7 @@ class TestDataset:  # pragma: no cover
         logger.info(single_line)
 
     # ============================================================================================ #
-    def test_info(self, dataset, caplog):
+    def test_info(self, credit, caplog):
         start = datetime.now()
         logger.info(
             "\n\nStarted {} {} at {} on {}".format(
@@ -190,7 +190,7 @@ class TestDataset:  # pragma: no cover
         logger.info(single_line)
 
     # ============================================================================================ #
-    def test_overview(self, dataset, caplog):
+    def test_overview(self, credit, caplog):
         start = datetime.now()
         logger.info(
             "\n\nStarted {} {} at {} on {}".format(
@@ -222,7 +222,7 @@ class TestDataset:  # pragma: no cover
         logger.info(single_line)
 
     # ============================================================================================ #
-    def test_sample(self, dataset, caplog):
+    def test_sample(self, credit, caplog):
         start = datetime.now()
         logger.info(
             "\n\nStarted {} {} at {} on {}".format(
@@ -253,7 +253,7 @@ class TestDataset:  # pragma: no cover
         logger.info(single_line)
 
     # ============================================================================================ #
-    def test_dtypes(self, dataset, caplog):
+    def test_dtypes(self, credit, caplog):
         start = datetime.now()
         logger.info(
             "\n\nStarted {} {} at {} on {}".format(
@@ -286,7 +286,7 @@ class TestDataset:  # pragma: no cover
         logger.info(single_line)
 
     # ============================================================================================ #
-    def test_select(self, dataset, caplog):
+    def test_select(self, credit, caplog):
         start = datetime.now()
         logger.info(
             "\n\nStarted {} {} at {} on {}".format(
@@ -322,7 +322,7 @@ class TestDataset:  # pragma: no cover
         logger.info(single_line)
 
     # ============================================================================================ #
-    def test_subset(self, dataset, caplog):
+    def test_subset(self, credit, caplog):
         start = datetime.now()
         logger.info(
             "\n\nStarted {} {} at {} on {}".format(
@@ -358,7 +358,7 @@ class TestDataset:  # pragma: no cover
         logger.info(single_line)
 
     # ============================================================================================ #
-    def test_head(self, dataset, caplog):
+    def test_head(self, credit, caplog):
         start = datetime.now()
         logger.info(
             "\n\nStarted {} {} at {} on {}".format(
@@ -389,7 +389,7 @@ class TestDataset:  # pragma: no cover
         logger.info(single_line)
 
     # ============================================================================================ #
-    def test_unique(self, dataset, caplog):
+    def test_unique(self, credit, caplog):
         start = datetime.now()
         logger.info(
             "\n\nStarted {} {} at {} on {}".format(
@@ -424,7 +424,7 @@ class TestDataset:  # pragma: no cover
         logger.info(single_line)
 
     # ============================================================================================ #
-    def test_as_df(self, dataset, caplog):
+    def test_as_df(self, credit, caplog):
         start = datetime.now()
         logger.info(
             "\n\nStarted {} {} at {} on {}".format(
@@ -457,7 +457,7 @@ class TestDataset:  # pragma: no cover
         logger.info(single_line)
 
     # ============================================================================================ #
-    def test_frequency(self, dataset, caplog):
+    def test_frequency(self, credit, caplog):
         start = datetime.now()
         logger.info(
             "\n\nStarted {} {} at {} on {}".format(
@@ -491,7 +491,7 @@ class TestDataset:  # pragma: no cover
         logger.info(single_line)
 
     # ============================================================================================ #
-    def test_histable(self, dataset, caplog):
+    def test_histable(self, credit, caplog):
         start = datetime.now()
         logger.info(
             "\n\nStarted {} {} at {} on {}".format(
@@ -525,7 +525,7 @@ class TestDataset:  # pragma: no cover
         logger.info(single_line)
 
     # ============================================================================================ #
-    def test_top_n(self, dataset, caplog):
+    def test_top_n(self, credit, caplog):
         start = datetime.now()
         logger.info(
             "\n\nStarted {} {} at {} on {}".format(
@@ -562,7 +562,7 @@ class TestDataset:  # pragma: no cover
         logger.info(single_line)
 
     # ============================================================================================ #
-    def test_describe_df(self, dataset, caplog):
+    def test_describe_df(self, credit, caplog):
         start = datetime.now()
         logger.info(
             "\n\nStarted {} {} at {} on {}".format(
@@ -596,7 +596,7 @@ class TestDataset:  # pragma: no cover
         logger.info(single_line)
 
     # ============================================================================================ #
-    def test_describe_series(self, dataset, caplog):
+    def test_describe_series(self, credit, caplog):
         start = datetime.now()
         logger.info(
             "\n\nStarted {} {} at {} on {}".format(

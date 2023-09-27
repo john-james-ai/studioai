@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Sunday August 27th 2023 08:28:27 pm                                                 #
-# Modified   : Sunday August 27th 2023 08:34:39 pm                                                 #
+# Modified   : Wednesday September 27th 2023 06:12:54 am                                           #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -34,7 +34,7 @@ single_line = f"\n{100 * '-'}"
 @pytest.mark.categorical
 class TestCategoricalStats:  # pragma: no cover
     # ============================================================================================ #
-    def test_categorical_stats(self, dataset, caplog):
+    def test_categorical_stats(self, credit, caplog):
         start = datetime.now()
         logger.info(
             "\n\nStarted {} {} at {} on {}".format(

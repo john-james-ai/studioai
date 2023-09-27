@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Monday June 5th 2023 09:32:36 pm                                                    #
-# Modified   : Sunday September 17th 2023 09:52:38 pm                                              #
+# Modified   : Wednesday September 27th 2023 06:12:54 am                                           #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -37,7 +37,7 @@ single_line = f"\n{100 * '-'}"
 @pytest.mark.cramersv
 class TestCramersV:  # pragma: no cover
     # ============================================================================================ #
-    def test_cramers_v(self, dataset, caplog):
+    def test_cramers_v(self, credit, caplog):
         start = datetime.now()
         logger.info(
             "\n\nStarted {} {} at {} on {}".format(

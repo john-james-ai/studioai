@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Thursday June 8th 2023 03:48:00 am                                                  #
-# Modified   : Sunday August 27th 2023 08:26:22 pm                                                 #
+# Modified   : Wednesday September 27th 2023 06:12:54 am                                           #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -38,7 +38,7 @@ single_line = f"\n{100 * '-'}"
 @pytest.mark.ttest
 class TestTTest:  # pragma: no cover
     # ============================================================================================ #
-    def test_ttest(self, dataset, caplog):
+    def test_ttest(self, credit, caplog):
         start = datetime.now()
         logger.info(
             "\n\nStarted {} {} at {} on {}".format(
@@ -80,7 +80,7 @@ class TestTTest:  # pragma: no cover
         logger.info(single_line)
 
     # ============================================================================================ #
-    def test_ttest2(self, dataset, caplog):
+    def test_ttest2(self, credit, caplog):
         start = datetime.now()
         logger.info(
             "\n\nStarted {} {} at {} on {}".format(

@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Wednesday August 23rd 2023 12:44:53 am                                              #
-# Modified   : Wednesday August 23rd 2023 05:48:20 am                                              #
+# Modified   : Wednesday September 27th 2023 06:12:54 am                                           #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -38,7 +38,7 @@ single_line = f"\n{100 * '-'}"
 @pytest.mark.summary
 class TestSummaryStats:  # pragma: no cover
     # ============================================================================================ #
-    def test_all(self, dataset, caplog):
+    def test_all(self, credit, caplog):
         start = datetime.now()
         logger.info(
             "\n\nStarted {} {} at {} on {}".format(
@@ -73,7 +73,7 @@ class TestSummaryStats:  # pragma: no cover
         logger.info(single_line)
 
     # ============================================================================================ #
-    def test_series_numeric(self, dataset, caplog):
+    def test_series_numeric(self, credit, caplog):
         start = datetime.now()
         logger.info(
             "\n\nStarted {} {} at {} on {}".format(
@@ -106,7 +106,7 @@ class TestSummaryStats:  # pragma: no cover
         logger.info(single_line)
 
     # ============================================================================================ #
-    def test_series_numeric_exclude_str(self, dataset, caplog):
+    def test_series_numeric_exclude_str(self, credit, caplog):
         start = datetime.now()
         logger.info(
             "\n\nStarted {} {} at {} on {}".format(
@@ -139,7 +139,7 @@ class TestSummaryStats:  # pragma: no cover
         logger.info(single_line)
 
     # ============================================================================================ #
-    def test_series_numeric_exclude_list(self, dataset, caplog):
+    def test_series_numeric_exclude_list(self, credit, caplog):
         start = datetime.now()
         logger.info(
             "\n\nStarted {} {} at {} on {}".format(
@@ -172,7 +172,7 @@ class TestSummaryStats:  # pragma: no cover
         logger.info(single_line)
 
     # ============================================================================================ #
-    def test_series_categorical(self, dataset, caplog):
+    def test_series_categorical(self, credit, caplog):
         start = datetime.now()
         logger.info(
             "\n\nStarted {} {} at {} on {}".format(
@@ -205,7 +205,7 @@ class TestSummaryStats:  # pragma: no cover
         logger.info(single_line)
 
     # ============================================================================================ #
-    def test_series_categorical_include_str(self, dataset, caplog):
+    def test_series_categorical_include_str(self, credit, caplog):
         start = datetime.now()
         logger.info(
             "\n\nStarted {} {} at {} on {}".format(
@@ -238,7 +238,7 @@ class TestSummaryStats:  # pragma: no cover
         logger.info(single_line)
 
     # ============================================================================================ #
-    def test_series_categorical_include_list(self, dataset, caplog):
+    def test_series_categorical_include_list(self, credit, caplog):
         start = datetime.now()
         logger.info(
             "\n\nStarted {} {} at {} on {}".format(
@@ -271,7 +271,7 @@ class TestSummaryStats:  # pragma: no cover
         logger.info(single_line)
 
     # ============================================================================================ #
-    def test_dataframe_numeric(self, dataset, caplog):
+    def test_dataframe_numeric(self, credit, caplog):
         start = datetime.now()
         logger.info(
             "\n\nStarted {} {} at {} on {}".format(
@@ -304,7 +304,7 @@ class TestSummaryStats:  # pragma: no cover
         logger.info(single_line)
 
     # ============================================================================================ #
-    def test_dataframe_numeric_include_str(self, dataset, caplog):
+    def test_dataframe_numeric_include_str(self, credit, caplog):
         start = datetime.now()
         logger.info(
             "\n\nStarted {} {} at {} on {}".format(
@@ -336,7 +336,7 @@ class TestSummaryStats:  # pragma: no cover
         logger.info(single_line)
 
     # ============================================================================================ #
-    def test_dataframe_categorical(self, dataset, caplog):
+    def test_dataframe_categorical(self, credit, caplog):
         start = datetime.now()
         logger.info(
             "\n\nStarted {} {} at {} on {}".format(
@@ -369,7 +369,7 @@ class TestSummaryStats:  # pragma: no cover
         logger.info(single_line)
 
     # ============================================================================================ #
-    def test_dataframe_categorical_include_numeric(self, dataset, caplog):
+    def test_dataframe_categorical_include_numeric(self, credit, caplog):
         start = datetime.now()
         logger.info(
             "\n\nStarted {} {} at {} on {}".format(
@@ -401,7 +401,7 @@ class TestSummaryStats:  # pragma: no cover
         logger.info(single_line)
 
     # ============================================================================================ #
-    def test_dataframe_categorical_exclude_str(self, dataset, caplog):
+    def test_dataframe_categorical_exclude_str(self, credit, caplog):
         start = datetime.now()
         logger.info(
             "\n\nStarted {} {} at {} on {}".format(
@@ -434,7 +434,7 @@ class TestSummaryStats:  # pragma: no cover
         logger.info(single_line)
 
     # ============================================================================================ #
-    def test_groupby_numeric(self, dataset, caplog):
+    def test_groupby_numeric(self, credit, caplog):
         start = datetime.now()
         logger.info(
             "\n\nStarted {} {} at {} on {}".format(
@@ -467,7 +467,7 @@ class TestSummaryStats:  # pragma: no cover
         logger.info(single_line)
 
     # ============================================================================================ #
-    def test_groupby_categorical(self, dataset, caplog):
+    def test_groupby_categorical(self, credit, caplog):
         start = datetime.now()
         logger.info(
             "\n\nStarted {} {} at {} on {}".format(
@@ -501,7 +501,7 @@ class TestSummaryStats:  # pragma: no cover
         logger.info(single_line)
 
     # ============================================================================================ #
-    def test_groupby_categorical_exclude_number(self, dataset, caplog):
+    def test_groupby_categorical_exclude_number(self, credit, caplog):
         start = datetime.now()
         logger.info(
             "\n\nStarted {} {} at {} on {}".format(
@@ -535,7 +535,7 @@ class TestSummaryStats:  # pragma: no cover
         logger.info(single_line)
 
     # ============================================================================================ #
-    def test_groupby_mixed(self, dataset, caplog):
+    def test_groupby_mixed(self, credit, caplog):
         start = datetime.now()
         logger.info(
             "\n\nStarted {} {} at {} on {}".format(

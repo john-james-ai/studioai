@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Monday June 5th 2023 09:32:36 pm                                                    #
-# Modified   : Saturday August 26th 2023 05:46:42 am                                               #
+# Modified   : Wednesday September 27th 2023 06:12:54 am                                           #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -38,7 +38,7 @@ single_line = f"\n{100 * '-'}"
 @pytest.mark.x2ind
 class TestX2Independence:  # pragma: no cover
     # ============================================================================================ #
-    def test_x2(self, dataset, caplog):
+    def test_x2(self, credit, caplog):
         start = datetime.now()
         logger.info(
             "\n\nStarted {} {} at {} on {}".format(

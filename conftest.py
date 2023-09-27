@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Friday May 26th 2023 11:12:03 pm                                                    #
-# Modified   : Wednesday August 23rd 2023 07:24:33 am                                              #
+# Modified   : Wednesday September 27th 2023 06:14:16 am                                           #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -29,7 +29,8 @@ from studioai.data.dataclass import DataClass
 # ------------------------------------------------------------------------------------------------ #
 logging.getLogger("matplotlib").setLevel(logging.WARNING)
 # ------------------------------------------------------------------------------------------------ #
-DATAFILE = "data/Credit Score Classification Dataset.csv"
+CREDIT_FP = "data/Credit Score Classification Dataset.csv"
+CASES_FP = "data/calc_cases.csv"
 
 # ------------------------------------------------------------------------------------------------ #
 collect_ignore_glob = []
@@ -47,9 +48,11 @@ class TestDataClass(DataClass):
 
 
 # ------------------------------------------------------------------------------------------------ #
+#                                       DATASETS                                                   #
+# ------------------------------------------------------------------------------------------------ #
 @pytest.fixture(scope="function", autouse=False)
-def dataset():
-    df = pd.read_csv(DATAFILE, index_col=None)
+def credit():
+    df = pd.read_csv(CREDIT_FP, index_col=None)
     df = df.astype(
         {
             "Gender": "category",
@@ -62,6 +65,12 @@ def dataset():
         }
     )
     return df
+
+
+# ------------------------------------------------------------------------------------------------ #
+@pytest.fixture(scope="function", autouse=False)
+def cases():
+    return pd.read_csv(CASES_FP, index_col=None)
 
 
 # ------------------------------------------------------------------------------------------------ #

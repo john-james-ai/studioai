@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Thursday June 8th 2023 03:48:00 am                                                  #
-# Modified   : Sunday August 27th 2023 08:17:34 pm                                                 #
+# Modified   : Wednesday September 27th 2023 06:12:54 am                                           #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -39,7 +39,7 @@ single_line = f"\n{100 * '-'}"
 @pytest.mark.kstest
 class TestKSTest:  # pragma: no cover
     # ============================================================================================ #
-    def test_kstest(self, dataset, caplog):
+    def test_kstest(self, credit, caplog):
         start = datetime.now()
         logger.info(
             "\n\nStarted {} {} at {} on {}".format(
@@ -80,7 +80,7 @@ class TestKSTest:  # pragma: no cover
         logger.info(single_line)
 
     # ============================================================================================ #
-    def test_kstest_norm(self, dataset, caplog):
+    def test_kstest_norm(self, credit, caplog):
         start = datetime.now()
         logger.info(
             "\n\nStarted {} {} at {} on {}".format(
@@ -120,7 +120,7 @@ class TestKSTest:  # pragma: no cover
         logger.info(single_line)
 
     # ============================================================================================ #
-    def test_kstest_small_dataset(self, dataset, caplog):
+    def test_kstest_small_dataset(self, credit, caplog):
         start = datetime.now()
         logger.info(
             "\n\nStarted {} {} at {} on {}".format(
@@ -160,7 +160,7 @@ class TestKSTest:  # pragma: no cover
         logger.info(single_line)
 
     # ============================================================================================ #
-    def test_kstest_large_dataset(self, dataset, caplog):
+    def test_kstest_large_dataset(self, credit, caplog):
         start = datetime.now()
         logger.info(
             "\n\nStarted {} {} at {} on {}".format(
@@ -203,7 +203,7 @@ class TestKSTest:  # pragma: no cover
         logger.info(single_line)
 
     # ============================================================================================ #
-    def test_kstest_invalid_distribution(self, dataset, caplog):
+    def test_kstest_invalid_distribution(self, credit, caplog):
         start = datetime.now()
         logger.info(
             "\n\nStarted {} {} at {} on {}".format(
@@ -236,7 +236,7 @@ class TestKSTest:  # pragma: no cover
         logger.info(single_line)
 
     # ============================================================================================ #
-    def test_kstest_fail_to_reject(self, dataset, caplog):
+    def test_kstest_fail_to_reject(self, credit, caplog):
         start = datetime.now()
         logger.info(
             "\n\nStarted {} {} at {} on {}".format(

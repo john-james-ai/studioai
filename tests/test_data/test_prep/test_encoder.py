@@ -3,15 +3,15 @@
 # ================================================================================================ #
 # Project    : Artificial Intelligence & Data Science Studio                                       #
 # Version    : 0.1.0                                                                               #
-# Python     : 3.10.10                                                                             #
-# Filename   : /tests/test_stats/test_inferential/test_spearman.py                                 #
+# Python     : 3.10.12                                                                             #
+# Filename   : /tests/test_data/test_prep/test_encoder.py                                          #
 # ------------------------------------------------------------------------------------------------ #
 # Author     : John James                                                                          #
 # Email      : john.james.ai.studio@gmail.com                                                      #
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
-# Created    : Wednesday June 7th 2023 09:15:17 pm                                                 #
-# Modified   : Wednesday September 27th 2023 06:12:54 am                                           #
+# Created    : Wednesday September 27th 2023 06:10:42 am                                           #
+# Modified   : Wednesday September 27th 2023 06:49:38 am                                           #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -20,10 +20,8 @@ import inspect
 from datetime import datetime
 import pytest
 import logging
-import pandas as pd
 
-from studioai.stats.inferential.spearman import SpearmanCorrelationTest
-from studioai.stats.inferential.base import StatTestProfile
+from studioai.data.prep.encode import RankFrequencyEncoder
 
 
 # ------------------------------------------------------------------------------------------------ #
@@ -33,12 +31,10 @@ double_line = f"\n{100 * '='}"
 single_line = f"\n{100 * '-'}"
 
 
-@pytest.mark.stats
-@pytest.mark.corr
-@pytest.mark.spearman
-class TestSpearman:  # pragma: no cover
+@pytest.mark.rfencoder
+class TestRFEncoder:  # pragma: no cover
     # ============================================================================================ #
-    def test_spearman(self, credit, caplog):
+    def test_fit_transform(self, cases, caplog):
         start = datetime.now()
         logger.info(
             "\n\nStarted {} {} at {} on {}".format(
@@ -50,17 +46,19 @@ class TestSpearman:  # pragma: no cover
         )
         logger.info(double_line)
         # ---------------------------------------------------------------------------------------- #
-        test = SpearmanCorrelationTest(data=dataset, a="Income", b="Age")
-        test.run()
-        assert "Spearman" in test.result.test
-        assert isinstance(test.result.H0, str)
-        assert isinstance(test.result.value, float)
-        assert isinstance(test.result.pvalue, float)
-        assert test.result.alpha == 0.05
-        assert isinstance(test.result.result, str)
-        assert isinstance(test.result.data, pd.DataFrame)
-        assert isinstance(test.profile, StatTestProfile)
-        logging.debug(test.result)
+        enc = RankFrequencyEncoder()
+        enc.fit(df=cases)
+        df = enc.transform(df=cases)
+        logger.debug(cases.info())
+        logger.debug(df.info())
+        logger.debug(cases.head())
+        logger.debug(df.head())
+
+        df2 = enc.inverse_transform(df=df)
+        logger.debug(df2.info())
+        logger.debug(df2.head())
+
+        assert df2.equals(cases)
 
         # ---------------------------------------------------------------------------------------- #
         end = datetime.now()
