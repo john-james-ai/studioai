@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Wednesday September 27th 2023 06:10:42 am                                           #
-# Modified   : Wednesday September 27th 2023 06:49:38 am                                           #
+# Modified   : Thursday September 28th 2023 03:17:04 am                                            #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -59,6 +59,9 @@ class TestRFEncoder:  # pragma: no cover
         logger.debug(df2.head())
 
         assert df2.equals(cases)
+
+        df3 = enc.fit_transform(df=cases)
+        assert df.equals(df3)
 
         # ---------------------------------------------------------------------------------------- #
         end = datetime.now()

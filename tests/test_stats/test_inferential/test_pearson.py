@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Wednesday June 7th 2023 09:15:17 pm                                                 #
-# Modified   : Wednesday September 27th 2023 06:12:54 am                                           #
+# Modified   : Thursday September 28th 2023 03:08:07 am                                            #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -52,7 +52,7 @@ class TestPearson:  # pragma: no cover
         )
         logger.info(double_line)
         # ---------------------------------------------------------------------------------------- #
-        test = PearsonCorrelationTest(data=dataset, a="Income", b="Age")
+        test = PearsonCorrelationTest(data=credit, a="Income", b="Age")
         test.run()
         assert "Pearson" in test.result.test
         assert isinstance(test.result.H0, str)

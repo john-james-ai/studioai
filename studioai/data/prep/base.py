@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Wednesday September 27th 2023 03:35:41 am                                           #
-# Modified   : Wednesday September 27th 2023 06:08:22 am                                           #
+# Modified   : Thursday September 28th 2023 03:15:10 am                                            #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -33,9 +33,6 @@ class Encoder(ABC):
         Args:
             df (pd.DataFrame): DataFrame to be fit to the encoder.
         """
-        self._columns = df.columns
-        for col in df.columns:
-            self.fit_feature(df[col])
 
     @abstractmethod
     def transform(self, df: pd.DataFrame) -> pd.DataFrame:

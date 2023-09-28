@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Tuesday August 22nd 2023 07:44:59 pm                                                #
-# Modified   : Sunday September 17th 2023 07:16:20 pm                                              #
+# Modified   : Thursday September 28th 2023 03:13:01 am                                            #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -110,13 +110,13 @@ class StatAnalysis(ABC):
     def run(self) -> None:
         """Performs the statistical test and creates a result object."""
 
-    def _report_pvalue(self, pvalue: float) -> str:
+    def _report_pvalue(self, pvalue: float) -> str:  # pragma: no cover
         """Rounds the pvalue in accordance with the APA Style Guide 7th Edition"""
         if pvalue < 0.001:
             return "p<.001"
         else:
             return "p=" + str(round(pvalue, 4))
 
-    def _report_alpha(self) -> str:
+    def _report_alpha(self) -> str:  # pragma: no cover
         a = int(self._alpha * 100)
         return f"significant at {a}%."

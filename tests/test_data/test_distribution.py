@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Sunday May 28th 2023 12:41:00 am                                                    #
-# Modified   : Wednesday September 27th 2023 06:12:54 am                                           #
+# Modified   : Thursday September 28th 2023 03:04:46 am                                            #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -48,7 +48,7 @@ class TestRVSDistribution:  # pragma: no cover
         )
         logger.info(double_line)
         # ---------------------------------------------------------------------------------------- #
-        data = dataset["Income"].values
+        data = credit["Income"].values
         dg = RVSDistribution()
         for dist in DISTRIBUTIONS.keys():
             dg(data=data, distribution=dist)

@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Wednesday August 23rd 2023 12:44:53 am                                              #
-# Modified   : Wednesday September 27th 2023 06:12:54 am                                           #
+# Modified   : Thursday September 28th 2023 03:05:25 am                                            #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -51,7 +51,7 @@ class TestSummaryStats:  # pragma: no cover
         logger.info(double_line)
         # ---------------------------------------------------------------------------------------- #
         stats = SummaryStats()
-        stats.describe(data=dataset)
+        stats.describe(data=credit)
         assert isinstance(stats.numeric, pd.DataFrame)
         assert isinstance(stats.categorical, pd.DataFrame)
         logger.debug(stats.numeric)
@@ -86,7 +86,7 @@ class TestSummaryStats:  # pragma: no cover
         logger.info(double_line)
         # ---------------------------------------------------------------------------------------- #
         stats = SummaryStats()
-        stats.describe(data=dataset["Income"])
+        stats.describe(data=credit["Income"])
         assert isinstance(stats.numeric, pd.DataFrame)
         logger.debug(stats.numeric)
         assert stats.categorical is None
@@ -119,7 +119,7 @@ class TestSummaryStats:  # pragma: no cover
         logger.info(double_line)
         # ---------------------------------------------------------------------------------------- #
         stats = SummaryStats()
-        stats.describe(data=dataset["Income"], exclude="object")
+        stats.describe(data=credit["Income"], exclude="object")
         assert isinstance(stats.numeric, pd.DataFrame)
         logger.debug(stats.numeric)
         assert stats.categorical is None
@@ -152,7 +152,7 @@ class TestSummaryStats:  # pragma: no cover
         logger.info(double_line)
         # ---------------------------------------------------------------------------------------- #
         stats = SummaryStats()
-        stats.describe(data=dataset["Income"], exclude=["category"])
+        stats.describe(data=credit["Income"], exclude=["category"])
         assert isinstance(stats.numeric, pd.DataFrame)
         logger.debug(stats.numeric)
         assert stats.categorical is None
@@ -185,7 +185,7 @@ class TestSummaryStats:  # pragma: no cover
         logger.info(double_line)
         # ---------------------------------------------------------------------------------------- #
         stats = SummaryStats()
-        stats.describe(data=dataset["Education"])
+        stats.describe(data=credit["Education"])
         assert isinstance(stats.categorical, pd.DataFrame)
         logger.debug(stats.categorical)
         assert stats.numeric is None
@@ -218,7 +218,7 @@ class TestSummaryStats:  # pragma: no cover
         logger.info(double_line)
         # ---------------------------------------------------------------------------------------- #
         stats = SummaryStats()
-        stats.describe(data=dataset["Education"], include="category")
+        stats.describe(data=credit["Education"], include="category")
         assert isinstance(stats.categorical, pd.DataFrame)
         logger.debug(stats.categorical)
         assert stats.numeric is None
@@ -251,7 +251,7 @@ class TestSummaryStats:  # pragma: no cover
         logger.info(double_line)
         # ---------------------------------------------------------------------------------------- #
         stats = SummaryStats()
-        stats.describe(data=dataset["Education"], include=["category"])
+        stats.describe(data=credit["Education"], include=["category"])
         assert isinstance(stats.categorical, pd.DataFrame)
         logger.debug(stats.categorical)
         assert stats.numeric is None
@@ -284,7 +284,7 @@ class TestSummaryStats:  # pragma: no cover
         logger.info(double_line)
         # ---------------------------------------------------------------------------------------- #
         stats = SummaryStats()
-        stats.describe(data=dataset[["Income", "Age"]])
+        stats.describe(data=credit[["Income", "Age"]])
         assert isinstance(stats.numeric, pd.DataFrame)
         logger.debug(stats.numeric)
         assert stats.categorical is None
@@ -317,7 +317,7 @@ class TestSummaryStats:  # pragma: no cover
         logger.info(double_line)
         # ---------------------------------------------------------------------------------------- #
         stats = SummaryStats()
-        stats.describe(data=dataset[["Income", "Age"]], include="object")
+        stats.describe(data=credit[["Income", "Age"]], include="object")
         assert stats.numeric is None
         assert stats.categorical is None
         # ---------------------------------------------------------------------------------------- #
@@ -349,7 +349,7 @@ class TestSummaryStats:  # pragma: no cover
         logger.info(double_line)
         # ---------------------------------------------------------------------------------------- #
         stats = SummaryStats()
-        stats.describe(data=dataset[["Education", "Own"]])
+        stats.describe(data=credit[["Education", "Own"]])
         assert isinstance(stats.categorical, pd.DataFrame)
         logger.debug(stats.categorical)
         assert stats.numeric is None
@@ -382,7 +382,7 @@ class TestSummaryStats:  # pragma: no cover
         logger.info(double_line)
         # ---------------------------------------------------------------------------------------- #
         stats = SummaryStats()
-        stats.describe(data=dataset[["Education", "Own"]], include=np.number)
+        stats.describe(data=credit[["Education", "Own"]], include=np.number)
         assert stats.categorical is None
         assert stats.numeric is None
         # ---------------------------------------------------------------------------------------- #
@@ -414,7 +414,7 @@ class TestSummaryStats:  # pragma: no cover
         logger.info(double_line)
         # ---------------------------------------------------------------------------------------- #
         stats = SummaryStats()
-        stats.describe(data=dataset[["Education", "Own"]], exclude="object")
+        stats.describe(data=credit[["Education", "Own"]], exclude="object")
         assert isinstance(stats.categorical, pd.DataFrame)
         logger.debug(stats.categorical)
         assert stats.numeric is None
@@ -447,7 +447,7 @@ class TestSummaryStats:  # pragma: no cover
         logger.info(double_line)
         # ---------------------------------------------------------------------------------------- #
         stats = SummaryStats()
-        stats.describe(data=dataset, groupby="Education", include=[np.number])
+        stats.describe(data=credit, groupby="Education", include=[np.number])
         assert isinstance(stats.numeric, (pd.DataFrame, pd.core.frame.DataFrame))
         logger.debug(stats.numeric)
         assert stats.categorical is None
@@ -480,7 +480,7 @@ class TestSummaryStats:  # pragma: no cover
         logger.info(double_line)
         # ---------------------------------------------------------------------------------------- #
         stats = SummaryStats()
-        stats.describe(data=dataset, groupby="Education", exclude=np.number)
+        stats.describe(data=credit, groupby="Education", exclude=np.number)
         assert isinstance(stats.categorical, pd.DataFrame)
         assert stats.numeric is None
         logger.debug(stats.categorical)
@@ -514,7 +514,7 @@ class TestSummaryStats:  # pragma: no cover
         logger.info(double_line)
         # ---------------------------------------------------------------------------------------- #
         stats = SummaryStats()
-        stats.describe(data=dataset, groupby="Education", exclude=np.number)
+        stats.describe(data=credit, groupby="Education", exclude=np.number)
         assert isinstance(stats.categorical, pd.DataFrame)
         assert stats.numeric is None
         logger.debug(stats.categorical)
@@ -548,7 +548,7 @@ class TestSummaryStats:  # pragma: no cover
         logger.info(double_line)
         # ---------------------------------------------------------------------------------------- #
         stats = SummaryStats()
-        stats.describe(data=dataset, groupby="Education")
+        stats.describe(data=credit, groupby="Education")
         assert isinstance(stats.categorical, pd.DataFrame)
         assert isinstance(stats.numeric, pd.DataFrame)
         logger.debug(stats.categorical)

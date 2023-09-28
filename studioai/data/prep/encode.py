@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Wednesday September 27th 2023 03:35:41 am                                           #
-# Modified   : Wednesday September 27th 2023 07:27:59 am                                           #
+# Modified   : Thursday September 28th 2023 03:15:00 am                                            #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -54,6 +54,7 @@ class RankFrequencyEncoder(Encoder):
         self._dtypes = df.dtypes.astype(str).replace("0", "object").to_dict()
         for col in df.columns:
             self._fit_feature(df[col])
+        return self
 
     def transform(self, df: pd.DataFrame) -> pd.DataFrame:
         """Transform the Data

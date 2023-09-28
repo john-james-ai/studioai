@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Sunday August 27th 2023 08:28:27 pm                                                 #
-# Modified   : Wednesday September 27th 2023 06:12:54 am                                           #
+# Modified   : Thursday September 28th 2023 03:04:30 am                                            #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -46,7 +46,7 @@ class TestCategoricalStats:  # pragma: no cover
         )
         logger.info(double_line)
         # ---------------------------------------------------------------------------------------- #
-        stats = CategoricalStats.describe(x=dataset["Education"], name="Education")
+        stats = CategoricalStats.describe(x=credit["Education"], name="Education")
         assert isinstance(stats.length, int)
         assert isinstance(stats.count, int)
         assert isinstance(stats.size, int)

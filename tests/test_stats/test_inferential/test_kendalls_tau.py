@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Monday June 5th 2023 09:32:36 pm                                                    #
-# Modified   : Wednesday September 27th 2023 06:12:54 am                                           #
+# Modified   : Thursday September 28th 2023 03:07:36 am                                            #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -49,7 +49,7 @@ class TestKendallsTau:  # pragma: no cover
         )
         logger.info(double_line)
         # ---------------------------------------------------------------------------------------- #
-        test = KendallsTauAnalysis(data=dataset, a="Education", b="Credit Rating")
+        test = KendallsTauAnalysis(data=credit, a="Education", b="Credit Rating")
         test.run()
         measure = test.measure
         assert "Kendall" in measure.name

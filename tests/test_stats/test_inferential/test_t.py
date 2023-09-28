@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Thursday June 8th 2023 03:48:00 am                                                  #
-# Modified   : Wednesday September 27th 2023 06:12:54 am                                           #
+# Modified   : Thursday September 28th 2023 03:08:29 am                                            #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -50,8 +50,8 @@ class TestTTest:  # pragma: no cover
         )
         logger.info(double_line)
         # ---------------------------------------------------------------------------------------- #
-        male = dataset[dataset["Gender"] == "Male"]["Income"]
-        female = dataset[dataset["Gender"] == "Female"]["Income"]
+        male = credit[credit["Gender"] == "Male"]["Income"]
+        female = credit[credit["Gender"] == "Female"]["Income"]
         test = TTest(a=male, b=female)
         test.run()
         assert "Independent" in test.result.test
@@ -92,7 +92,7 @@ class TestTTest:  # pragma: no cover
         )
         logger.info(double_line)
         # ---------------------------------------------------------------------------------------- #
-        female = dataset[dataset["Gender"] == "Female"]["Income"]
+        female = credit[credit["Gender"] == "Female"]["Income"]
         test = TTest(a=female, b=female)
         test.run()
         assert "Independent" in test.result.test

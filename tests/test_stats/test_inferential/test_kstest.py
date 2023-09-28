@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Thursday June 8th 2023 03:48:00 am                                                  #
-# Modified   : Wednesday September 27th 2023 06:12:54 am                                           #
+# Modified   : Thursday September 28th 2023 03:07:54 am                                            #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -51,8 +51,8 @@ class TestKSTest:  # pragma: no cover
         )
         logger.info(double_line)
         # ---------------------------------------------------------------------------------------- #
-        male = dataset[dataset["Gender"] == "Male"]["Income"]
-        female = dataset[dataset["Gender"] == "Female"]["Income"]
+        male = credit[credit["Gender"] == "Male"]["Income"]
+        female = credit[credit["Gender"] == "Female"]["Income"]
         test = KSTest(a=male, b=female)
         test.run()
         assert "Kolmogorov" in test.result.test
@@ -92,7 +92,7 @@ class TestKSTest:  # pragma: no cover
         )
         logger.info(double_line)
         # ---------------------------------------------------------------------------------------- #
-        female = dataset[dataset["Gender"] == "Female"]["Income"].values
+        female = credit[credit["Gender"] == "Female"]["Income"].values
         test = KSTest(a=female, b="norm")
         test.run()
         assert "Kolmogorov" in test.result.test
@@ -120,7 +120,7 @@ class TestKSTest:  # pragma: no cover
         logger.info(single_line)
 
     # ============================================================================================ #
-    def test_kstest_small_dataset(self, credit, caplog):
+    def test_kstest_small_credit(self, credit, caplog):
         start = datetime.now()
         logger.info(
             "\n\nStarted {} {} at {} on {}".format(
@@ -132,7 +132,7 @@ class TestKSTest:  # pragma: no cover
         )
         logger.info(double_line)
         # ---------------------------------------------------------------------------------------- #
-        female = dataset[dataset["Gender"] == "Female"]["Income"].values[0:30]
+        female = credit[credit["Gender"] == "Female"]["Income"].values[0:30]
         test = KSTest(a=female, b="norm")
         test.run()
         assert "Kolmogorov" in test.result.test
@@ -160,7 +160,7 @@ class TestKSTest:  # pragma: no cover
         logger.info(single_line)
 
     # ============================================================================================ #
-    def test_kstest_large_dataset(self, credit, caplog):
+    def test_kstest_large_credit(self, credit, caplog):
         start = datetime.now()
         logger.info(
             "\n\nStarted {} {} at {} on {}".format(
@@ -172,7 +172,7 @@ class TestKSTest:  # pragma: no cover
         )
         logger.info(double_line)
         # ---------------------------------------------------------------------------------------- #
-        female = dataset[dataset["Gender"] == "Female"]["Income"].values
+        female = credit[credit["Gender"] == "Female"]["Income"].values
         mu = np.mean(female)
         sigma = np.std(female)
         data = np.random.normal(loc=mu, scale=sigma, size=1200)
@@ -215,7 +215,7 @@ class TestKSTest:  # pragma: no cover
         )
         logger.info(double_line)
         # ---------------------------------------------------------------------------------------- #
-        female = dataset[dataset["Gender"] == "Female"]["Income"].values
+        female = credit[credit["Gender"] == "Female"]["Income"].values
         test = KSTest(a=female, b="fake")
         with pytest.raises(AttributeError):
             test.run()

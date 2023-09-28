@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Monday June 5th 2023 09:32:36 pm                                                    #
-# Modified   : Wednesday September 27th 2023 06:12:54 am                                           #
+# Modified   : Thursday September 28th 2023 03:05:43 am                                            #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -50,7 +50,7 @@ class TestX2Independence:  # pragma: no cover
         )
         logger.info(double_line)
         # ---------------------------------------------------------------------------------------- #
-        test = ChiSquareIndependenceTest(data=dataset, a="Education", b="Credit Rating")
+        test = ChiSquareIndependenceTest(data=credit, a="Education", b="Credit Rating")
         test.run()
         assert "Chi" in test.result.test
         assert isinstance(test.result.H0, str)
