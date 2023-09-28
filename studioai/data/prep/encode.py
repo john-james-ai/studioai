@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Wednesday September 27th 2023 03:35:41 am                                           #
-# Modified   : Thursday September 28th 2023 08:52:47 am                                            #
+# Modified   : Thursday September 28th 2023 08:59:16 am                                            #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -67,6 +67,7 @@ class RankFrequencyEncoder(Encoder):
         Args:
             df (pd.DataFrame): The encoded data.
         """
+        df = df.round(0)
         df_out = df.replace(to_replace=self._decodings)
         df_out = df_out.astype(self._dtypes)
         return df_out
