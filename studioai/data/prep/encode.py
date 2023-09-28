@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Wednesday September 27th 2023 03:35:41 am                                           #
-# Modified   : Thursday September 28th 2023 03:15:00 am                                            #
+# Modified   : Thursday September 28th 2023 06:39:55 am                                            #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -76,6 +76,7 @@ class RankFrequencyEncoder(Encoder):
 
     def _fit_feature(self, feature: pd.Series) -> None:
         """Fits a single feature to the encoder."""
+        metric = "proportion" if self._normalize else "count"
         if not feature.dtype == "bool":
             counts = (
                 feature.value_counts(sort=True, ascending=True, normalize=self._normalize)
@@ -83,7 +84,7 @@ class RankFrequencyEncoder(Encoder):
                 .reset_index()
             )
             keys = counts[feature.name].values
-            values = (counts["proportion"] + counts.index).values
+            values = (counts[metric] + counts.index).values
 
             if self._normalize:
                 values = [value / len(values) for value in values]
