@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Thursday August 10th 2023 08:29:08 pm                                               #
-# Modified   : Thursday September 28th 2023 03:01:14 am                                            #
+# Modified   : Thursday September 28th 2023 04:32:31 am                                            #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -102,11 +102,12 @@ class Dataset(ABC):
 
         info = self._df.dtypes.to_frame().reset_index()
         info.columns = ["Column", "DataType"]
-        info["Valid"] = self._df.count().values
+        info["Complete"] = self._df.count().values
         info["Null"] = self._df.isna().sum().values
-        info["Validity"] = info["Valid"] / self._df.shape[0]
-        info["Cardinality"] = self._df.nunique().values
-        info["Percent Unique"] = self._df.nunique().values / self._df.shape[0]
+        info["Completeness"] = info["Complete"] / self._df.shape[0]
+        info["Unique"] = self._df.nunique().values
+        info["Duplicate"] = self._df.shape[0] - self._df.nunique().values
+        info["Uniqueness"] = self._df.nunique().values / self._df.shape[0]
         info["Size"] = self._df.memory_usage(deep=True, index=False).to_frame().reset_index()[0]
         info = round(info, 2)
         return self._format(df=info)
