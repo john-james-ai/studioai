@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Wednesday September 27th 2023 06:10:42 am                                           #
-# Modified   : Thursday September 28th 2023 03:17:04 am                                            #
+# Modified   : Thursday September 28th 2023 06:51:17 am                                            #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -51,12 +51,12 @@ class TestRFEncoder:  # pragma: no cover
         df = enc.transform(df=cases)
         logger.debug(cases.info())
         logger.debug(df.info())
-        logger.debug(cases.head())
-        logger.debug(df.head())
+        logger.debug(cases.head().T)
+        logger.debug(df.head().T)
 
         df2 = enc.inverse_transform(df=df)
         logger.debug(df2.info())
-        logger.debug(df2.head())
+        logger.debug(df2.head().T)
 
         assert df2.equals(cases)
 

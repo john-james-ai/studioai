@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Wednesday September 27th 2023 03:35:41 am                                           #
-# Modified   : Thursday September 28th 2023 06:39:55 am                                            #
+# Modified   : Thursday September 28th 2023 08:52:47 am                                            #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -32,13 +32,10 @@ class RankFrequencyEncoder(Encoder):
 
     Booleans are encoded as 0 (False) or 1 (True)
 
-    Args:
-        standardize (bool): Whether to standardize the encode.
     """
 
-    def __init__(self, normalize: bool = True) -> None:
+    def __init__(self) -> None:
         super().__init__()
-        self._normalize = normalize
         self._encodings = {}  # Nested dictionary of column > keys (orig) > values (encodings)
         self._decodings = {}  # Nested dictionary of column > keys (encodings) > values (orig)
 
@@ -76,24 +73,20 @@ class RankFrequencyEncoder(Encoder):
 
     def _fit_feature(self, feature: pd.Series) -> None:
         """Fits a single feature to the encoder."""
-        metric = "proportion" if self._normalize else "count"
-        if not feature.dtype == "bool":
+        if feature.dtype in ["object", "category"]:
             counts = (
-                feature.value_counts(sort=True, ascending=True, normalize=self._normalize)
+                feature.value_counts(sort=True, ascending=True, normalize=False)
                 .to_frame()
                 .reset_index()
             )
             keys = counts[feature.name].values
-            values = (counts[metric] + counts.index).values
+            values = (counts["count"].astype("int64") + counts.index).values.astype("int64")
+            self._set_map(col=feature.name, keys=keys, values=values)
 
-            if self._normalize:
-                values = [value / len(values) for value in values]
-
-        else:
+        elif feature.dtype == "bool":
             keys = [True, False]
             values = [1, 0]
-
-        self._set_map(col=feature.name, keys=keys, values=values)
+            self._set_map(col=feature.name, keys=keys, values=values)
 
     def _set_map(self, col: str, keys: np.ndarray, values: np.ndarray) -> None:
         """Updates the encodings/decodings map"""
