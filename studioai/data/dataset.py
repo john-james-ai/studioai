@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Thursday August 10th 2023 08:29:08 pm                                               #
-# Modified   : Sunday September 17th 2023 04:40:36 pm                                              #
+# Modified   : Thursday September 28th 2023 03:01:14 am                                            #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -271,6 +271,26 @@ class Dataset(ABC):
         if formatting:
             freq = self._format(freq)
         return freq
+
+    # ------------------------------------------------------------------------------------------- #
+    def countstats(self, x: str) -> pd.DataFrame:
+        """Computes descriptive statistics of counts for a variable.
+
+        The value counts of the x variable are obtained and descriptive statistics are
+        computed showing min, max, average, std, and quantiles of counts.
+
+        Args:
+            x (str): Name of a variable in the dataset
+
+        Returns:
+            Value Counts: pd.DataFrame
+            Count Statistics: pd.DataFrame
+
+        """
+        counts = self._df[x].value_counts().to_frame().reset_index()
+        cs = counts["count"].describe().to_frame()
+        cs.columns = [x]
+        return counts, cs.T
 
     # ------------------------------------------------------------------------------------------- #
     @property

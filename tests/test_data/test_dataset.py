@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Tuesday August 15th 2023 05:59:13 pm                                                #
-# Modified   : Wednesday September 27th 2023 06:12:54 am                                           #
+# Modified   : Thursday September 28th 2023 03:02:34 am                                            #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -48,7 +48,7 @@ class TestDataset:  # pragma: no cover
         )
         logger.info(double_line)
         # ---------------------------------------------------------------------------------------- #
-        ds = CreditScoreDataset(df=dataset)
+        ds = CreditScoreDataset(df=credit)
         assert (len(ds)) == 164
         # ---------------------------------------------------------------------------------------- #
         end = datetime.now()
@@ -78,7 +78,7 @@ class TestDataset:  # pragma: no cover
         )
         logger.info(double_line)
         # ---------------------------------------------------------------------------------------- #
-        ds = CreditScoreDataset(df=dataset)
+        ds = CreditScoreDataset(df=credit)
         assert isinstance(ds.size, np.int64)
         logger.debug(ds.size)
         # ---------------------------------------------------------------------------------------- #
@@ -109,7 +109,7 @@ class TestDataset:  # pragma: no cover
         )
         logger.info(double_line)
         # ---------------------------------------------------------------------------------------- #
-        ds = CreditScoreDataset(df=dataset)
+        ds = CreditScoreDataset(df=credit)
         columns = ds.columns
         assert len(columns) == 8
         # ---------------------------------------------------------------------------------------- #
@@ -140,7 +140,7 @@ class TestDataset:  # pragma: no cover
         )
         logger.info(double_line)
         # ---------------------------------------------------------------------------------------- #
-        ds = CreditScoreDataset(df=dataset)
+        ds = CreditScoreDataset(df=credit)
         assert isinstance(ds.summary, pd.DataFrame)
         logger.debug(ds.summary)
         # ---------------------------------------------------------------------------------------- #
@@ -171,7 +171,7 @@ class TestDataset:  # pragma: no cover
         )
         logger.info(double_line)
         # ---------------------------------------------------------------------------------------- #
-        ds = CreditScoreDataset(df=dataset)
+        ds = CreditScoreDataset(df=credit)
         assert isinstance(ds.info, pd.DataFrame)
         logger.debug(ds.info)
         # ---------------------------------------------------------------------------------------- #
@@ -202,7 +202,7 @@ class TestDataset:  # pragma: no cover
         )
         logger.info(double_line)
         # ---------------------------------------------------------------------------------------- #
-        ds = CreditScoreDataset(df=dataset)
+        ds = CreditScoreDataset(df=credit)
         assert isinstance(ds.overview, pd.DataFrame)
         logger.debug(ds.overview)
 
@@ -234,7 +234,7 @@ class TestDataset:  # pragma: no cover
         )
         logger.info(double_line)
         # ---------------------------------------------------------------------------------------- #
-        ds = CreditScoreDataset(df=dataset)
+        ds = CreditScoreDataset(df=credit)
         assert len(ds.sample()) == 5
 
         # ---------------------------------------------------------------------------------------- #
@@ -265,7 +265,7 @@ class TestDataset:  # pragma: no cover
         )
         logger.info(double_line)
         # ---------------------------------------------------------------------------------------- #
-        ds = CreditScoreDataset(df=dataset)
+        ds = CreditScoreDataset(df=credit)
         dt = ds.dtypes
         assert isinstance(dt, pd.DataFrame)
         logger.debug(dt)
@@ -298,12 +298,12 @@ class TestDataset:  # pragma: no cover
         )
         logger.info(double_line)
         # ---------------------------------------------------------------------------------------- #
-        ds = CreditScoreDataset(df=dataset)
+        ds = CreditScoreDataset(df=credit)
         df = ds.select(include=["Gender", "Education"])
         assert df.shape[1] == 2
         df = ds.select(exclude=["Gender"])
         logger.debug(df.head())
-        assert df.shape[1] == dataset.shape[1] - 1
+        assert df.shape[1] == credit.shape[1] - 1
         df = ds.select()
         assert df.shape[1] == 8
         # ---------------------------------------------------------------------------------------- #
@@ -334,10 +334,10 @@ class TestDataset:  # pragma: no cover
         )
         logger.info(double_line)
         # ---------------------------------------------------------------------------------------- #
-        ds = CreditScoreDataset(df=dataset)
+        ds = CreditScoreDataset(df=credit)
         condition = lambda df: df["Gender"] == "Male"  # noqa
         df = ds.subset(condition=condition)
-        assert df.shape[0] < dataset.shape[0]
+        assert df.shape[0] < credit.shape[0]
         condition = lambda df: df["xyz"] == "Male"  # noqa
         with pytest.raises(Exception):
             ds.subset(condition=condition)
@@ -370,7 +370,7 @@ class TestDataset:  # pragma: no cover
         )
         logger.info(double_line)
         # ---------------------------------------------------------------------------------------- #
-        ds = CreditScoreDataset(df=dataset)
+        ds = CreditScoreDataset(df=credit)
         df = ds.head()
         assert len(df) == 5
         # ---------------------------------------------------------------------------------------- #
@@ -401,7 +401,7 @@ class TestDataset:  # pragma: no cover
         )
         logger.info(double_line)
         # ---------------------------------------------------------------------------------------- #
-        ds = CreditScoreDataset(df=dataset)
+        ds = CreditScoreDataset(df=credit)
         df = ds.unique(columns=["Gender", "Education"])
         assert isinstance(df, pd.DataFrame)
         assert df.shape[0] == 10
@@ -436,7 +436,7 @@ class TestDataset:  # pragma: no cover
         )
         logger.info(double_line)
         # ---------------------------------------------------------------------------------------- #
-        ds = CreditScoreDataset(df=dataset)
+        ds = CreditScoreDataset(df=credit)
         df = ds.as_df()
         assert isinstance(df, pd.DataFrame)
         assert df.shape[0] == 164
@@ -469,10 +469,10 @@ class TestDataset:  # pragma: no cover
         )
         logger.info(double_line)
         # ---------------------------------------------------------------------------------------- #
-        ds = CreditScoreDataset(df=dataset)
+        ds = CreditScoreDataset(df=credit)
         df = ds.frequency(x=["Education", "Credit Rating"])
         assert isinstance(df, pd.DataFrame)
-        assert "Cumulative" in df.columns
+        assert "cumulative" in df.columns
         logger.debug(f"\n{df}")
 
         # ---------------------------------------------------------------------------------------- #
@@ -503,10 +503,10 @@ class TestDataset:  # pragma: no cover
         )
         logger.info(double_line)
         # ---------------------------------------------------------------------------------------- #
-        ds = CreditScoreDataset(df=dataset)
+        ds = CreditScoreDataset(df=credit)
         df = ds.frequency(x="Income", bins=4)
         assert isinstance(df, pd.DataFrame)
-        assert "Cumulative" in df.columns
+        assert "cumulative" in df.columns
         logger.debug(f"\n{df}")
 
         # ---------------------------------------------------------------------------------------- #
@@ -537,7 +537,7 @@ class TestDataset:  # pragma: no cover
         )
         logger.info(double_line)
         # ---------------------------------------------------------------------------------------- #
-        ds = CreditScoreDataset(df=dataset)
+        ds = CreditScoreDataset(df=credit)
         df = ds.top_n(x="Income", n=10)
         assert isinstance(df, pd.DataFrame)
         assert df.shape[0] == 10
@@ -574,7 +574,7 @@ class TestDataset:  # pragma: no cover
         )
         logger.info(double_line)
         # ---------------------------------------------------------------------------------------- #
-        ds = CreditScoreDataset(df=dataset)
+        ds = CreditScoreDataset(df=credit)
         stats = ds.describe()
         assert isinstance(stats.numeric, pd.DataFrame)
         assert isinstance(stats.categorical, pd.DataFrame)
@@ -608,11 +608,46 @@ class TestDataset:  # pragma: no cover
         )
         logger.info(double_line)
         # ---------------------------------------------------------------------------------------- #
-        ds = CreditScoreDataset(df=dataset)
+        ds = CreditScoreDataset(df=credit)
         stats = ds.describe(x="Income")
         assert isinstance(stats.numeric, pd.DataFrame)
         assert stats.categorical is None
         logger.debug(stats.numeric)
+        # ---------------------------------------------------------------------------------------- #
+        end = datetime.now()
+        duration = round((end - start).total_seconds(), 1)
+
+        logger.info(
+            "\n\tCompleted {} {} in {} seconds at {} on {}".format(
+                self.__class__.__name__,
+                inspect.stack()[0][3],
+                duration,
+                end.strftime("%I:%M:%S %p"),
+                end.strftime("%m/%d/%Y"),
+            )
+        )
+        logger.info(single_line)
+
+    # ============================================================================================ #
+    def test_countstats(self, credit, caplog):
+        start = datetime.now()
+        logger.info(
+            "\n\nStarted {} {} at {} on {}".format(
+                self.__class__.__name__,
+                inspect.stack()[0][3],
+                start.strftime("%I:%M:%S %p"),
+                start.strftime("%m/%d/%Y"),
+            )
+        )
+        logger.info(double_line)
+        # ---------------------------------------------------------------------------------------- #
+        ds = CreditScoreDataset(df=credit)
+        counts, cs = ds.countstats(x="Education")
+        assert isinstance(counts, pd.DataFrame)
+        assert isinstance(cs, pd.DataFrame)
+        msg = f"Counts\n{counts}\nCount Statistics\n{cs}"
+        logger.debug(msg)
+
         # ---------------------------------------------------------------------------------------- #
         end = datetime.now()
         duration = round((end - start).total_seconds(), 1)
