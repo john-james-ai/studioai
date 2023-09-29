@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Saturday August 26th 2023 06:25:27 am                                               #
-# Modified   : Friday September 29th 2023 06:24:55 am                                              #
+# Modified   : Friday September 29th 2023 06:40:40 am                                              #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -340,6 +340,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         y: str = None,
         hue: str = None,
         orient: str = None,
+        order_by_count: bool = False,
         plot_counts: bool = False,
         title: str = None,
         ax: plt.Axes = None,
@@ -360,6 +361,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
             orient (str): 'v' or 'h'. Orientation of the plot (vertical or horizontal). This is usually
                 inferred based on the type of the input variables, but it can be used to resolve ambiguity
                 when both x and y are numeric or when plotting wide-form data.
+            order_by_count (bool): If True, bars are ordered by counts.
             plot_counts (bool): If True, the bars are annotated with absolute and relative counts. Default = False
             title (str): Title for the plot. Optional
             ax: (plt.Axes): A matplotlib Axes object. Optional. If not provide, one will be obtained from the canvas.
@@ -375,6 +377,12 @@ class Visualizer(VisualizerABC):  # pragma: no cover
             else:
                 orient = "v"
 
+        if order_by_count:
+            col = x if x is not None else y
+            order = data[col].value_counts().index
+        else:
+            order = None
+
         if ax is None:
             fig, ax = self._canvas.get_figaxes()
 
@@ -384,6 +392,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
             y=y,
             hue=hue,
             ax=ax,
+            order=order,
             palette=palette,
             *args,
             **kwargs,
@@ -401,7 +410,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
                     )
             else:
                 for p in ax.patches:
-                    x = p.get_x() + p.get_width() / 2
+                    x = p.get_x() + p.get_width()
                     y = p.get_y() + p.get_height() / 2
                     ax.annotate(
                         text=f"{round(p.get_width(),0)} ({round(p.get_width()/total*100,1)}%)",
