@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Saturday August 26th 2023 06:25:27 am                                               #
-# Modified   : Monday September 18th 2023 05:24:42 am                                              #
+# Modified   : Friday September 29th 2023 06:24:55 am                                              #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -340,6 +340,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         y: str = None,
         hue: str = None,
         orient: str = None,
+        plot_counts: bool = False,
         title: str = None,
         ax: plt.Axes = None,
         *args,
@@ -359,6 +360,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
             orient (str): 'v' or 'h'. Orientation of the plot (vertical or horizontal). This is usually
                 inferred based on the type of the input variables, but it can be used to resolve ambiguity
                 when both x and y are numeric or when plotting wide-form data.
+            plot_counts (bool): If True, the bars are annotated with absolute and relative counts. Default = False
             title (str): Title for the plot. Optional
             ax: (plt.Axes): A matplotlib Axes object. Optional. If not provide, one will be obtained from the canvas.
 
@@ -386,25 +388,26 @@ class Visualizer(VisualizerABC):  # pragma: no cover
             *args,
             **kwargs,
         )
-        if orient == "v":
-            for p in ax.patches:
-                x = p.get_bbox().get_points()[:, 0]
-                y = p.get_bbox().get_points()[1, 1]
-                ax.annotate(
-                    text=f"{round(y,0)}\n({round(y/total*100,1)}%)",
-                    xy=(x.mean(), y),
-                    ha="center",
-                    va="bottom",
-                )
-        else:
-            for p in ax.patches:
-                x = p.get_x() + p.get_width() / 2
-                y = p.get_y() + p.get_height() / 2
-                ax.annotate(
-                    text=f"{round(p.get_width(),0)} ({round(p.get_width()/total*100,1)}%)",
-                    xy=(x, y),
-                    va="center",
-                )
+        if plot_counts:
+            if orient == "v":
+                for p in ax.patches:
+                    x = p.get_bbox().get_points()[:, 0]
+                    y = p.get_bbox().get_points()[1, 1]
+                    ax.annotate(
+                        text=f"{round(y,0)}\n({round(y/total*100,1)}%)",
+                        xy=(x.mean(), y),
+                        ha="center",
+                        va="bottom",
+                    )
+            else:
+                for p in ax.patches:
+                    x = p.get_x() + p.get_width() / 2
+                    y = p.get_y() + p.get_height() / 2
+                    ax.annotate(
+                        text=f"{round(p.get_width(),0)} ({round(p.get_width()/total*100,1)}%)",
+                        xy=(x, y),
+                        va="center",
+                    )
 
         if title is not None:
             ax.set_title(title)
