@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Saturday August 26th 2023 06:25:27 am                                               #
-# Modified   : Friday September 29th 2023 10:01:00 am                                              #
+# Modified   : Friday September 29th 2023 07:49:00 pm                                              #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -453,7 +453,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
             ax: (plt.Axes): A matplotlib Axes object. Optional. If not provide, one will be obtained from the canvas.
 
         """
-        palette = self._canvas.palette if hue is not None else None
+        palette = self._canvas.palette if hue is not None else "Blues_r"
         data = data if data is not None else self._data
 
         if ax is None:
@@ -505,7 +505,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
 
 
         """
-        palette = self._canvas.palette if hue is not None else None
+        palette = self._canvas.palette if hue is not None else "Blues_r"
         data = data if data is not None else self._data
 
         if ax is None:
@@ -555,7 +555,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
             ax: (plt.Axes): A matplotlib Axes object. Optional. If not provide, one will be obtained from the canvas.
 
         """
-        palette = self._canvas.palette if hue is not None else None
+        palette = self._canvas.palette if hue is not None else "Blues_r"
         data = data if data is not None else self._data
 
         if ax is None:
@@ -604,7 +604,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
 
 
         """
-        palette = self._canvas.palette if hue is not None else None
+        palette = self._canvas.palette if hue is not None else "Blues_r"
         data = data if data is not None else self._data
 
         if ax is None:
@@ -753,7 +753,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
 
 
         """
-        palette = self._canvas.palette if hue is not None else None
+        palette = self._canvas.palette if hue is not None else "Blues_r"
         data = data if data is not None else self._data
 
         g = sns.pairplot(
@@ -791,7 +791,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
 
         """
 
-        palette = self._canvas.palette if hue is not None else None
+        palette = self._canvas.palette if hue is not None else "Blues_r"
         data = data if data is not None else self._data
 
         g = sns.jointplot(
