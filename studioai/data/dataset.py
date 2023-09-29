@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Thursday August 10th 2023 08:29:08 pm                                               #
-# Modified   : Friday September 29th 2023 10:38:33 am                                              #
+# Modified   : Friday September 29th 2023 11:23:34 am                                              #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -25,6 +25,7 @@ import pandas as pd
 
 from studioai.stats.descriptive.summary import SummaryStats
 from studioai.visual.visualizer import Visualizer, SeabornCanvas
+from studioai.stats.inferential.test import Inference
 
 # ------------------------------------------------------------------------------------------------ #
 logger = logging.getLogger(__name__)
@@ -43,6 +44,7 @@ class Dataset(ABC):
     def __init__(self, df: pd.DataFrame) -> None:
         self._df = df
         self._visualizer = Visualizer(canvas=SeabornCanvas())
+        self._inference = Inference()
 
     def __len__(self):
         """Returns the length of the dataset."""
@@ -52,11 +54,14 @@ class Dataset(ABC):
     def summary(self) -> pd.DataFrame:
         """Returns a summary of the dataset contents in DataFrame format"""
 
-    # ------------------------------------------------------------------------------------------- #
     @property
     def plot(self) -> Visualizer:  # pragma: no cover
         self._visualizer.data = self._df
         return self._visualizer
+
+    @property
+    def stats(self) -> Visualizer:  # pragma: no cover
+        return self._inference
 
     @property
     def columns(self) -> list:

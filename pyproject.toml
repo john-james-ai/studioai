@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "studioai"
-version = "0.1.28"
+version = "0.1.29"
 description = "Atelier for Artificial Intelligence and Data Science"
 authors = [
     "John James <john.james.ai.studio@gmail.com>",
