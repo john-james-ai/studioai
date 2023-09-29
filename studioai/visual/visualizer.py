@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Saturday August 26th 2023 06:25:27 am                                               #
-# Modified   : Friday September 29th 2023 06:40:40 am                                              #
+# Modified   : Friday September 29th 2023 10:01:00 am                                              #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -366,8 +366,8 @@ class Visualizer(VisualizerABC):  # pragma: no cover
             title (str): Title for the plot. Optional
             ax: (plt.Axes): A matplotlib Axes object. Optional. If not provide, one will be obtained from the canvas.
 
-
         """
+
         palette = self._canvas.palette if hue is not None else "Blues_r"
         data = data if data is not None else self._data
         total = len(data)
@@ -464,6 +464,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
             x=x,
             y=y,
             hue=hue,
+            orient=orient,
             ax=ax,
             palette=palette,
             *args,

@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Monday May 29th 2023 03:00:39 am                                                    #
-# Modified   : Monday September 18th 2023 05:21:37 am                                              #
+# Modified   : Friday September 29th 2023 10:55:32 am                                              #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -111,9 +111,9 @@ class CramersVAnalysis(StatAnalysis):
         self._labels = ["Negligible", "Small", "Moderate", "Large"]
 
     @property
-    def measure(self) -> CramersV:
-        """Returns the Cramer's V Measure object."""
-        return self._measure
+    def result(self) -> CramersV:
+        """Returns the Cramer's V Result object."""
+        return self._result
 
     def run(self) -> None:
         """Performs the statistical test and creates a result object."""
@@ -133,7 +133,7 @@ class CramersVAnalysis(StatAnalysis):
         interpretation = self._labels[np.where(thresholds < cv)[-1][-1]]
 
         # Create the result object.
-        self._measure = CramersV(
+        self._result = CramersV(
             data=crosstab,
             dof=dof,
             value=cv,

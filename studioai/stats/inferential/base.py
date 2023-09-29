@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Tuesday August 22nd 2023 07:44:59 pm                                                #
-# Modified   : Thursday September 28th 2023 03:13:01 am                                            #
+# Modified   : Friday September 29th 2023 10:56:00 am                                              #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -103,7 +103,7 @@ class StatAnalysis(ABC):
 
     @property
     @abstractmethod
-    def measure(self) -> StatMeasure:
+    def result(self) -> StatMeasure:
         """Returns a Statistical Test Result object."""
 
     @abstractmethod

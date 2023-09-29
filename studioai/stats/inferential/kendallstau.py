@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Monday May 29th 2023 03:00:39 am                                                    #
-# Modified   : Monday September 18th 2023 05:18:32 am                                              #
+# Modified   : Friday September 29th 2023 10:56:00 am                                              #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -102,9 +102,9 @@ class KendallsTauAnalysis(StatAnalysis):
         ]
 
     @property
-    def measure(self) -> KendallsTau:
+    def result(self) -> KendallsTau:
         """Returns the Cramer's V Measure object."""
-        return self._measure
+        return self._result
 
     def run(self) -> None:
         """Performs the statistical test and creates a result object."""
@@ -119,7 +119,7 @@ class KendallsTauAnalysis(StatAnalysis):
         interpretation = self._labels[np.where(self._thresholds < statistic)[-1][-1]]
 
         # Create the result object.
-        self._measure = KendallsTau(
+        self._result = KendallsTau(
             data=self._data,
             a=self._a,
             b=self._b,
