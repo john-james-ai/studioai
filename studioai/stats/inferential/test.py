@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Friday September 29th 2023 10:45:53 am                                              #
-# Modified   : Friday September 29th 2023 11:15:27 am                                              #
+# Modified   : Friday September 29th 2023 11:40:19 am                                              #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -36,28 +36,40 @@ from studioai.stats.inferential.ttest import TTest, TTestResult
 class Inference:
     """Bundles hypothesis testing into a single class."""
 
+    def __init__(self) -> None:
+        self._data = None
+
+    @property
+    def data(self) -> pd.DataFrame:
+        return self._data
+
+    @data.setter
+    def data(self, data: pd.DataFrame) -> None:
+        self._data = data
+
     def chisquare(
-        self, data: pd.DataFrame, a: str = None, b: str = None, alpha: float = 0.05
+        self, a: str, b: str, data: pd.DataFrame = None, alpha: float = 0.05
     ) -> ChiSquareIndependenceResult:
+        data = data if data is not None else self._data
         test = ChiSquareIndependenceTest(data=data, a=a, b=b, alpha=alpha)
         test.run()
         return test.result
 
-    def cramersv(
-        self, data: pd.DataFrame, x: str = None, y: str = None, alpha: float = 0.05
-    ) -> CramersV:
+    def cramersv(self, x: str, y: str, data: pd.DataFrame = None, alpha: float = 0.05) -> CramersV:
+        data = data if data is not None else self._data
         test = CramersVAnalysis(data=data, x=x, y=y, alpha=alpha)
         test.run()
         return test.result
 
     def kendallstau(
         self,
-        data: pd.DataFrame,
-        a: str = None,
-        b: str = None,
+        a: str,
+        b: str,
+        data: pd.DataFrame = None,
         variant: str = "c",
         alternative: str = "two-sided",
     ) -> KendallsTau:
+        data = data if data is not None else self._data
         test = KendallsTauAnalysis(data=data, a=a, b=b, variant=variant, alternative=alternative)
         test.run()
         return test.result
@@ -69,22 +81,24 @@ class Inference:
 
     def pearson(
         self,
+        a: str,
+        b: str,
         data: pd.DataFrame = None,
-        a: Union[str, np.ndarray, pd.Series] = None,
-        b: Union[str, np.ndarray, pd.Series] = None,
         alpha: float = 0.05,
     ) -> PearsonCorrelationResult:
+        data = data if data is not None else self._data
         test = PearsonCorrelationTest(data=data, a=a, b=b, alpha=alpha)
         test.run()
         return test.result
 
     def spearman(
         self,
+        a: str,
+        b: str,
         data: pd.DataFrame = None,
-        a: Union[str, np.ndarray, pd.Series] = None,
-        b: Union[str, np.ndarray, pd.Series] = None,
         alpha: float = 0.05,
     ) -> SpearmanCorrelationResult:
+        data = data if data is not None else self._data
         test = SpearmanCorrelationTest(data=data, a=a, b=b, alpha=alpha)
         test.run()
         return test.result

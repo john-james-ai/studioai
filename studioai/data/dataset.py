@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Thursday August 10th 2023 08:29:08 pm                                               #
-# Modified   : Friday September 29th 2023 11:23:34 am                                              #
+# Modified   : Friday September 29th 2023 11:45:43 am                                              #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -61,6 +61,7 @@ class Dataset(ABC):
 
     @property
     def stats(self) -> Visualizer:  # pragma: no cover
+        self._inference.data = self._df
         return self._inference
 
     @property

@@ -11,15 +11,13 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Wednesday June 7th 2023 08:15:08 pm                                                 #
-# Modified   : Sunday September 17th 2023 05:52:04 pm                                              #
+# Modified   : Friday September 29th 2023 11:33:59 am                                              #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
 # ================================================================================================ #
 from dataclasses import dataclass
-from typing import Union
 
-import numpy as np
 import pandas as pd
 from scipy import stats
 from dependency_injector.wiring import inject, Provide
@@ -70,8 +68,8 @@ class PearsonCorrelationTest(StatisticalTest):
 
     Args:
         data (pd.DataFrame): DataFrame containing at least two variables. Optional
-        x (str): Keys in the DataFrame.
-        y (str): Keys in the DataFrame.
+        a (str): Keys in the DataFrame.
+        b (str): Keys in the DataFrame.
         alpha (float): The test significance level. Default=0.05
 
     """
@@ -80,9 +78,9 @@ class PearsonCorrelationTest(StatisticalTest):
 
     def __init__(
         self,
-        data: pd.DataFrame = None,
-        a: Union[str, np.ndarray, pd.Series] = None,
-        b: Union[str, np.ndarray, pd.Series] = None,
+        data: pd.DataFrame,
+        a: str,
+        b: str,
         alpha: float = 0.05,
     ) -> None:
         super().__init__()

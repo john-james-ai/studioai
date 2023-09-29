@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Friday September 29th 2023 11:05:43 am                                              #
-# Modified   : Friday September 29th 2023 11:18:54 am                                              #
+# Modified   : Friday September 29th 2023 11:44:52 am                                              #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -22,6 +22,7 @@ import pytest
 import logging
 
 from studioai.stats.inferential.test import Inference
+from studioai.stats.inferential.chisquare import ChiSquareIndependenceResult
 from studioai.stats.inferential.cramersv import CramersV
 from studioai.stats.inferential.kendallstau import KendallsTau
 from studioai.stats.inferential.kstest import KSTestResult
@@ -38,6 +39,40 @@ single_line = f"\n{100 * '-'}"
 
 @pytest.mark.inference
 class TestInference:  # pragma: no cover
+    # ============================================================================================ #
+    def test_chisquare(self, credit, caplog):
+        start = datetime.now()
+        logger.info(
+            "\n\nStarted {} {} at {} on {}".format(
+                self.__class__.__name__,
+                inspect.stack()[0][3],
+                start.strftime("%I:%M:%S %p"),
+                start.strftime("%m/%d/%Y"),
+            )
+        )
+        logger.info(double_line)
+        # ---------------------------------------------------------------------------------------- #
+        test = Inference()
+        test.data = credit
+        df = test.data
+        assert df.equals(credit)
+        result = test.chisquare(a="Education", b="Credit Rating")
+        assert isinstance(result, ChiSquareIndependenceResult)
+        # ---------------------------------------------------------------------------------------- #
+        end = datetime.now()
+        duration = round((end - start).total_seconds(), 1)
+
+        logger.info(
+            "\nCompleted {} {} in {} seconds at {} on {}".format(
+                self.__class__.__name__,
+                inspect.stack()[0][3],
+                duration,
+                end.strftime("%I:%M:%S %p"),
+                end.strftime("%m/%d/%Y"),
+            )
+        )
+        logger.info(single_line)
+
     # ============================================================================================ #
     def test_cramersv(self, credit, caplog):
         start = datetime.now()

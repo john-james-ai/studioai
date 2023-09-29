@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Tuesday August 15th 2023 05:59:13 pm                                                #
-# Modified   : Thursday September 28th 2023 03:19:27 am                                            #
+# Modified   : Friday September 29th 2023 11:47:59 am                                              #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -25,6 +25,7 @@ import pandas as pd
 import numpy as np
 
 from studioai.data.credit import CreditScoreDataset
+from studioai.stats.inferential.cramersv import CramersV
 
 # ------------------------------------------------------------------------------------------------ #
 logger = logging.getLogger(__name__)
@@ -677,6 +678,38 @@ class TestDataset:  # pragma: no cover
         assert isinstance(cs, pd.DataFrame)
         msg = f"Counts\n{counts}\nCount Statistics\n{cs}"
         logger.debug(msg)
+
+        # ---------------------------------------------------------------------------------------- #
+        end = datetime.now()
+        duration = round((end - start).total_seconds(), 1)
+
+        logger.info(
+            "\n\tCompleted {} {} in {} seconds at {} on {}".format(
+                self.__class__.__name__,
+                inspect.stack()[0][3],
+                duration,
+                end.strftime("%I:%M:%S %p"),
+                end.strftime("%m/%d/%Y"),
+            )
+        )
+        logger.info(single_line)
+
+    # ============================================================================================ #
+    def test_stats(self, credit, caplog):
+        start = datetime.now()
+        logger.info(
+            "\n\nStarted {} {} at {} on {}".format(
+                self.__class__.__name__,
+                inspect.stack()[0][3],
+                start.strftime("%I:%M:%S %p"),
+                start.strftime("%m/%d/%Y"),
+            )
+        )
+        logger.info(double_line)
+        # ---------------------------------------------------------------------------------------- #
+        ds = CreditScoreDataset(df=credit)
+        result = ds.stats.cramersv(x="Education", y="Credit Rating")
+        assert isinstance(result, CramersV)
 
         # ---------------------------------------------------------------------------------------- #
         end = datetime.now()
