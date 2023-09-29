@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Monday May 29th 2023 03:00:39 am                                                    #
-# Modified   : Friday September 29th 2023 01:04:12 pm                                              #
+# Modified   : Friday September 29th 2023 05:23:56 pm                                              #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -41,6 +41,7 @@ class CramersV(StatTestResult):
     data: pd.DataFrame = None
     x: str = None
     y: str = None
+    n: int = None
     dof: int = None
     x2alpha: float = None
     x2: float = None
@@ -55,7 +56,7 @@ class CramersV(StatTestResult):
         self.visualizer = visualizer
 
     def result(self) -> str:
-        return f"Cramer's V Test of Association\n{self.x.capitalize()} and {self.y.capitalize()}\n\u03C6={round(self.value,2)}."
+        return f"(X\u00b2 ({self.dof}, n={self.data.shape[0]})={round(self.value,2)}, {self._report_pvalue(self.pvalue)}, phi={round(self.value,2)}."
 
 
 # ------------------------------------------------------------------------------------------------ #
@@ -126,6 +127,7 @@ class CramersVAnalysis(StatAnalysis):
             dof=dof,
             value=cv,
             strength=strength,
+            n=len(self._data),
             x2alpha=self._alpha,
             x2=statistic,
             x2dof=x2dof,
