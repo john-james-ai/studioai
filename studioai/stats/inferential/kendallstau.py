@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Monday May 29th 2023 03:00:39 am                                                    #
-# Modified   : Friday September 29th 2023 05:27:36 pm                                              #
+# Modified   : Friday September 29th 2023 05:29:51 pm                                              #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -39,6 +39,7 @@ class KendallsTau(StatTestResult):
     data: pd.DataFrame = None
     a: str = None
     b: str = None
+    n: int = None
     strength: str = None
     pvalue: float = None
     visualizer: Visualizer = None
@@ -82,7 +83,6 @@ class KendallsTauAnalysis(StatAnalysis):
         data: pd.DataFrame,
         a: str = None,
         b: str = None,
-        n: int = None,
         variant: str = "c",
         alternative: str = "two-sided",
     ) -> None:
