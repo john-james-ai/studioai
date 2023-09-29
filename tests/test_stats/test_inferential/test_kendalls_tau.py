@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Monday June 5th 2023 09:32:36 pm                                                    #
-# Modified   : Thursday September 28th 2023 03:07:36 am                                            #
+# Modified   : Friday September 29th 2023 01:00:19 pm                                              #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -51,13 +51,13 @@ class TestKendallsTau:  # pragma: no cover
         # ---------------------------------------------------------------------------------------- #
         test = KendallsTauAnalysis(data=credit, a="Education", b="Credit Rating")
         test.run()
-        measure = test.measure
-        assert "Kendall" in measure.name
-        assert isinstance(measure.value, float)
-        assert isinstance(measure.pvalue, float)
-        assert isinstance(measure.data, pd.DataFrame)
-        assert isinstance(measure.interpretation, str)
-        logging.debug(measure.interpretation)
+        result = test.result
+        assert isinstance(result.value, float)
+        assert isinstance(result.pvalue, float)
+        assert isinstance(result.data, pd.DataFrame)
+        assert isinstance(result.strength, str)
+        logging.debug(result)
+        logging.debug(result.result())
 
         # ---------------------------------------------------------------------------------------- #
         end = datetime.now()

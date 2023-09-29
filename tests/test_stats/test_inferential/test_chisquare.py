@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Monday June 5th 2023 09:32:36 pm                                                    #
-# Modified   : Thursday September 28th 2023 03:05:43 am                                            #
+# Modified   : Friday September 29th 2023 12:40:25 pm                                              #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -59,7 +59,6 @@ class TestX2Independence:  # pragma: no cover
         assert test.result.alpha == 0.05
         assert isinstance(test.result.data, pd.DataFrame)
         assert isinstance(test.profile, StatTestProfile)
-        assert isinstance(test.result.result, str)
         logging.debug(test.result)
 
         # ---------------------------------------------------------------------------------------- #

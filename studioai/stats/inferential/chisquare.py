@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Monday May 29th 2023 03:00:39 am                                                    #
-# Modified   : Sunday September 17th 2023 05:52:04 pm                                              #
+# Modified   : Friday September 29th 2023 12:16:43 pm                                              #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -50,6 +50,15 @@ class ChiSquareIndependenceResult(StatTestResult):
         self.visualizer.x2testplot(
             statistic=self.value, dof=self.dof, result=self.result, alpha=self.alpha
         )
+
+    def result(self) -> str:
+        return f"X\u00b2 Test of Independence\n{self.a.capitalize()} and {self.b.capitalize()}\nX\u00b2({self.dof}, N={self.data.shape[0]})={round(self.value,2)}, {self._report_pvalue(self.pvalue)}."
+
+    def interpretation(self) -> str:
+        if self.pvalue > self.alpha:  # pragma: no cover
+            return f"The pvalue {round(self.pvalue,2)} is greater than level of significance {int(self.alpha*100)}%; therefore, the null hypothesis is not rejected. The evidence against independence of {self.a} and {self.b} is not significant."
+        else:
+            return f"The pvalue {round(self.pvalue,2)} is less than level of significance {int(self.alpha*100)}%; therefore, the null hypothesis is rejected. The evidence against independence of {self.a} and {self.b} is significant."
 
 
 # ------------------------------------------------------------------------------------------------ #
@@ -92,18 +101,9 @@ class ChiSquareIndependenceTest(StatisticalTest):
     def run(self) -> None:
         """Performs the statistical test and creates a result object."""
 
-        n = len(self._data)
-
         obs = stats.contingency.crosstab(self._data[self._a], self._data[self._b])
 
         statistic, pvalue, dof, exp = stats.chi2_contingency(obs[1])
-
-        result = self._report_results(statistic=statistic, pvalue=pvalue, dof=dof, n=n)
-
-        if pvalue > self._alpha:  # pragma: no cover
-            inference = f"The pvalue {round(pvalue,2)} is greater than level of significance {int(self._alpha*100)}%; therefore, the null hypothesis is not rejected. The evidence against independence of {self._a} and {self._b} is not significant."
-        else:
-            inference = f"The pvalue {round(pvalue,2)} is less than level of significance {int(self._alpha*100)}%; therefore, the null hypothesis is rejected. The evidence against independence of {self._a} and {self._b} is significant."
 
         # Create the result object.
         self._result = ChiSquareIndependenceResult(
@@ -114,13 +114,8 @@ class ChiSquareIndependenceTest(StatisticalTest):
             dof=dof,
             value=statistic,
             pvalue=pvalue,
-            result=result,
             data=self._data,
             a=self._a,
             b=self._b,
-            inference=inference,
             alpha=self._alpha,
         )
-
-    def _report_results(self, statistic: float, pvalue: float, dof: float, n: int) -> str:
-        return f"X\u00b2 Test of Independence\n{self._a.capitalize()} and {self._b.capitalize()}\nX\u00b2({dof}, N={n})={round(statistic,2)}, {self._report_pvalue(pvalue)}."

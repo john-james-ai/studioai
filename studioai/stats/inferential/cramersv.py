@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Monday May 29th 2023 03:00:39 am                                                    #
-# Modified   : Friday September 29th 2023 10:55:32 am                                              #
+# Modified   : Friday September 29th 2023 01:04:12 pm                                              #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -26,7 +26,7 @@ from dependency_injector.wiring import inject, Provide
 from studioai.container import StudioAIContainer
 from studioai.visual.visualizer import Visualizer
 from studioai.stats.inferential.base import (
-    StatMeasure,
+    StatTestResult,
     StatAnalysis,
 )
 
@@ -35,12 +35,13 @@ from studioai.stats.inferential.base import (
 #                                 CRAMERS V MEASURE OF ASSOCIATION                                 #
 # ------------------------------------------------------------------------------------------------ #
 @dataclass
-class CramersV(StatMeasure):
+class CramersV(StatTestResult):
     name: str = "Cramer's V"
+    strength: str = None
     data: pd.DataFrame = None
+    x: str = None
+    y: str = None
     dof: int = None
-    thresholds: np.array = None
-    interpretation: str = None
     x2alpha: float = None
     x2: float = None
     x2dof: float = None
@@ -53,21 +54,8 @@ class CramersV(StatMeasure):
     def __post_init__(self, visualizer: Visualizer = Provide[StudioAIContainer.visualizer]) -> None:
         self.visualizer = visualizer
 
-    def plot(self) -> None:  # pragma: no cover
-        self.visualizer.cramersv(
-            data=self.data,
-            value=self.value,
-            thresholds=self.thresholds,
-            interpretation=self.interpretation,
-        )
-
-    def plot_x2(self) -> None:  # pragma: no cover
-        self.visualizer.x2testplot(
-            statistic=self.x2,
-            dof=self.x2dof,
-            result=self.x2result,
-            alpha=self.x2alpha,
-        )
+    def result(self) -> str:
+        return f"Cramer's V Test of Association\n{self.x.capitalize()} and {self.y.capitalize()}\n\u03C6={round(self.value,2)}."
 
 
 # ------------------------------------------------------------------------------------------------ #
@@ -118,8 +106,6 @@ class CramersVAnalysis(StatAnalysis):
     def run(self) -> None:
         """Performs the statistical test and creates a result object."""
 
-        n = len(self._data)
-
         crosstab = pd.crosstab(self._data[self._x], self._data[self._y])
 
         dof = min(crosstab.shape[0], crosstab.shape[1]) - 1
@@ -130,22 +116,19 @@ class CramersVAnalysis(StatAnalysis):
 
         thresholds = np.array(self._thresholds[dof])
 
-        interpretation = self._labels[np.where(thresholds < cv)[-1][-1]]
+        strength = self._labels[np.where(thresholds < cv)[-1][-1]]
 
         # Create the result object.
         self._result = CramersV(
             data=crosstab,
+            x=self._x,
+            y=self._y,
             dof=dof,
             value=cv,
-            interpretation=interpretation,
-            thresholds=thresholds,
+            strength=strength,
             x2alpha=self._alpha,
             x2=statistic,
             x2dof=x2dof,
             pvalue=pvalue,
             expected_freq=exp,
-            x2result=self._report_results(statistic=statistic, pvalue=pvalue, dof=x2dof, n=n),
         )
-
-    def _report_results(self, statistic: float, pvalue: float, dof: float, n: int) -> str:
-        return f"X\u00b2 Test of Independence\n{self._x.capitalize()} and {self._y.capitalize()}\nX\u00b2({dof}, N={n})={round(statistic,2)}, {self._report_pvalue(pvalue)}."

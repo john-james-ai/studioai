@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Monday May 29th 2023 03:00:39 am                                                    #
-# Modified   : Friday September 29th 2023 10:56:00 am                                              #
+# Modified   : Friday September 29th 2023 01:01:05 pm                                              #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -26,7 +26,7 @@ from dependency_injector.wiring import inject, Provide
 from studioai.container import StudioAIContainer
 from studioai.visual.visualizer import Visualizer
 from studioai.stats.inferential.base import (
-    StatMeasure,
+    StatTestResult,
     StatAnalysis,
 )
 
@@ -35,15 +35,12 @@ from studioai.stats.inferential.base import (
 #                                 KENDALL'S TAU MEASURE OF CORRELATION                             #
 # ------------------------------------------------------------------------------------------------ #
 @dataclass
-class KendallsTau(StatMeasure):
-    name: str = "Kendall's Tau"
+class KendallsTau(StatTestResult):
     data: pd.DataFrame = None
     a: str = None
     b: str = None
-    thresholds: np.array = None
-    interpretation: str = None
+    strength: str = None
     pvalue: float = None
-    result: str = None
     visualizer: Visualizer = None
 
     @inject
@@ -59,6 +56,9 @@ class KendallsTau(StatMeasure):
             thresholds=self.thresholds,
             interpretation=self.interpretation,
         )
+
+    def result(self) -> str:
+        return f"Kendall's Tau Test of Association between {self.a.capitalize()} and {self.b.capitalize()} \u03C4={round(self.value,2)},{self._report_pvalue(self.pvalue)}."
 
 
 # ------------------------------------------------------------------------------------------------ #
@@ -116,7 +116,7 @@ class KendallsTauAnalysis(StatAnalysis):
             x=a, y=b, variant=self._variant, alternative=self._alternative
         )
 
-        interpretation = self._labels[np.where(self._thresholds < statistic)[-1][-1]]
+        strength = self._labels[np.where(self._thresholds < statistic)[-1][-1]]
 
         # Create the result object.
         self._result = KendallsTau(
@@ -124,11 +124,6 @@ class KendallsTauAnalysis(StatAnalysis):
             a=self._a,
             b=self._b,
             value=statistic,
-            interpretation=interpretation,
-            thresholds=self._thresholds,
+            strength=strength,
             pvalue=pvalue,
-            result=self._report_results(statistic=statistic, pvalue=pvalue),
         )
-
-    def _report_results(self, statistic: float, pvalue: float) -> str:
-        return f"Kendall's Tau Test of Correlation\n{self._a.capitalize()} and {self._b.capitalize()}\n\u03C4={statistic},{self._report_pvalue(pvalue)}."

@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Tuesday August 22nd 2023 07:44:59 pm                                                #
-# Modified   : Friday September 29th 2023 10:56:00 am                                              #
+# Modified   : Friday September 29th 2023 12:58:10 pm                                              #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -45,10 +45,22 @@ class StatTestResult(DataClass):
     statistic: str = None
     value: float = 0
     pvalue: float = 0
-    inference: str = None
     alpha: float = 0.05
-    result: str = None
-    interpretation: str = None
+
+    @abstractmethod
+    def result(self) -> str:
+        """Result in APA Style"""
+
+    def _report_alpha(self) -> str:
+        a = int(self._alpha * 100)
+        return f"significant at {a}%."
+
+    def _report_pvalue(self, pvalue: float) -> str:
+        """Rounds the pvalue in accordance with the APA Style Guide 7th Edition"""
+        if pvalue < 0.001:
+            return "p<.001"
+        else:
+            return "p=" + str(round(pvalue, 4))
 
 
 # ------------------------------------------------------------------------------------------------ #
@@ -73,25 +85,6 @@ class StatisticalTest(ABC):
     def run(self) -> None:
         """Performs the statistical test and creates a result object."""
 
-    def _report_pvalue(self, pvalue: float) -> str:
-        """Rounds the pvalue in accordance with the APA Style Guide 7th Edition"""
-        if pvalue < 0.001:
-            return "p<.001"
-        else:
-            return "p=" + str(round(pvalue, 4))
-
-    def _report_alpha(self) -> str:
-        a = int(self._alpha * 100)
-        return f"significant at {a}%."
-
-
-# ------------------------------------------------------------------------------------------------ #
-@dataclass
-class StatMeasure(DataClass):
-    name: str = None
-    value: float = 0
-    interpretation: str = None
-
 
 # ------------------------------------------------------------------------------------------------ #
 class StatAnalysis(ABC):
@@ -103,7 +96,7 @@ class StatAnalysis(ABC):
 
     @property
     @abstractmethod
-    def result(self) -> StatMeasure:
+    def result(self) -> StatTestResult:
         """Returns a Statistical Test Result object."""
 
     @abstractmethod

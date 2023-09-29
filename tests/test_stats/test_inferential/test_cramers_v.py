@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Monday June 5th 2023 09:32:36 pm                                                    #
-# Modified   : Thursday September 28th 2023 03:05:54 am                                            #
+# Modified   : Friday September 29th 2023 01:01:20 pm                                              #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -51,14 +51,14 @@ class TestCramersV:  # pragma: no cover
         # ---------------------------------------------------------------------------------------- #
         test = CramersVAnalysis(data=credit, x="Gender", y="Education")
         test.run()
-        measure = test.measure
-        assert "Cramer" in measure.name
-        assert isinstance(measure.value, float)
-        assert isinstance(measure.pvalue, float)
-        assert measure.x2alpha == 0.05
-        assert isinstance(measure.data, pd.DataFrame)
-        assert isinstance(measure.interpretation, str)
-        logging.debug(measure.interpretation)
+        result = test.result
+        assert "Cramer" in result.name
+        assert isinstance(result.value, float)
+        assert isinstance(result.pvalue, float)
+        assert result.x2alpha == 0.05
+        assert isinstance(result.data, pd.DataFrame)
+        logging.debug(result)
+        logging.debug(result.result())
 
         # ---------------------------------------------------------------------------------------- #
         end = datetime.now()
