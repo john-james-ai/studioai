@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Saturday August 26th 2023 06:25:27 am                                               #
-# Modified   : Friday September 29th 2023 07:49:00 pm                                              #
+# Modified   : Friday September 29th 2023 10:40:49 pm                                              #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -1233,3 +1233,76 @@ class Visualizer(VisualizerABC):  # pragma: no cover
                 ax.tick_params(axis="y", labelsize=fontsize)
 
         return axes
+
+    def heatmap(
+        self,
+        data: pd.DataFrame,
+        vmin: float = None,
+        vmax: float = None,
+        cmap: str = "crest",
+        robust: bool = False,
+        annot: bool = True,
+        fmt: str = ".2f",
+        annot_kws: dict = None,
+        cbar: bool = True,
+        cbar_kws: dict = None,
+        cbar_ax: plt.Axes = None,
+        square: bool = True,
+        xticklabels: Union["str, bool", list, int] = "auto",
+        yticklabels: Union["str, bool", list, int] = "auto",
+        mask: bool = None,
+        ax: plt.Axes = None,
+        title: str = None,
+        *args,
+        **kwargs,
+    ) -> None:
+        """Plot rectangular data as a color-encoded matrix.
+
+        Args:
+            data (pd.DataFrame): 2D Dataset that can be coerced into an ndarray.
+                If a Pandas DataFrame is provided, the index/column information
+                will be used to label the columns and rows
+            vmin, vmax: Values to anchor the colormap, otherwise they are inferred from the data and other keyword arguments.
+
+            cmap (matplotlib colormap): The mapping from data values to color space.
+            robust (bool): If True and vmin or vmax are absent, the colormap range is computed with robust quantiles instead of the extreme values.
+            annot (bool): If True, write the data value in each cell. If an array-like with the same shape as data, then use this to annotate the heatmap instead of the data. Note that DataFrames will match on position, not index.
+            fmt (str): String formatting code to use when adding annotations. Default = ".2f"
+            annot_kws (dict): Keyword arguments for matplotlib.axes.Axes.text() when annot is True.
+            cbar (bool): Whether to draw a colorbar.
+            cbar_kws (dict): Keyword arguments for matplotlib.figure.Figure.colorbar().
+            cbar_ax (matplotlib.Axes): Axes in which to draw the colorbar, otherwise take space from the main Axes.
+            square (bool): If True, set the Axes aspect to “equal” so each cell will be square-shaped.
+            xticklabels, yticklabels (Union['str', 'bool', list, int]): f True, plot the column names of the dataframe. If False, don’t plot the column names. If list-like, plot these alternate labels as the xticklabels. If an integer, use the column names but plot only every n label. If “auto”, try to densely plot non-overlapping labels.
+            mask (bool): If passed, data will not be shown in cells where mask is True. Cells with missing values are automatically masked.
+            ax (matplotlib.Axes): Axes in which to draw the plot, otherwise use the currently-active Axes.
+            title (str): Title for the plot. Optional
+            kwargs (dict): All other keyword arguments are passed to matplotlib.axes.Axes.pcolormesh().
+
+        Returns: ax (matplotlib.Axes): Axes object with the heatmap.
+
+        """
+
+        if ax is None:
+            _, ax = self._canvas.get_figaxes()
+
+        _ = sns.heatmap(
+            data=data,
+            vmin=vmin,
+            vmax=vmax,
+            cmap=cmap,
+            robust=robust,
+            annot=annot,
+            fmt=fmt,
+            annot_kws=annot_kws,
+            cbar=cbar,
+            cbar_kws=cbar_kws,
+            cbar_ax=cbar_ax,
+            square=square,
+            xticklabels=xticklabels,
+            yticklabels=yticklabels,
+            mask=mask,
+            ax=ax,
+        )
+        if title is not None:
+            ax.set_title(title)
