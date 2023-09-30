@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Wednesday June 7th 2023 09:15:17 pm                                                 #
-# Modified   : Thursday September 28th 2023 03:08:07 am                                            #
+# Modified   : Saturday September 30th 2023 02:13:17 am                                            #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -24,7 +24,7 @@ import logging
 import numpy as np
 import pandas as pd
 
-from studioai.stats.inferential.pearson import PearsonCorrelationTest
+from studioai.stats.inferential.correlation import PearsonCorrelationTest
 from studioai.stats.inferential.base import StatTestProfile
 
 
@@ -54,12 +54,12 @@ class TestPearson:  # pragma: no cover
         # ---------------------------------------------------------------------------------------- #
         test = PearsonCorrelationTest(data=credit, a="Income", b="Age")
         test.run()
-        assert "Pearson" in test.result.test
+        assert "Pearson" in test.result.name
         assert isinstance(test.result.H0, str)
         assert isinstance(test.result.value, float)
         assert isinstance(test.result.pvalue, float)
         assert test.result.alpha == 0.05
-        assert isinstance(test.result.result, str)
+        assert isinstance(test.result.report(), str)
         assert isinstance(test.result.data, pd.DataFrame)
         assert isinstance(test.profile, StatTestProfile)
         logging.debug(test.result)
@@ -98,12 +98,12 @@ class TestPearson:  # pragma: no cover
         df = pd.DataFrame(d)
         test = PearsonCorrelationTest(data=df, a="sample a", b="sample b")
         test.run()
-        assert "Pearson" in test.result.test
+        assert "Pearson" in test.result.name
         assert isinstance(test.result.H0, str)
         assert isinstance(test.result.value, float)
         assert isinstance(test.result.pvalue, float)
         assert test.result.alpha == 0.05
-        assert isinstance(test.result.result, str)
+        assert isinstance(test.result.report(), str)
         assert isinstance(test.result.data, pd.DataFrame)
         assert isinstance(test.profile, StatTestProfile)
         logging.debug(test.result)
@@ -137,8 +137,8 @@ class TestPearson:  # pragma: no cover
         logger.info(double_line)
         # ---------------------------------------------------------------------------------------- #
         b = np.linspace(100, 10, 100)
-        test = PearsonCorrelationTest(b=b)
-        with pytest.raises(Exception):
+        with pytest.raises(TypeError):
+            test = PearsonCorrelationTest(b=b)
             test.run()
 
         # ---------------------------------------------------------------------------------------- #

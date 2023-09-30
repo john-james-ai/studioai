@@ -4,14 +4,14 @@
 # Project    : Artificial Intelligence & Data Science Studio                                       #
 # Version    : 0.1.0                                                                               #
 # Python     : 3.10.10                                                                             #
-# Filename   : /studioai/stats/inferential/kstest.py                                               #
+# Filename   : /studioai/stats/inferential/gof.py                                                  #
 # ------------------------------------------------------------------------------------------------ #
 # Author     : John James                                                                          #
 # Email      : john.james.ai.studio@gmail.com                                                      #
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Tuesday June 6th 2023 01:45:05 am                                                   #
-# Modified   : Sunday September 17th 2023 05:52:04 pm                                              #
+# Modified   : Saturday September 30th 2023 01:58:05 am                                            #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -39,8 +39,11 @@ from studioai.stats.inferential.base import (
 class KSTestResult(StatTestResult):
     """Encapsulates the hypothesis test results."""
 
+    name: str = "Kolmogorov-Smirnov Test"
     a: np.ndarray = None
     b: Union[np.ndarray, str] = None
+    n: int = None
+    advisory: str = None
 
     @inject
     def __post_init__(self, visualizer: Visualizer = Provide[StudioAIContainer.visualizer]) -> None:
@@ -50,6 +53,11 @@ class KSTestResult(StatTestResult):
         self.visualizer.kstestplot(
             statistic=self.value, n=len(self.a), result=self.result, alpha=self.alpha
         )
+
+    def report(self) -> str:
+        """Reports the result in APA style."""
+        result = f"Kolmogorov-Smirnov Goodness of Fit\nD({self.n})={round(self.value,4)}, p={round(self.pvalue,3)}"
+        return result
 
 
 # ------------------------------------------------------------------------------------------------ #
@@ -112,47 +120,22 @@ class KSTest(StatisticalTest):
             self._logger.exception(msg)
             raise
 
-        inference = self._infer(pvalue=result.pvalue)
-
-        interpretation = None
+        advisory = None
         if len(self._a) < 50:
-            interpretation = "Note: The Kolmogorov-Smirnov Test requires a sample size N > 50. For smaller sample sizes, the Shapiro-Wilk test should be considered."
+            advisory = "Note: The Kolmogorov-Smirnov Test requires a sample size N > 50. For smaller sample sizes, the Shapiro-Wilk test should be considered."
         if len(self._a) > 1000:
-            interpretation = "Note: The Kolmogorov-Smirnov Test on large sample sizes may lead to rejections of the null hypothesis that are statistically significant, yet practically insignificant."
+            advisory = "Note: The Kolmogorov-Smirnov Test on large sample sizes may lead to rejections of the null hypothesis that are statistically significant, yet practically insignificant."
 
         # Create the result object.
         self._result = KSTestResult(
-            test=self._profile.name,
             H0=self._profile.H0,
             statistic=self._profile.statistic,
             hypothesis=self._profile.hypothesis,
             value=result.statistic,
             pvalue=result.pvalue,
-            result=self._report_results(n=n, statistic=result.statistic, pvalue=result.pvalue),
             a=self._a,
             b=self._b,
-            inference=inference,
-            interpretation=interpretation,
+            n=n,
+            advisory=advisory,
             alpha=self._alpha,
         )
-
-    def _infer(self, pvalue: float) -> str:  # pragma: no cover
-        """Formats the inference for the hypothesis based upon whether it is one or two sample"""
-        if isinstance(self._b, str):
-            if pvalue > self._alpha:
-                inference = f"The pvalue {round(pvalue,2)} is greater than level of significance {int(self._alpha*100)}%; therefore, the null hypothesis is not rejected. The evidence against the data being drawn from the {self._b} is not significant."
-            else:
-                inference = f"The pvalue {round(pvalue,2)} is less than level of significance {int(self._alpha*100)}%; therefore, the null hypothesis is rejected. The evidence against the data being drawn from the {self._b} is significant."
-        else:
-            if pvalue > self._alpha:
-                inference = f"The pvalue {round(pvalue,2)} is greater than level of significance {int(self._alpha*100)}%; therefore, the null hypothesis is not rejected. The evidence against the data being drawn from the same distribution is not significant."
-            else:
-                inference = f"The pvalue {round(pvalue,2)} is less than level of significance {int(self._alpha*100)}%; therefore, the null hypothesis is rejected. The evidence against the data being drawn from the same distribution is significant."
-        return inference
-
-    def _report_results(self, n: int, statistic: float, pvalue: float) -> str:
-        """Reports the result in APA style."""
-        result = (
-            f"Kolmogorov-Smirnov Goodness of Fit\nD({n})={round(statistic,4)}, p={round(pvalue,3)}"
-        )
-        return result

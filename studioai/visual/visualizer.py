@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Saturday August 26th 2023 06:25:27 am                                               #
-# Modified   : Friday September 29th 2023 10:40:49 pm                                              #
+# Modified   : Saturday September 30th 2023 01:35:45 am                                            #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -27,7 +27,6 @@ import pandas as pd
 import numpy as np
 from scipy import stats
 import seaborn as sns
-import plotly.graph_objects as go
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
 
@@ -811,7 +810,6 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         self,
         statistic: float,
         dof: int,
-        result: str = None,
         alpha: float = 0.05,
         title: str = None,
         ax: plt.Axes = None,
@@ -917,7 +915,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         )
 
         ax.set_title(
-            f"{result}",
+            f"{title}",
             fontsize=self._canvas.fontsize_title,
         )
 
@@ -927,7 +925,6 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         self,
         statistic: float,
         dof: int,
-        result: str = None,
         alpha: float = 0.05,
         title: str = None,
         ax: plt.Axes = None,
@@ -996,7 +993,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         )
 
         ax.set_title(
-            f"{result}",
+            f"{title}",
             fontsize=self._canvas.fontsize_title,
         )
 
@@ -1008,7 +1005,6 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         self,
         statistic: float,
         n: int,
-        result: str = None,
         alpha: float = 0.05,
         title: str = None,
         ax: plt.Axes = None,
@@ -1114,125 +1110,11 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         )
 
         ax.set_title(
-            f"{result}",
+            f"{title}",
             fontsize=self._canvas.fontsize_title,
         )
 
         plt.tight_layout()
-
-    def cramersv(
-        self,
-        data: pd.DataFrame,
-        value: float,
-        thresholds: np.array,
-        interpretation: str,
-        title: str = None,
-        *args,
-        **kwargs,
-    ) -> None:
-        default_title = f"Cramer's V Measure of Association between {data.index.name.capitalize()} & {data.columns.name.capitalize()} is {interpretation}"
-
-        title = f"{title}\n{interpretation}" if title else default_title
-
-        fig = go.Figure(
-            go.Indicator(
-                mode="gauge+number",
-                value=value,
-                gauge={
-                    "axis": {"range": [0, 1]},
-                    "bar": {"color": "#122740"},
-                    "steps": [
-                        {"range": [0, thresholds[1]], "color": "#84B29E"},
-                        {"range": [thresholds[1], thresholds[2]], "color": "#568F8B"},
-                        {"range": [thresholds[2], thresholds[3]], "color": "#326B77"},
-                        {"range": [thresholds[3], thresholds[4]], "color": "#1B485E"},
-                    ],
-                },
-                domain={"x": [0, 1], "y": [0, 1]},
-                title={"text": title},
-            )
-        )
-        fig.show()
-
-    def kendallstau(
-        self,
-        data: pd.DataFrame,
-        a: str,
-        b: str,
-        value: float,
-        thresholds: np.array,
-        interpretation: str,
-        title: str = None,
-        *args,
-        **kwargs,
-    ) -> None:
-        default_title = f"Kendall's Tau-C Measure of Correlation between {a.capitalize()} & {b.capitalize()} is {interpretation}"
-
-        title = f"{title}\n{interpretation}" if title else default_title
-
-        fig = go.Figure(
-            go.Indicator(
-                mode="gauge+number",
-                value=value,
-                gauge={
-                    "bar": {"thickness": 0},
-                    "axis": {
-                        "range": [-1, 1],
-                        "tickmode": "array",
-                        "tickvals": [-1, -0.5, -0.3, 0, 0.3, 0.5, 1],
-                    },
-                    "steps": [
-                        {
-                            "range": [thresholds[0], thresholds[1]],
-                            "color": "#003c65",
-                        },
-                        {
-                            "range": [thresholds[1], thresholds[2]],
-                            "color": "#457c93",
-                        },
-                        {
-                            "range": [thresholds[2], thresholds[3]],
-                            "color": "#88c1bf",
-                        },
-                        {
-                            "range": [thresholds[3], thresholds[4]],
-                            "color": "#88c1bf",
-                        },
-                        {
-                            "range": [thresholds[4], thresholds[5]],
-                            "color": "#457c93",
-                        },
-                        {
-                            "range": [thresholds[5], thresholds[6]],
-                            "color": "#003c65",
-                        },
-                    ],
-                },
-                domain={"x": [0, 1], "y": [0, 1]},
-                title={"text": title},
-            )
-        )
-        fig.show()
-
-    def _wrap_ticklabels(
-        self, axis: str, axes: List[plt.Axes], fontsize: int = 8
-    ) -> List[plt.Axes]:
-        """Wraps long tick labels"""
-        if axis.lower() == "x":
-            for i, ax in enumerate(axes):
-                xlabels = [label.get_text() for label in ax.get_xticklabels()]
-                xlabels = [label.replace(" ", "\n") for label in xlabels]
-                ax.set_xticklabels(xlabels, fontdict={"fontsize": fontsize})
-                ax.tick_params(axis="x", labelsize=fontsize)
-
-        if axis.lower() == "y":
-            for i, ax in enumerate(axes):
-                ylabels = [label.get_text() for label in ax.get_yticklabels()]
-                ylabels = [label.replace(" ", "\n") for label in ylabels]
-                ax.set_yticklabels(ylabels, fontdict={"fontsize": fontsize})
-                ax.tick_params(axis="y", labelsize=fontsize)
-
-        return axes
 
     def heatmap(
         self,
@@ -1306,3 +1188,23 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         )
         if title is not None:
             ax.set_title(title)
+
+    def _wrap_ticklabels(
+        self, axis: str, axes: List[plt.Axes], fontsize: int = 8
+    ) -> List[plt.Axes]:
+        """Wraps long tick labels"""
+        if axis.lower() == "x":
+            for i, ax in enumerate(axes):
+                xlabels = [label.get_text() for label in ax.get_xticklabels()]
+                xlabels = [label.replace(" ", "\n") for label in xlabels]
+                ax.set_xticklabels(xlabels, fontdict={"fontsize": fontsize})
+                ax.tick_params(axis="x", labelsize=fontsize)
+
+        if axis.lower() == "y":
+            for i, ax in enumerate(axes):
+                ylabels = [label.get_text() for label in ax.get_yticklabels()]
+                ylabels = [label.replace(" ", "\n") for label in ylabels]
+                ax.set_yticklabels(ylabels, fontdict={"fontsize": fontsize})
+                ax.tick_params(axis="y", labelsize=fontsize)
+
+        return axes

@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Friday September 29th 2023 10:45:53 am                                              #
-# Modified   : Friday September 29th 2023 09:33:40 pm                                              #
+# Modified   : Saturday September 30th 2023 12:56:57 am                                            #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -20,16 +20,19 @@ import pandas as pd
 import numpy as np
 from typing import Union
 
-from studioai.stats.inferential.chisquare import (
+from studioai.stats.inferential.independence import (
     ChiSquareIndependenceTest,
     ChiSquareIndependenceResult,
 )
-from studioai.stats.inferential.cramersv import CramersVAnalysis, CramersV
-from studioai.stats.inferential.kendallstau import KendallsTauAnalysis, KendallsTau
-from studioai.stats.inferential.kstest import KSTest, KSTestResult
-from studioai.stats.inferential.pearson import PearsonCorrelationTest, PearsonCorrelationResult
-from studioai.stats.inferential.spearman import SpearmanCorrelationTest, SpearmanCorrelationResult
-from studioai.stats.inferential.ttest import TTest, TTestResult
+from studioai.stats.inferential.association import CramersVAnalysis, CramersV
+from studioai.stats.inferential.association import KendallsTauAnalysis, KendallsTau
+from studioai.stats.inferential.gof import KSTest, KSTestResult
+from studioai.stats.inferential.correlation import PearsonCorrelationTest, PearsonCorrelationResult
+from studioai.stats.inferential.correlation import (
+    SpearmanCorrelationTest,
+    SpearmanCorrelationResult,
+)
+from studioai.stats.inferential.centrality import TTest, TTestResult
 
 
 # ------------------------------------------------------------------------------------------------ #

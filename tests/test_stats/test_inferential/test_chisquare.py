@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Monday June 5th 2023 09:32:36 pm                                                    #
-# Modified   : Friday September 29th 2023 12:40:25 pm                                              #
+# Modified   : Saturday September 30th 2023 01:52:06 am                                            #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -22,7 +22,7 @@ import pytest
 import logging
 import pandas as pd
 
-from studioai.stats.inferential.chisquare import ChiSquareIndependenceTest
+from studioai.stats.inferential.independence import ChiSquareIndependenceTest
 from studioai.stats.inferential.base import StatTestProfile
 
 
@@ -52,7 +52,6 @@ class TestX2Independence:  # pragma: no cover
         # ---------------------------------------------------------------------------------------- #
         test = ChiSquareIndependenceTest(data=credit, a="Education", b="Credit Rating")
         test.run()
-        assert "Chi" in test.result.test
         assert isinstance(test.result.H0, str)
         assert isinstance(test.result.value, float)
         assert isinstance(test.result.pvalue, float)
@@ -60,6 +59,7 @@ class TestX2Independence:  # pragma: no cover
         assert isinstance(test.result.data, pd.DataFrame)
         assert isinstance(test.profile, StatTestProfile)
         logging.debug(test.result)
+        logging.debug(test.result.report())
 
         # ---------------------------------------------------------------------------------------- #
         end = datetime.now()

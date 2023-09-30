@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Monday June 5th 2023 09:32:36 pm                                                    #
-# Modified   : Friday September 29th 2023 01:00:19 pm                                              #
+# Modified   : Saturday September 30th 2023 02:27:43 am                                            #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -22,7 +22,7 @@ import pytest
 import logging
 import pandas as pd
 
-from studioai.stats.inferential.kendallstau import KendallsTauAnalysis
+from studioai.stats.inferential.association import KendallsTauAnalysis
 
 
 # ------------------------------------------------------------------------------------------------ #
@@ -57,7 +57,7 @@ class TestKendallsTau:  # pragma: no cover
         assert isinstance(result.data, pd.DataFrame)
         assert isinstance(result.strength, str)
         logging.debug(result)
-        logging.debug(result.result())
+        logging.debug(result.report())
 
         # ---------------------------------------------------------------------------------------- #
         end = datetime.now()

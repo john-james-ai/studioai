@@ -4,14 +4,14 @@
 # Project    : Artificial Intelligence & Data Science Studio                                       #
 # Version    : 0.1.0                                                                               #
 # Python     : 3.10.11                                                                             #
-# Filename   : /studioai/stats/inferential/chisquare.py                                            #
+# Filename   : /studioai/stats/inferential/independence.py                                         #
 # ------------------------------------------------------------------------------------------------ #
 # Author     : John James                                                                          #
 # Email      : john.james.ai.studio@gmail.com                                                      #
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Monday May 29th 2023 03:00:39 am                                                    #
-# Modified   : Friday September 29th 2023 12:16:43 pm                                              #
+# Modified   : Saturday September 30th 2023 01:52:09 am                                            #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -36,6 +36,7 @@ from studioai.stats.inferential.base import (
 # ------------------------------------------------------------------------------------------------ #
 @dataclass
 class ChiSquareIndependenceResult(StatTestResult):
+    name: str = f"X\u00b2 Test of Independence"  # noqa
     dof: int = None
     data: pd.DataFrame = None
     a: str = None
@@ -51,14 +52,8 @@ class ChiSquareIndependenceResult(StatTestResult):
             statistic=self.value, dof=self.dof, result=self.result, alpha=self.alpha
         )
 
-    def result(self) -> str:
+    def report(self) -> str:
         return f"X\u00b2 Test of Independence\n{self.a.capitalize()} and {self.b.capitalize()}\nX\u00b2({self.dof}, N={self.data.shape[0]})={round(self.value,2)}, {self._report_pvalue(self.pvalue)}."
-
-    def interpretation(self) -> str:
-        if self.pvalue > self.alpha:  # pragma: no cover
-            return f"The pvalue {round(self.pvalue,2)} is greater than level of significance {int(self.alpha*100)}%; therefore, the null hypothesis is not rejected. The evidence against independence of {self.a} and {self.b} is not significant."
-        else:
-            return f"The pvalue {round(self.pvalue,2)} is less than level of significance {int(self.alpha*100)}%; therefore, the null hypothesis is rejected. The evidence against independence of {self.a} and {self.b} is significant."
 
 
 # ------------------------------------------------------------------------------------------------ #
@@ -107,7 +102,6 @@ class ChiSquareIndependenceTest(StatisticalTest):
 
         # Create the result object.
         self._result = ChiSquareIndependenceResult(
-            test=self._profile.name,
             H0=self._profile.H0,
             statistic="X\u00b2",
             hypothesis=self._profile.hypothesis,

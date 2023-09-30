@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Thursday June 8th 2023 03:48:00 am                                                  #
-# Modified   : Thursday September 28th 2023 03:08:29 am                                            #
+# Modified   : Saturday September 30th 2023 01:53:04 am                                            #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -22,7 +22,7 @@ import pytest
 import logging
 import pandas as pd
 
-from studioai.stats.inferential.ttest import TTest
+from studioai.stats.inferential.centrality import TTest
 from studioai.stats.inferential.base import StatTestProfile
 
 
@@ -54,7 +54,7 @@ class TestTTest:  # pragma: no cover
         female = credit[credit["Gender"] == "Female"]["Income"]
         test = TTest(a=male, b=female)
         test.run()
-        assert "Independent" in test.result.test
+        assert "Student" in test.result.name
         assert isinstance(test.result.H0, str)
         assert isinstance(test.result.pvalue, float)
         assert test.result.alpha == 0.05
@@ -63,6 +63,7 @@ class TestTTest:  # pragma: no cover
         assert isinstance(test.profile, StatTestProfile)
         assert isinstance(test.result.as_df(), pd.DataFrame)
         logging.debug(test.result)
+        logging.debug(test.result.report())
 
         # ---------------------------------------------------------------------------------------- #
         end = datetime.now()
@@ -95,7 +96,7 @@ class TestTTest:  # pragma: no cover
         female = credit[credit["Gender"] == "Female"]["Income"]
         test = TTest(a=female, b=female)
         test.run()
-        assert "Independent" in test.result.test
+        assert "Student" in test.result.name
         assert isinstance(test.result.H0, str)
         assert isinstance(test.result.pvalue, float)
         assert test.result.alpha == 0.05

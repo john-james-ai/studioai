@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Tuesday August 15th 2023 05:59:13 pm                                                #
-# Modified   : Friday September 29th 2023 11:47:59 am                                              #
+# Modified   : Saturday September 30th 2023 01:01:14 am                                            #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -25,7 +25,7 @@ import pandas as pd
 import numpy as np
 
 from studioai.data.credit import CreditScoreDataset
-from studioai.stats.inferential.cramersv import CramersV
+from studioai.stats.inferential.association import CramersV
 
 # ------------------------------------------------------------------------------------------------ #
 logger = logging.getLogger(__name__)

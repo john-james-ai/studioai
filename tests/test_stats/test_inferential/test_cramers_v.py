@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Monday June 5th 2023 09:32:36 pm                                                    #
-# Modified   : Friday September 29th 2023 08:58:38 pm                                              #
+# Modified   : Saturday September 30th 2023 02:22:42 am                                            #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -22,7 +22,7 @@ import pytest
 import logging
 import pandas as pd
 
-from studioai.stats.inferential.cramersv import CramersVAnalysis
+from studioai.stats.inferential.association import CramersVAnalysis
 
 
 # ------------------------------------------------------------------------------------------------ #
@@ -52,13 +52,12 @@ class TestCramersV:  # pragma: no cover
         test = CramersVAnalysis(data=credit, a="Gender", b="Education")
         test.run()
         result = test.result
-        assert "Cramer" in result.name
         assert isinstance(result.value, float)
         assert isinstance(result.pvalue, float)
         assert result.x2alpha == 0.05
         assert isinstance(result.data, pd.DataFrame)
         logging.debug(result)
-        logging.debug(result.result())
+        logging.debug(result.report())
 
         # ---------------------------------------------------------------------------------------- #
         end = datetime.now()

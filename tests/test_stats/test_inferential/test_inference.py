@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Friday September 29th 2023 11:05:43 am                                              #
-# Modified   : Friday September 29th 2023 11:44:52 am                                              #
+# Modified   : Saturday September 30th 2023 01:01:36 am                                            #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -22,13 +22,13 @@ import pytest
 import logging
 
 from studioai.stats.inferential.test import Inference
-from studioai.stats.inferential.chisquare import ChiSquareIndependenceResult
-from studioai.stats.inferential.cramersv import CramersV
-from studioai.stats.inferential.kendallstau import KendallsTau
-from studioai.stats.inferential.kstest import KSTestResult
-from studioai.stats.inferential.pearson import PearsonCorrelationResult
-from studioai.stats.inferential.spearman import SpearmanCorrelationResult
-from studioai.stats.inferential.ttest import TTestResult
+from studioai.stats.inferential.independence import ChiSquareIndependenceResult
+from studioai.stats.inferential.association import CramersV
+from studioai.stats.inferential.association import KendallsTau
+from studioai.stats.inferential.gof import KSTestResult
+from studioai.stats.inferential.correlation import PearsonCorrelationResult
+from studioai.stats.inferential.correlation import SpearmanCorrelationResult
+from studioai.stats.inferential.centrality import TTestResult
 
 # ------------------------------------------------------------------------------------------------ #
 logger = logging.getLogger(__name__)

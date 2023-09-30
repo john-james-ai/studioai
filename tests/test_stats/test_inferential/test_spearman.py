@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Wednesday June 7th 2023 09:15:17 pm                                                 #
-# Modified   : Thursday September 28th 2023 03:08:19 am                                            #
+# Modified   : Saturday September 30th 2023 02:20:58 am                                            #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -22,7 +22,7 @@ import pytest
 import logging
 import pandas as pd
 
-from studioai.stats.inferential.spearman import SpearmanCorrelationTest
+from studioai.stats.inferential.correlation import SpearmanCorrelationTest
 from studioai.stats.inferential.base import StatTestProfile
 
 
@@ -52,15 +52,16 @@ class TestSpearman:  # pragma: no cover
         # ---------------------------------------------------------------------------------------- #
         test = SpearmanCorrelationTest(data=credit, a="Income", b="Age")
         test.run()
-        assert "Spearman" in test.result.test
+        assert "Spearman" in test.result.name
         assert isinstance(test.result.H0, str)
         assert isinstance(test.result.value, float)
         assert isinstance(test.result.pvalue, float)
         assert test.result.alpha == 0.05
-        assert isinstance(test.result.result, str)
+        assert isinstance(test.result.report(), str)
         assert isinstance(test.result.data, pd.DataFrame)
         assert isinstance(test.profile, StatTestProfile)
         logging.debug(test.result)
+        logging.debug(test.result.report())
 
         # ---------------------------------------------------------------------------------------- #
         end = datetime.now()

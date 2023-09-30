@@ -4,14 +4,14 @@
 # Project    : Artificial Intelligence & Data Science Studio                                       #
 # Version    : 0.1.0                                                                               #
 # Python     : 3.10.10                                                                             #
-# Filename   : /studioai/stats/inferential/ttest.py                                                #
+# Filename   : /studioai/stats/inferential/centrality.py                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Author     : John James                                                                          #
 # Email      : john.james.ai.studio@gmail.com                                                      #
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Wednesday June 7th 2023 11:41:00 pm                                                 #
-# Modified   : Sunday September 17th 2023 05:52:04 pm                                              #
+# Modified   : Saturday September 30th 2023 01:52:44 am                                            #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -38,6 +38,7 @@ from studioai.stats.descriptive.continuous import ContinuousStats
 # ------------------------------------------------------------------------------------------------ #
 @dataclass
 class TTestResult(StatTestResult):
+    name: str = "Student's t-test"
     dof: int = None
     homoscedastic: bool = None
     a: np.ndarray = None
@@ -53,9 +54,11 @@ class TTestResult(StatTestResult):
         self.visualizer = visualizer
 
     def plot(self) -> None:  # pragma: no cover
-        self.visualizer.ttestplot(
-            statistic=self.value, dof=self.dof, result=self.result, alpha=self.alpha
-        )
+        title = self.result()
+        self.visualizer.ttestplot(statistic=self.value, dof=self.dof, alpha=self.alpha, title=title)
+
+    def report(self) -> str:
+        return f"{self.name}\na: (N = {self.a_stats.count}, M = {round(self.a_stats.mean,2)}, SD = {round(self.a_stats.std,2)})\nb: (N = {self.b_stats.count}, M = {round(self.b_stats.mean,2)}, SD = {round(self.b_stats.std,2)})\nt({self.dof}) = {round(self.value,2)}, {self._report_pvalue(self.pvalue)} {self._report_alpha()}"
 
 
 # ------------------------------------------------------------------------------------------------ #
@@ -84,8 +87,6 @@ class TTest(StatisticalTest):
         a: np.ndarray,
         b: np.ndarray,
         varname: str = None,
-        a_name: str = None,
-        b_name: str = None,
         alpha: float = 0.05,
         homoscedastic: bool = True,
     ) -> None:
@@ -93,8 +94,6 @@ class TTest(StatisticalTest):
         self._a = a
         self._b = b
         self._varname = varname
-        self._a_name = a_name
-        self._b_name = b_name
         self._alpha = alpha
         self._homoscedastic = homoscedastic
         self._profile = StatTestProfile.create(self.__id)
@@ -115,39 +114,24 @@ class TTest(StatisticalTest):
 
         statistic, pvalue = stats.ttest_ind(a=self._a, b=self._b, equal_var=self._homoscedastic)
 
-        a_stats = ContinuousStats.describe(x=self._a, name=self._a_name)
-        b_stats = ContinuousStats.describe(x=self._b, name=self._b_name)
+        a_stats = ContinuousStats.describe(x=self._a)
+        b_stats = ContinuousStats.describe(x=self._b)
 
         dof = len(self._a) + len(self._b) - 2
 
-        result = self._report_results(a_stats, b_stats, dof, statistic, pvalue)
-
-        if pvalue > self._alpha:  # pragma: no cover
-            inference = f"The pvalue {round(pvalue,2)} is greater than level of significance {int(self._alpha*100)}%; therefore, the null hypothesis is not rejected. The evidence against identical centers for a and b is not significant."
-        else:
-            inference = f"The pvalue {round(pvalue,2)} is less than level of significance {int(self._alpha*100)}%; therefore, the null hypothesis is rejected. The evidence against identical centers for a and b is significant."
-
         # Create the result object.
         self._result = TTestResult(
-            test=self._profile.name,
             H0=self._profile.H0,
             statistic=self._profile.statistic,
             hypothesis=self._profile.hypothesis,
             homoscedastic=self._homoscedastic,
+            varname=self._varname,
             dof=dof,
             value=np.abs(statistic),
+            alpha=self._alpha,
             pvalue=pvalue,
-            result=result,
             a=self._a,
-            a_name=self._a_name,
             b=self._b,
-            b_name=self._b_name,
-            varname=self._varname,
             a_stats=a_stats,
             b_stats=b_stats,
-            inference=inference,
-            alpha=self._alpha,
         )
-
-    def _report_results(self, a_stats, b_stats, dof, statistic, pvalue) -> str:
-        return f"Independent Samples t Test\na: (N = {a_stats.count}, M = {round(a_stats.mean,2)}, SD = {round(a_stats.std,2)})\nb: (N = {b_stats.count}, M = {round(b_stats.mean,2)}, SD = {round(b_stats.std,2)})\nt({dof}) = {round(statistic,2)}, {self._report_pvalue(pvalue)} {self._report_alpha()}"

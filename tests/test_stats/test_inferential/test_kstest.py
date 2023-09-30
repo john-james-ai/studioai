@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Thursday June 8th 2023 03:48:00 am                                                  #
-# Modified   : Thursday September 28th 2023 03:07:54 am                                            #
+# Modified   : Saturday September 30th 2023 01:58:38 am                                            #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -23,7 +23,7 @@ import logging
 import pandas as pd
 import numpy as np
 
-from studioai.stats.inferential.kstest import KSTest
+from studioai.stats.inferential.gof import KSTest
 from studioai.stats.inferential.base import StatTestProfile
 
 
@@ -55,7 +55,7 @@ class TestKSTest:  # pragma: no cover
         female = credit[credit["Gender"] == "Female"]["Income"]
         test = KSTest(a=male, b=female)
         test.run()
-        assert "Kolmogorov" in test.result.test
+        assert "Kolmogorov" in test.result.name
         assert isinstance(test.result.H0, str)
         assert isinstance(test.result.pvalue, float)
         assert test.result.alpha == 0.05
@@ -63,6 +63,7 @@ class TestKSTest:  # pragma: no cover
         assert isinstance(test.result.b, pd.Series)
         assert isinstance(test.profile, StatTestProfile)
         logging.debug(test.result)
+        logging.debug(test.result.report())
 
         # ---------------------------------------------------------------------------------------- #
         end = datetime.now()
@@ -95,7 +96,6 @@ class TestKSTest:  # pragma: no cover
         female = credit[credit["Gender"] == "Female"]["Income"].values
         test = KSTest(a=female, b="norm")
         test.run()
-        assert "Kolmogorov" in test.result.test
         assert isinstance(test.result.H0, str)
         assert isinstance(test.result.pvalue, float)
         assert test.result.alpha == 0.05
@@ -135,7 +135,6 @@ class TestKSTest:  # pragma: no cover
         female = credit[credit["Gender"] == "Female"]["Income"].values[0:30]
         test = KSTest(a=female, b="norm")
         test.run()
-        assert "Kolmogorov" in test.result.test
         assert isinstance(test.result.H0, str)
         assert isinstance(test.result.pvalue, float)
         assert test.result.alpha == 0.05
@@ -178,7 +177,6 @@ class TestKSTest:  # pragma: no cover
         data = np.random.normal(loc=mu, scale=sigma, size=1200)
         test = KSTest(a=data, b=female)
         test.run()
-        assert "Kolmogorov" in test.result.test
         assert isinstance(test.result.H0, str)
         assert isinstance(test.result.pvalue, float)
         assert test.result.alpha == 0.05

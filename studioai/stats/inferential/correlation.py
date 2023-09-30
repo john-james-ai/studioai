@@ -4,14 +4,14 @@
 # Project    : Artificial Intelligence & Data Science Studio                                       #
 # Version    : 0.1.0                                                                               #
 # Python     : 3.10.10                                                                             #
-# Filename   : /studioai/stats/inferential/pearson.py                                              #
+# Filename   : /studioai/stats/inferential/correlation.py                                          #
 # ------------------------------------------------------------------------------------------------ #
 # Author     : John James                                                                          #
 # Email      : john.james.ai.studio@gmail.com                                                      #
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Wednesday June 7th 2023 08:15:08 pm                                                 #
-# Modified   : Friday September 29th 2023 11:33:59 am                                              #
+# Modified   : Saturday September 30th 2023 02:20:33 am                                            #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -31,14 +31,24 @@ from studioai.stats.inferential.base import (
 )
 
 
+# ================================================================================================ #
+#                                  PEARSON'S CORRELATION                                           #
+# ================================================================================================ #
+
+
 # ------------------------------------------------------------------------------------------------ #
 #                                     TEST RESULT                                                  #
 # ------------------------------------------------------------------------------------------------ #
 @dataclass
 class PearsonCorrelationResult(StatTestResult):
+    name: str = "Pearson Correlation Coefficient"
     data: pd.DataFrame = None
     a: str = None
     b: str = None
+    dof: float = None
+    strength: str = None
+    low_ci: float = (None,)
+    high_ci: float = (None,)
 
     @inject
     def __post_init__(self, visualizer: Visualizer = Provide[StudioAIContainer.visualizer]) -> None:
@@ -46,6 +56,9 @@ class PearsonCorrelationResult(StatTestResult):
 
     def plot(self) -> None:  # pragma: no cover
         self.visualizer.regplot(data=self.data, x=self.a, y=self.b, title=self.result)
+
+    def report(self) -> str:
+        return f"Pearson Correlation Test\nr({self.dof})={round(self.value,2)}, {self._report_pvalue(self.pvalue)}"
 
 
 # ------------------------------------------------------------------------------------------------ #
@@ -121,31 +134,22 @@ class PearsonCorrelationTest(StatisticalTest):
 
         dof = len(self._data) - 2
 
-        result = self._report_results(r=r, pvalue=pvalue, dof=dof)
-
-        if pvalue > self._alpha:  # pragma: no cover
-            inference = f"The two variables had {self._interpret_r(r)}, r({dof})={round(r,2)}, {self._report_pvalue(pvalue)}.\nHowever, the pvalue, {round(pvalue,2)} is greater than level of significance {int(self._alpha*100)}% indicating that the correlation coefficient is not statistically significant."
-        else:
-            inference = f"The two variables had {self._interpret_r(r)}, r({dof})={round(r,2)}, {self._report_pvalue(pvalue)}.\nFurther, the pvalue, {round(pvalue,2)} is lower than level of significance {int(self._alpha*100)}% indicating that the correlation coefficient is statistically significant."
-
         # Create the result object.
         self._result = PearsonCorrelationResult(
-            test=self._profile.name,
             H0=self._profile.H0,
             statistic=self._profile.statistic,
             hypothesis=self._profile.hypothesis,
+            strength=self._interpret_r(r=r).capitalize(),
+            low_ci=confidence_interval.low,
+            high_ci=confidence_interval.high,
             value=r,
+            dof=dof,
             pvalue=pvalue,
-            result=result,
             data=self._data,
             a=self._a,
             b=self._b,
-            inference=inference,
             alpha=self._alpha,
         )
-
-    def _report_results(self, r: float, pvalue: float, dof: float) -> str:
-        return f"Pearson Correlation Test\nr({dof})={round(r,2)}, {self._report_pvalue(pvalue)}\n{self._interpret_r(r=r).capitalize()}"
 
     def _interpret_r(self, r: float) -> str:  # pragma: no cover
         """Interprets the value of the correlation[1]_
@@ -171,3 +175,109 @@ class PearsonCorrelationTest(StatisticalTest):
             return f"low {direction} correlation."
         else:
             return "negligible correlation."
+
+
+# ================================================================================================ #
+#                                SPEARMAN'S CORRELATION                                            #
+# ================================================================================================ #
+# ------------------------------------------------------------------------------------------------ #
+#                                     TEST RESULT                                                  #
+# ------------------------------------------------------------------------------------------------ #
+@dataclass
+class SpearmanCorrelationResult(StatTestResult):
+    name: str = "Spearman Rank Correlation Coefficient"
+    strength: str = None
+    data: pd.DataFrame = None
+    a: str = None
+    b: str = None
+    dof: float = None
+    n: int = None
+
+    @inject
+    def __post_init__(self, visualizer: Visualizer = Provide[StudioAIContainer.visualizer]) -> None:
+        self.visualizer = visualizer
+
+    def plot(self) -> None:  # pragma: no cover
+        self.visualizer.regplot(data=self.data, x=self.a, y=self.b, title=self.result)
+
+    def report(self) -> str:
+        return f"Spearman Correlation Test\nr({self.dof})={round(self.value,3)}, {self._report_pvalue(self.pvalue)}"
+
+
+# ------------------------------------------------------------------------------------------------ #
+#                                          TEST                                                    #
+# ------------------------------------------------------------------------------------------------ #
+class SpearmanCorrelationTest(StatisticalTest):
+    __id = "spearman"
+
+    def __init__(self, data: pd.DataFrame, a=str, b=str, alpha: float = 0.05) -> None:
+        super().__init__()
+        self._data = data
+        self._a = a
+        self._b = b
+        self._alpha = alpha
+        self._profile = StatTestProfile.create(self.__id)
+        self._result = None
+
+    @property
+    def profile(self) -> StatTestProfile:
+        """Returns the statistical test profile."""
+        return self._profile
+
+    @property
+    def result(self) -> StatTestResult:
+        """Returns a Statistical Test Result object."""
+        return self._result
+
+    def run(self) -> None:
+        """Performs the statistical test and creates a result object."""
+
+        r, pvalue = stats.spearmanr(
+            a=self._data[self._a].values,
+            b=self._data[self._b].values,
+            alternative="two-sided",
+            nan_policy="omit",
+        )
+
+        dof = len(self._data) - 2
+
+        # Create the result object.
+        self._result = SpearmanCorrelationResult(
+            H0=self._profile.H0,
+            statistic=self._profile.statistic,
+            hypothesis=self._profile.hypothesis,
+            strength=self._interpret_r(r).capitalize(),
+            value=r,
+            pvalue=pvalue,
+            dof=dof,
+            data=self._data,
+            a=self._a,
+            b=self._b,
+            alpha=self._alpha,
+            n=len(self._data),
+        )
+
+    def _interpret_r(self, r: float) -> str:  # pragma: no cover
+        """Interprets the value of the correlation[1]_
+
+        .. [1] Mukaka MM. Statistics corner: A guide to appropriate use of correlation coefficient in medical research. Malawi Med J. 2012 Sep;24(3):69-71. PMID: 23638278; PMCID: PMC3576830.
+
+
+        """
+
+        if r < 0:
+            direction = "negative"
+        else:
+            direction = "positive"
+
+        r = abs(r)
+        if r >= 0.9:
+            return f"very high {direction} correlation"
+        elif r >= 0.70:
+            return f"high {direction} correlation"
+        elif r >= 0.5:
+            return f"moderate {direction} correlation"
+        elif r >= 0.3:
+            return f"low {direction} correlation"
+        else:
+            return "negligible correlation"
