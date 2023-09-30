@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Monday May 29th 2023 03:00:39 am                                                    #
-# Modified   : Friday September 29th 2023 05:23:56 pm                                              #
+# Modified   : Friday September 29th 2023 08:57:50 pm                                              #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -39,8 +39,8 @@ class CramersV(StatTestResult):
     name: str = "Cramer's V"
     strength: str = None
     data: pd.DataFrame = None
-    x: str = None
-    y: str = None
+    a: str = None
+    b: str = None
     n: int = None
     dof: int = None
     x2alpha: float = None
@@ -78,12 +78,12 @@ class CramersVAnalysis(StatAnalysis):
 
     @inject
     def __init__(
-        self, data: pd.DataFrame, x: str = None, y: str = None, alpha: float = 0.05
+        self, data: pd.DataFrame, a: str = None, b: str = None, alpha: float = 0.05
     ) -> None:
         super().__init__()
         self._data = data
-        self._x = x
-        self._y = y
+        self._a = a
+        self._b = b
         self._alpha = alpha
         self._thresholds = {
             1: [0.0, 0.1, 0.3, 0.5, 1.0],
@@ -107,7 +107,7 @@ class CramersVAnalysis(StatAnalysis):
     def run(self) -> None:
         """Performs the statistical test and creates a result object."""
 
-        crosstab = pd.crosstab(self._data[self._x], self._data[self._y])
+        crosstab = pd.crosstab(self._data[self._a], self._data[self._b])
 
         dof = min(crosstab.shape[0], crosstab.shape[1]) - 1
 
@@ -122,8 +122,8 @@ class CramersVAnalysis(StatAnalysis):
         # Create the result object.
         self._result = CramersV(
             data=crosstab,
-            x=self._x,
-            y=self._y,
+            a=self._a,
+            b=self._b,
             dof=dof,
             value=cv,
             strength=strength,

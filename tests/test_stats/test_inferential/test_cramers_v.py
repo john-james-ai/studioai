@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Monday June 5th 2023 09:32:36 pm                                                    #
-# Modified   : Friday September 29th 2023 01:01:20 pm                                              #
+# Modified   : Friday September 29th 2023 08:58:38 pm                                              #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -49,7 +49,7 @@ class TestCramersV:  # pragma: no cover
         )
         logger.info(double_line)
         # ---------------------------------------------------------------------------------------- #
-        test = CramersVAnalysis(data=credit, x="Gender", y="Education")
+        test = CramersVAnalysis(data=credit, a="Gender", b="Education")
         test.run()
         result = test.result
         assert "Cramer" in result.name

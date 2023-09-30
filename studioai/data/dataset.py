@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Thursday August 10th 2023 08:29:08 pm                                               #
-# Modified   : Friday September 29th 2023 11:45:43 am                                              #
+# Modified   : Friday September 29th 2023 09:01:19 pm                                              #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -45,6 +45,7 @@ class Dataset(ABC):
         self._df = df
         self._visualizer = Visualizer(canvas=SeabornCanvas())
         self._inference = Inference()
+        self._tests = {}
 
     def __len__(self):
         """Returns the length of the dataset."""
