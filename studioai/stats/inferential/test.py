@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Friday September 29th 2023 10:45:53 am                                              #
-# Modified   : Friday September 29th 2023 11:40:19 am                                              #
+# Modified   : Friday September 29th 2023 09:33:40 pm                                              #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -55,9 +55,9 @@ class Inference:
         test.run()
         return test.result
 
-    def cramersv(self, x: str, y: str, data: pd.DataFrame = None, alpha: float = 0.05) -> CramersV:
+    def cramersv(self, a: str, b: str, data: pd.DataFrame = None, alpha: float = 0.05) -> CramersV:
         data = data if data is not None else self._data
-        test = CramersVAnalysis(data=data, x=x, y=y, alpha=alpha)
+        test = CramersVAnalysis(data=data, a=a, b=b, alpha=alpha)
         test.run()
         return test.result
 
