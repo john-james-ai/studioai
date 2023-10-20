@@ -11,12 +11,12 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Thursday October 19th 2023 06:49:08 pm                                              #
-# Modified   : Thursday October 19th 2023 07:34:06 pm                                              #
+# Modified   : Thursday October 19th 2023 08:05:14 pm                                              #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
 # ================================================================================================ #
-
+from studioai.analysis.explore.eda import Explorer
 from studioai.analysis.container import AnalysisContainer
 
 container = AnalysisContainer()
