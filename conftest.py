@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Friday May 26th 2023 11:12:03 pm                                                    #
-# Modified   : Wednesday September 27th 2023 06:14:16 am                                           #
+# Modified   : Thursday October 19th 2023 07:02:46 pm                                              #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -24,7 +24,7 @@ from dataclasses import dataclass
 
 import numpy as np
 
-from studioai.data.dataclass import DataClass
+from studioai import DataClass
 
 # ------------------------------------------------------------------------------------------------ #
 logging.getLogger("matplotlib").setLevel(logging.WARNING)
