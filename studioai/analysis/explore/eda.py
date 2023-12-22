@@ -4,28 +4,29 @@
 # Project    : Artificial Intelligence & Data Science Studio                                       #
 # Version    : 0.1.0                                                                               #
 # Python     : 3.10.11                                                                             #
-# Filename   : /studioai/data/eda.py                                                               #
+# Filename   : /studioai/analysis/explore/eda.py                                                   #
 # ------------------------------------------------------------------------------------------------ #
 # Author     : John James                                                                          #
 # Email      : john.james.ai.studio@gmail.com                                                      #
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Thursday August 10th 2023 08:29:08 pm                                               #
-# Modified   : Thursday October 19th 2023 07:23:02 pm                                              #
+# Modified   : Friday December 22nd 2023 04:39:10 pm                                               #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
 # ================================================================================================ #
 from __future__ import annotations
-from abc import ABC, abstractproperty
+
 import logging
-from typing import Callable, Union, List
+from abc import ABC, abstractmethod
+from typing import Callable, List, Union
 
 import pandas as pd
 
 from studioai.analysis.stats.descriptive.summary import SummaryStats
-from studioai.analysis.visualize.visualizer import Visualizer, SeabornCanvas
 from studioai.analysis.stats.inferential.test import Inference
+from studioai.analysis.visualize.visualizer import SeabornCanvas, Visualizer
 
 # ------------------------------------------------------------------------------------------------ #
 logger = logging.getLogger(__name__)
@@ -51,7 +52,8 @@ class Explorer(ABC):
         """Returns the length of the dataset."""
         return len(self._df)
 
-    @abstractproperty
+    @property
+    @abstractmethod
     def summary(self) -> pd.DataFrame:
         """Returns a summary of the dataset contents in DataFrame format"""
 
@@ -121,7 +123,9 @@ class Explorer(ABC):
         info["Unique"] = self._df.nunique().values
         info["Duplicate"] = self._df.shape[0] - self._df.nunique().values
         info["Uniqueness"] = self._df.nunique().values / self._df.shape[0]
-        info["Size"] = self._df.memory_usage(deep=True, index=False).to_frame().reset_index()[0]
+        info["Size"] = (
+            self._df.memory_usage(deep=True, index=False).to_frame().reset_index()[0]
+        )
         info = round(info, 2)
         return self._format(df=info)
 
@@ -132,7 +136,11 @@ class Explorer(ABC):
 
     # ------------------------------------------------------------------------------------------- #
     def sample(
-        self, n: int = 5, frac: float = None, replace: bool = False, random_state: int = None
+        self,
+        n: int = 5,
+        frac: float = None,
+        replace: bool = False,
+        random_state: int = None,
     ) -> pd.DataFrame:
         """Returns a sample from the FOG Dataset
 
@@ -263,7 +271,9 @@ class Explorer(ABC):
         if isinstance(self._df[x], pd.Series):
             abs = (
                 self._df[x]
-                .value_counts(normalize=False, sort=sort, bins=bins, ascending=ascending)
+                .value_counts(
+                    normalize=False, sort=sort, bins=bins, ascending=ascending
+                )
                 .to_frame()
             )
             rel = (
@@ -273,10 +283,14 @@ class Explorer(ABC):
             )
         else:
             abs = (
-                self._df[x].value_counts(normalize=False, sort=sort, ascending=ascending).to_frame()
+                self._df[x]
+                .value_counts(normalize=False, sort=sort, ascending=ascending)
+                .to_frame()
             )
             rel = (
-                self._df[x].value_counts(normalize=True, sort=sort, ascending=ascending).to_frame()
+                self._df[x]
+                .value_counts(normalize=True, sort=sort, ascending=ascending)
+                .to_frame()
             )
         freq = abs.join(rel, on=x)
         freq.loc["Total"] = freq.sum()

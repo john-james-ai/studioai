@@ -11,28 +11,29 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Saturday August 26th 2023 06:25:27 am                                               #
-# Modified   : Thursday October 19th 2023 07:23:04 pm                                              #
+# Modified   : Friday December 22nd 2023 04:37:47 pm                                               #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
 # ================================================================================================ #
 """Wrapper for several Seaborn plotting functions."""
 from __future__ import annotations
+
+import logging
+import math
 from dataclasses import dataclass
 from typing import List, Union
-import math
-import logging
 
-import pandas as pd
-import numpy as np
-from scipy import stats
-import seaborn as sns
 import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import seaborn as sns
 from matplotlib.gridspec import GridSpec
+from scipy import stats
 
+from studioai import DataClass
 from studioai.analysis.visualize.base import Canvas, Colors
 from studioai.analysis.visualize.base import Visualizer as VisualizerABC
-from studioai import DataClass
 
 # ------------------------------------------------------------------------------------------------ #
 logger = logging.getLogger(__name__)
@@ -53,11 +54,21 @@ class Palettes(DataClass):
     darkblue = sns.dark_palette("#69d", reverse=False, as_cmap=False)
     darkblue_r = sns.dark_palette("#69d", reverse=True, as_cmap=False)
     winter_blue = sns.color_palette(
-        [Colors.cool_black, Colors.police_blue, Colors.teal_blue, Colors.pale_robin_egg_blue],
+        [
+            Colors.cool_black,
+            Colors.police_blue,
+            Colors.teal_blue,
+            Colors.pale_robin_egg_blue,
+        ],
         as_cmap=True,
     )
     blue_orange = sns.color_palette(
-        [Colors.russian_violet, Colors.dark_cornflower_blue, Colors.meat_brown, Colors.peach],
+        [
+            Colors.russian_violet,
+            Colors.dark_cornflower_blue,
+            Colors.meat_brown,
+            Colors.peach,
+        ],
         as_cmap=True,
     )
 
@@ -126,15 +137,15 @@ class Visualizer(VisualizerABC):  # pragma: no cover
 
     def lineplot(
         self,
+        *args,
         data: Union[pd.DataFrame, np.ndarray] = None,
         x: str = None,
         y: str = None,
         hue: str = None,
         title: str = None,
         ax: plt.Axes = None,
-        *args,
         **kwargs,
-    ) -> None:
+    ) -> plt.Axes:
         """Draw a line plot with possibility of several semantic groupings.
 
         The relationship between x and y can be shown for different subsets of the data using the
@@ -159,9 +170,9 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         data = data if data is not None else self._data
 
         if ax is None:
-            fig, ax = self._canvas.get_figaxes()
+            _, ax = self._canvas.get_figaxes()
 
-        sns.lineplot(
+        ax = sns.lineplot(
             data=data,
             x=x,
             y=y,
@@ -174,17 +185,19 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         if title is not None:
             ax.set_title(title)
 
+        return ax
+
     def scatterplot(
         self,
+        *args,
         data: Union[pd.DataFrame, np.ndarray] = None,
         x: str = None,
         y: str = None,
         hue: str = None,
         title: str = None,
         ax: plt.Axes = None,
-        *args,
         **kwargs,
-    ) -> None:
+    ) -> plt.Axes:
         """Draw a scatter plot with possibility of several semantic groupings.
 
         The relationship between x and y can be shown for different subsets of the data using the
@@ -209,9 +222,9 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         data = data if data is not None else self._data
 
         if ax is None:
-            fig, ax = self._canvas.get_figaxes()
+            _, ax = self._canvas.get_figaxes()
 
-        sns.scatterplot(
+        ax = sns.scatterplot(
             data=data,
             x=x,
             y=y,
@@ -224,8 +237,11 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         if title is not None:
             ax.set_title(title)
 
+        return ax
+
     def histogram(
         self,
+        *args,
         data: Union[pd.DataFrame, np.ndarray] = None,
         x: str = None,
         y: str = None,
@@ -235,7 +251,6 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         fill: bool = True,
         title: str = None,
         ax: plt.Axes = None,
-        *args,
         **kwargs,
     ) -> None:
         """Draw a scatter plot with possibility of several semantic groupings.
@@ -265,9 +280,9 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         data = data if data is not None else self._data
 
         if ax is None:
-            fig, ax = self._canvas.get_figaxes()
+            _, ax = self._canvas.get_figaxes()
 
-        sns.histplot(
+        ax = sns.histplot(
             data=data,
             x=x,
             y=y,
@@ -283,17 +298,19 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         if title is not None:
             ax.set_title(title)
 
+        return ax
+
     def boxplot(
         self,
+        *args,
         data: Union[pd.DataFrame, np.ndarray] = None,
         x: str = None,
         y: str = None,
         hue: str = None,
         title: str = None,
         ax: plt.Axes = None,
-        *args,
         **kwargs,
-    ) -> None:
+    ) -> plt.Axes:
         """Draw a box plot to show distributions with respect to categories.
 
         A box plot (or box-and-whisker plot) shows the distribution of quantitative data in a way
@@ -317,9 +334,9 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         data = data if data is not None else self._data
 
         if ax is None:
-            fig, ax = self._canvas.get_figaxes()
+            _, ax = self._canvas.get_figaxes()
 
-        sns.boxplot(
+        ax = sns.boxplot(
             data=data,
             x=x,
             y=y,
@@ -332,8 +349,11 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         if title is not None:
             ax.set_title(title)
 
+        return ax
+
     def countplot(
         self,
+        *args,
         data: Union[pd.DataFrame, np.ndarray] = None,
         x: str = None,
         y: str = None,
@@ -343,9 +363,8 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         plot_counts: bool = False,
         title: str = None,
         ax: plt.Axes = None,
-        *args,
         **kwargs,
-    ) -> None:
+    ) -> plt.Axes:
         """Show the counts of observations in each categorical bin using bars.
 
         A count plot can be thought of as a histogram across a categorical, instead of quantitative, variable. The basic API and options are identical to those for barplot(), so you can compare counts across nested variables.
@@ -383,9 +402,9 @@ class Visualizer(VisualizerABC):  # pragma: no cover
             order = None
 
         if ax is None:
-            fig, ax = self._canvas.get_figaxes()
+            _, ax = self._canvas.get_figaxes()
 
-        sns.countplot(
+        ax = sns.countplot(
             data=data,
             x=x,
             y=y,
@@ -420,8 +439,11 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         if title is not None:
             ax.set_title(title)
 
+        return ax
+
     def barplot(
         self,
+        *args,
         data: Union[pd.DataFrame, np.ndarray] = None,
         x: str = None,
         y: str = None,
@@ -429,9 +451,8 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         orient: str = None,
         title: str = None,
         ax: plt.Axes = None,
-        *args,
         **kwargs,
-    ) -> None:
+    ) -> plt.Axes:
         """Show point estimates and errors as rectangular bars.
 
         A bar plot represents an estimate of central tendency for a numeric variable with the height of each
@@ -458,7 +479,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         if ax is None:
             fig, ax = self._canvas.get_figaxes()
 
-        sns.barplot(
+        ax = sns.barplot(
             data=data,
             x=x,
             y=y,
@@ -476,17 +497,19 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         if hue is not None:
             plt.legend(loc="upper right")
 
+        return ax
+
     def kdeplot(
         self,
+        *args,
         data: Union[pd.DataFrame, np.ndarray] = None,
         x: str = None,
         y: str = None,
         hue: str = None,
         title: str = None,
         ax: plt.Axes = None,
-        *args,
         **kwargs,
-    ) -> None:
+    ) -> plt.Axes:
         """Plot univariate or bivariate distributions using kernel density estimation.
 
         A kernel density estimate (KDE) plot is a method for visualizing the distribution of
@@ -508,9 +531,9 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         data = data if data is not None else self._data
 
         if ax is None:
-            fig, ax = self._canvas.get_figaxes()
+            _, ax = self._canvas.get_figaxes()
 
-        sns.kdeplot(
+        ax = sns.kdeplot(
             data=data,
             x=x,
             y=y,
@@ -523,15 +546,17 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         if title is not None:
             ax.set_title(title)
 
+        return ax
+
     def ecdfplot(
         self,
+        *args,
         data: Union[pd.DataFrame, np.ndarray] = None,
         x: str = None,
         y: str = None,
         hue: str = None,
         title: str = None,
         ax: plt.Axes = None,
-        *args,
         **kwargs,
     ) -> None:
         """Plot empirical cumulative distribution functions.
@@ -558,9 +583,9 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         data = data if data is not None else self._data
 
         if ax is None:
-            fig, ax = self._canvas.get_figaxes()
+            _, ax = self._canvas.get_figaxes()
 
-        sns.ecdfplot(
+        ax = sns.ecdfplot(
             data=data,
             x=x,
             y=y,
@@ -573,17 +598,19 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         if title is not None:
             ax.set_title(title)
 
+        return ax
+
     def violinplot(
         self,
+        *args,
         data: Union[pd.DataFrame, np.ndarray] = None,
         x: str = None,
         y: str = None,
         hue: str = None,
         title: str = None,
         ax: plt.Axes = None,
-        *args,
         **kwargs,
-    ) -> None:
+    ) -> plt.Axes:
         """Draw a combination of boxplot and kernel density estimate.
 
         A violin plot plays a similar role as a box and whisker plot. It shows the distribution of
@@ -607,9 +634,9 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         data = data if data is not None else self._data
 
         if ax is None:
-            fig, ax = self._canvas.get_figaxes()
+            _, ax = self._canvas.get_figaxes()
 
-        sns.violinplot(
+        ax = sns.violinplot(
             data=data,
             x=x,
             y=y,
@@ -622,16 +649,18 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         if title is not None:
             ax.set_title(title)
 
+        return ax
+
     def regplot(
         self,
+        *args,
         data: Union[pd.DataFrame, np.ndarray] = None,
         x: str = None,
         y: str = None,
         title: str = None,
         ax: plt.Axes = None,
-        *args,
         **kwargs,
-    ) -> None:
+    ) -> plt.Axes:
         """Plot data and a linear regression model fit.
 
         Args:
@@ -649,7 +678,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         if ax is None:
             fig, ax = self._canvas.get_figaxes()
 
-        sns.regplot(
+        ax = sns.regplot(
             data=data,
             x=x,
             y=y,
@@ -662,16 +691,17 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         if title is not None:
             ax.set_title(title)
 
+        return ax
+
     def pdfcdfplot(
         self,
+        *args,
         data: Union[pd.DataFrame, np.ndarray] = None,
         x: str = None,
         y: str = None,
         title: str = None,
-        ax: plt.Axes = None,
-        *args,
         **kwargs,
-    ) -> None:
+    ) -> plt.Figure:
         """Renders a combination of the probabiity density and cumulative distribution functions.
 
         This visualization provides the probability density function and cumulative distribution
@@ -683,15 +713,10 @@ class Visualizer(VisualizerABC):  # pragma: no cover
                 that will be internally reshaped
             x,y (str): Keys in data.numeric, although color mapping will behave differently in latter case.
             title (str): Title for the plot. Optional
-            ax: (plt.Axes): A matplotlib Axes object. Optional. If not provide, one will be obtained from the canvas.
-
-
-
         """
         data = data if data is not None else self._data
 
-        if ax is None:
-            fig, ax1 = self._canvas.get_figaxes()
+        fig, ax1 = self._canvas.get_figaxes()
 
         ax1 = sns.kdeplot(
             data=data,
@@ -722,15 +747,17 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         fig.suptitle(title, fontsize=self._canvas.fontsize_title)
         fig.tight_layout()
 
+        return fig
+
     def pairplot(
         self,
+        *args,
         data: Union[pd.DataFrame, np.ndarray] = None,
-        vars: list = None,
+        include: list = None,
         hue: str = None,
         title: str = None,
-        *args,
         **kwargs,
-    ) -> None:
+    ) -> sns.PairGrid:
         """Plot pairwise relationships in a dataset.
 
         By default, this function will create a grid of Axes such that each numeric variable in data
@@ -745,7 +772,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
             data (Union[pd.DataFrame, np.ndarray]): Input data structure.
                 Either a long-form collection of vectors that can be assigned to named variables or
                 a wide-form dataset that will be internally reshaped
-            vars (list): Variables within data to use, otherwise use every column with a numeric datatype. Optional, if not provided all numeric columns will be included.
+            include (list): Variables within data to use, otherwise use every column with a numeric datatype. Optional, if not provided all numeric columns will be included.
             hue (str): Grouping variable that will produce lines with different colors. Can be
             either categorical or numeric, although color mapping will behave differently in latter case.
             title (str): Title for the plot. Optional
@@ -757,7 +784,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
 
         g = sns.pairplot(
             data=data,
-            vars=vars,
+            vars=include,
             hue=hue,
             palette=palette,
             *args,
@@ -767,16 +794,18 @@ class Visualizer(VisualizerABC):  # pragma: no cover
             g.fig.suptitle(title)
         g.tight_layout()
 
+        return g
+
     def jointplot(
         self,
+        *args,
         data: Union[pd.DataFrame, np.ndarray] = None,
         x: str = None,
         y: str = None,
         hue: str = None,
         title: str = None,
-        *args,
         **kwargs,
-    ) -> None:
+    ) -> sns.JointGrid:
         """Draw a plot of two variables with bivariate and univariate graphs.
 
         Args:
@@ -806,16 +835,18 @@ class Visualizer(VisualizerABC):  # pragma: no cover
             g.fig.suptitle(title)
         g.fig.tight_layout()
 
+        return g
+
     def ttestplot(
         self,
+        *args,
         statistic: float,
         dof: int,
         alpha: float = 0.05,
         title: str = None,
         ax: plt.Axes = None,
-        *args,
         **kwargs,
-    ) -> None:
+    ) -> plt.Axes:
         """Draw the results of a t-test with the statistic and reject regions.
 
         Args:
@@ -828,7 +859,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
 
         """
         if ax is None:
-            fig, ax = self._canvas.get_figaxes()
+            _, ax = self._canvas.get_figaxes()
 
         # Render the probability distribution
         x = np.linspace(stats.t.ppf(0.001, dof), stats.t.ppf(0.999, dof), 500)
@@ -921,18 +952,20 @@ class Visualizer(VisualizerABC):  # pragma: no cover
 
         plt.tight_layout()
 
+        return ax
+
     def x2testplot(
         self,
+        *args,
         statistic: float,
         dof: int,
         alpha: float = 0.05,
         title: str = None,
         ax: plt.Axes = None,
-        *args,
         **kwargs,
-    ) -> None:
+    ) -> plt.Axes:
         if ax is None:
-            fig, ax = self._canvas.get_figaxes()
+            _, ax = self._canvas.get_figaxes()
 
         # Render the probability distribution
         x = np.linspace(stats.chi2.ppf(0.01, dof), stats.chi2.ppf(0.99, dof), 100)
@@ -1001,16 +1034,18 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         ax.set_ylabel("Probability Density")
         plt.tight_layout()
 
+        return ax
+
     def kstestplot(
         self,
+        *args,
         statistic: float,
         n: int,
         alpha: float = 0.05,
         title: str = None,
         ax: plt.Axes = None,
-        *args,
         **kwargs,
-    ) -> None:
+    ) -> plt.Axes:
         """Draw the results of a t-test with the statistic and reject regions.
 
         Args:
@@ -1023,7 +1058,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
 
         """
         if ax is None:
-            fig, ax = self._canvas.get_figaxes()
+            _, ax = self._canvas.get_figaxes()
 
         # Render the probability distribution
         x = np.linspace(stats.kstwo.ppf(0.001, n), stats.kstwo.ppf(0.999, n), 500)
@@ -1116,8 +1151,11 @@ class Visualizer(VisualizerABC):  # pragma: no cover
 
         plt.tight_layout()
 
+        return ax
+
     def heatmap(
         self,
+        *args,
         data: pd.DataFrame,
         vmin: float = None,
         vmax: float = None,
@@ -1135,9 +1173,8 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         mask: bool = None,
         ax: plt.Axes = None,
         title: str = None,
-        *args,
         **kwargs,
-    ) -> None:
+    ) -> plt.Axes:
         """Plot rectangular data as a color-encoded matrix.
 
         Args:
@@ -1188,6 +1225,8 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         )
         if title is not None:
             ax.set_title(title)
+
+        return ax
 
     def _wrap_ticklabels(
         self, axis: str, axes: List[plt.Axes], fontsize: int = 8

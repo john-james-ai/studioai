@@ -4,20 +4,20 @@
 # Project    : Artificial Intelligence & Data Science Studio                                       #
 # Version    : 0.1.0                                                                               #
 # Python     : 3.10.12                                                                             #
-# Filename   : /studioai/explore/presentation/base.py                                              #
+# Filename   : /studioai/analysis/visualize/base.py                                                #
 # ------------------------------------------------------------------------------------------------ #
 # Author     : John James                                                                          #
 # Email      : john.james.ai.studio@gmail.com                                                      #
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Saturday August 26th 2023 06:22:05 am                                               #
-# Modified   : Thursday October 19th 2023 07:02:46 pm                                              #
+# Modified   : Friday December 22nd 2023 04:37:03 pm                                               #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
 # ================================================================================================ #
-from dataclasses import dataclass
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
 
 import pandas as pd
 import seaborn as sns
@@ -91,7 +91,7 @@ class Visualizer(ABC):  # pragma: no cover
     def canvas(self, canvas: Canvas) -> None:
         self._canvas = canvas
         sns.set_style(style=canvas.style)
-        sns.set_palette(style=canvas.palette)
+        sns.set_palette(canvas.palette)
 
     @abstractmethod
     def lineplot(self, *args, **kwargs) -> None:  # pragma: no cover
