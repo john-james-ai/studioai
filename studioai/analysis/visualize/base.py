@@ -11,18 +11,20 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Saturday August 26th 2023 06:22:05 am                                               #
-# Modified   : Friday December 22nd 2023 04:37:03 pm                                               #
+# Modified   : Sunday December 24th 2023 03:33:04 pm                                               #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
 # ================================================================================================ #
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
+from typing import Union
 
 import pandas as pd
 import seaborn as sns
 
 from studioai import DataClass
+from studioai.util.string import proper
 
 
 # ------------------------------------------------------------------------------------------------ #
@@ -132,3 +134,24 @@ class Visualizer(ABC):  # pragma: no cover
     @abstractmethod
     def x2testplot(self, *args, **kwargs) -> None:  # pragma: no cover
         """Renders the plot"""
+
+    def autotitle(self, x: str, y: str = None) -> Union[str, None]:
+        """Creates an automatic plot title based upon values of x and y.
+
+        If x and y are not None, the title is in the format of y by x.
+        If x or y is not None, the title is the proper form
+        of the non-Null dimension. Otherwise, None
+        is returned.
+
+        Args:
+            x (str): The x variable
+            y (str): Variable to plotted on y axis.
+        """
+        if x and y:
+            return f"{proper(y)} by {proper(x)}"
+        elif x:
+            return f"{proper(x)}"
+        elif y:
+            return f"{proper(y)}"
+        else:
+            return None

@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Saturday August 26th 2023 06:25:27 am                                               #
-# Modified   : Sunday December 24th 2023 12:01:16 am                                               #
+# Modified   : Sunday December 24th 2023 03:49:00 pm                                               #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -143,6 +143,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         y: str = None,
         hue: str = None,
         title: str = None,
+        figsize: bool = (12, 4),
         ax: plt.Axes = None,
         **kwargs,
     ) -> plt.Axes:
@@ -162,15 +163,17 @@ class Visualizer(VisualizerABC):  # pragma: no cover
             x,y (str): Keys in data.
             hue (str): Grouping variable that will produce lines with different colors. Can be either categorical or numeric, although color mapping will behave differently in latter case.
             title (str): Title for the plot. Optional
+            figsize (tuple): Size of figure in inches. Ignored if ax is provided.
             ax: (plt.Axes): A matplotlib Axes object. Optional. If not provide, one will be obtained from the canvas.
 
 
         """
         palette = self._canvas.palette if hue is not None else None
         data = data if data is not None else self._data
+        title = title or self.autotitle(x, y)
 
         if ax is None:
-            _, ax = self._canvas.get_figaxes()
+            _, ax = self._canvas.get_figaxes(figsize=figsize)
 
         ax = sns.lineplot(
             data=data,
@@ -195,6 +198,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         y: str = None,
         hue: str = None,
         title: str = None,
+        figsize: bool = (12, 4),
         ax: plt.Axes = None,
         **kwargs,
     ) -> plt.Axes:
@@ -214,15 +218,17 @@ class Visualizer(VisualizerABC):  # pragma: no cover
             x,y (str): Keys in data.
             hue (str): Grouping variable that will produce lines with different colors. Can be either categorical or numeric, although color mapping will behave differently in latter case.
             title (str): Title for the plot. Optional
+            figsize (tuple): Size of figure in inches. Ignored if ax is provided.
             ax: (plt.Axes): A matplotlib Axes object. Optional. If not provide, one will be obtained from the canvas.
 
 
         """
         palette = self._canvas.palette if hue is not None else None
         data = data if data is not None else self._data
+        title = title or self.autotitle(x, y)
 
         if ax is None:
-            _, ax = self._canvas.get_figaxes()
+            _, ax = self._canvas.get_figaxes(figsize=figsize)
 
         ax = sns.scatterplot(
             data=data,
@@ -250,6 +256,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         element: str = "bars",
         fill: bool = True,
         title: str = None,
+        figsize: bool = (12, 4),
         ax: plt.Axes = None,
         **kwargs,
     ) -> None:
@@ -269,6 +276,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
             x,y (str): Keys in data.
             hue (str): Grouping variable that will produce lines with different colors. Can be either categorical or numeric, although color mapping will behave differently in latter case.
             title (str): Title for the plot. Optional
+            figsize (tuple): Size of figure in inches. Ignored if ax is provided.
             stat (str): Aggregate statistics for each bin. Optional. Default is 'density'.
                 See https://seaborn.pydata.org/generated/seaborn.histplot.html for valid values.
             element (str): Visual representation of the histogram statistic. Only relevant with univariate data. Optional. Default is 'bars'. fill (bool): If True, fill in the space under the histogram. Only relevant with univariate data.
@@ -278,9 +286,10 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         """
         palette = self._canvas.palette if hue is not None else None
         data = data if data is not None else self._data
+        title = title or self.autotitle(x, y)
 
         if ax is None:
-            _, ax = self._canvas.get_figaxes()
+            _, ax = self._canvas.get_figaxes(figsize=figsize)
 
         ax = sns.histplot(
             data=data,
@@ -309,6 +318,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         hue: str = None,
         title: str = None,
         ax: plt.Axes = None,
+        figsize: bool = (12, 4),
         **kwargs,
     ) -> plt.Axes:
         """Draw a box plot to show distributions with respect to categories.
@@ -326,15 +336,17 @@ class Visualizer(VisualizerABC):  # pragma: no cover
             x,y (str): Keys in data.
             hue (str): Grouping variable that will produce lines with different colors. Can be either categorical or numeric, although color mapping will behave differently in latter case.
             title (str): Title for the plot. Optional
+            figsize (tuple): Size of figure in inches. Ignored if ax is provided.
             ax: (plt.Axes): A matplotlib Axes object. Optional. If not provide, one will be obtained from the canvas.
 
 
         """
         palette = self._canvas.palette if hue is not None else None
         data = data if data is not None else self._data
+        title = title or self.autotitle(x, y)
 
         if ax is None:
-            _, ax = self._canvas.get_figaxes()
+            _, ax = self._canvas.get_figaxes(figsize=figsize)
 
         ax = sns.boxplot(
             data=data,
@@ -362,6 +374,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         order_by_count: bool = False,
         plot_counts: bool = False,
         title: str = None,
+        figsize: bool = (12, 4),
         ax: plt.Axes = None,
         **kwargs,
     ) -> plt.Axes:
@@ -382,12 +395,14 @@ class Visualizer(VisualizerABC):  # pragma: no cover
             order_by_count (bool): If True, bars are ordered by counts.
             plot_counts (bool): If True, the bars are annotated with absolute and relative counts. Default = False
             title (str): Title for the plot. Optional
+            figsize (tuple): Size of figure in inches. Ignored if ax is provided.
             ax: (plt.Axes): A matplotlib Axes object. Optional. If not provide, one will be obtained from the canvas.
 
         """
 
         palette = self._canvas.palette if hue is not None else "Blues_r"
         data = data if data is not None else self._data
+        title = title or self.autotitle(x, y)
         total = len(data)
         if orient is None:
             if x is None and y is not None:
@@ -402,7 +417,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
             order = None
 
         if ax is None:
-            _, ax = self._canvas.get_figaxes()
+            _, ax = self._canvas.get_figaxes(figsize=figsize)
 
         ax = sns.countplot(
             data=data,
@@ -450,6 +465,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         hue: str = None,
         orient: str = None,
         title: str = None,
+        figsize: bool = (12, 4),
         ax: plt.Axes = None,
         **kwargs,
     ) -> plt.Axes:
@@ -470,14 +486,16 @@ class Visualizer(VisualizerABC):  # pragma: no cover
                 inferred based on the type of the input variables, but it can be used to resolve ambiguity
                 when both x and y are numeric or when plotting wide-form data.
             title (str): Title for the plot. Optional
+            figsize (tuple): Size of figure in inches. Ignored if ax is provided.
             ax: (plt.Axes): A matplotlib Axes object. Optional. If not provide, one will be obtained from the canvas.
 
         """
         palette = self._canvas.palette if hue is not None else "Blues_r"
         data = data if data is not None else self._data
+        title = title or self.autotitle(x, y)
 
         if ax is None:
-            fig, ax = self._canvas.get_figaxes()
+            fig, ax = self._canvas.get_figaxes(figsize=figsize)
 
         ax = sns.barplot(
             data=data,
@@ -507,6 +525,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         y: str = None,
         hue: str = None,
         title: str = None,
+        figsize: bool = (12, 4),
         ax: plt.Axes = None,
         **kwargs,
     ) -> plt.Axes:
@@ -523,15 +542,17 @@ class Visualizer(VisualizerABC):  # pragma: no cover
             x,y (str): Keys in data.
             hue (str): Grouping variable that will produce lines with different colors. Can be either categorical or numeric, although color mapping will behave differently in latter case.
             title (str): Title for the plot. Optional
+            figsize (tuple): Size of figure in inches. Ignored if ax is provided.
             ax: (plt.Axes): A matplotlib Axes object. Optional. If not provide, one will be obtained from the canvas.
 
 
         """
         palette = self._canvas.palette if hue is not None else "Blues_r"
         data = data if data is not None else self._data
+        title = title or self.autotitle(x, y)
 
         if ax is None:
-            _, ax = self._canvas.get_figaxes()
+            _, ax = self._canvas.get_figaxes(figsize=figsize)
 
         ax = sns.kdeplot(
             data=data,
@@ -548,6 +569,73 @@ class Visualizer(VisualizerABC):  # pragma: no cover
 
         return ax
 
+    def kdebox_one(
+        self,
+        *args,
+        data: Union[pd.DataFrame, np.ndarray] = None,
+        x: str = None,
+        title: str = None,
+        figsize: bool = (12, 4),
+        annotate: bool = True,
+        **kwargs,
+    ) -> plt.Axes:
+        """A figure level visualization for univariate distributions.
+
+        A kernel density estimate (KDE) and boxen plot used as a method for visualizing
+        the distribution of observations in a dataset, analogous to a histogram.
+        KDE represents the data using a continuous probability density curve in one.
+        The boxen plot represents the distribution as a box plot.
+
+        Note: This method only supports one-dimensional data along
+        the x axis. Therefore, no hue or grouping functionality is provided.
+        If multiple dimensions are being analyzed, use kdeplot.
+
+        Args:
+            data (Union[pd.DataFrame, np.ndarray]): Input data structure. Either a long-form
+                collection of vectors that can be assigned to named variables or a wide-form dataset
+                that will be internally reshaped
+            x (str): Keys in data.
+            title (str): Title for the plot. Optional
+            figsize (tuple): Size of figure in inches. Ignored if ax is provided.
+            annotate (bool): Whether to annotate plot with min, max, and mean
+
+
+        """
+        palette = "Blues_r"
+        data = data if data is not None else self._data
+        title = title or self.autotitle(x)
+
+        fig, axes = plt.subplots(
+            nrows=2,
+            ncols=1,
+            gridspec_kw={"height_ratios": [3, 1]},
+            figsize=figsize,
+            sharex=True,
+        )
+
+        # Density Plot
+        axes[0] = sns.kdeplot(
+            data=data,
+            x=x,
+            ax=axes[0],
+            palette=palette,
+            *args,
+            **kwargs,
+        )
+
+        # Annotations
+        if annotate:
+            ax = self._annotate(ax=axes[0], data=data, x=x)
+
+        # Boxen Plot
+        axes[1] = sns.boxenplot(data=data, x=x, orient="h")
+
+        if title is not None:
+            _ = fig.suptitle(title, weight="bold")
+
+        plt.tight_layout()
+        return ax
+
     def ecdfplot(
         self,
         *args,
@@ -556,6 +644,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         y: str = None,
         hue: str = None,
         title: str = None,
+        figsize: bool = (12, 4),
         ax: plt.Axes = None,
         **kwargs,
     ) -> None:
@@ -576,14 +665,16 @@ class Visualizer(VisualizerABC):  # pragma: no cover
             x,y (str): Keys in data.
             hue (str): Grouping variable that will produce lines with different colors. Can be either categorical or numeric, although color mapping will behave differently in latter case.
             title (str): Title for the plot. Optional
+            figsize (tuple): Size of figure in inches. Ignored if ax is provided.
             ax: (plt.Axes): A matplotlib Axes object. Optional. If not provide, one will be obtained from the canvas.
 
         """
         palette = self._canvas.palette if hue is not None else "Blues_r"
         data = data if data is not None else self._data
+        title = title or self.autotitle(x, y)
 
         if ax is None:
-            _, ax = self._canvas.get_figaxes()
+            _, ax = self._canvas.get_figaxes(figsize=figsize)
 
         ax = sns.ecdfplot(
             data=data,
@@ -608,6 +699,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         y: str = None,
         hue: str = None,
         title: str = None,
+        figsize: bool = (12, 4),
         ax: plt.Axes = None,
         **kwargs,
     ) -> plt.Axes:
@@ -626,15 +718,17 @@ class Visualizer(VisualizerABC):  # pragma: no cover
             x,y (str): Keys in data.
             hue (str): Grouping variable that will produce lines with different colors. Can be either categorical or numeric, although color mapping will behave differently in latter case.
             title (str): Title for the plot. Optional
+            figsize (tuple): Size of figure in inches. Ignored if ax is provided.
             ax: (plt.Axes): A matplotlib Axes object. Optional. If not provide, one will be obtained from the canvas.
 
 
         """
         palette = self._canvas.palette if hue is not None else "Blues_r"
         data = data if data is not None else self._data
+        title = title or self.autotitle(x, y)
 
         if ax is None:
-            _, ax = self._canvas.get_figaxes()
+            _, ax = self._canvas.get_figaxes(figsize=figsize)
 
         ax = sns.violinplot(
             data=data,
@@ -658,6 +752,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         x: str = None,
         y: str = None,
         title: str = None,
+        figsize: bool = (12, 4),
         ax: plt.Axes = None,
         **kwargs,
     ) -> plt.Axes:
@@ -669,14 +764,16 @@ class Visualizer(VisualizerABC):  # pragma: no cover
                 that will be internally reshaped
             x,y (str): Keys in data.
             title (str): Title for the plot. Optional
+            figsize (tuple): Size of figure in inches. Ignored if ax is provided.
             ax: (plt.Axes): A matplotlib Axes object. Optional. If not provide, one will be obtained from the canvas.
 
 
         """
         data = data if data is not None else self._data
+        title = title or self.autotitle(x, y)
 
         if ax is None:
-            fig, ax = self._canvas.get_figaxes()
+            fig, ax = self._canvas.get_figaxes(figsize=figsize)
 
         ax = sns.regplot(
             data=data,
@@ -700,6 +797,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         x: str = None,
         y: str = None,
         title: str = None,
+        figsize: bool = (12, 4),
         **kwargs,
     ) -> plt.Figure:
         """Renders a combination of the probabiity density and cumulative distribution functions.
@@ -713,10 +811,12 @@ class Visualizer(VisualizerABC):  # pragma: no cover
                 that will be internally reshaped
             x,y (str): Keys in data.numeric, although color mapping will behave differently in latter case.
             title (str): Title for the plot. Optional
+            figsize (tuple): Size of figure in inches. Ignored if ax is provided.
         """
         data = data if data is not None else self._data
+        title = title or self.autotitle(x, y)
 
-        fig, ax1 = self._canvas.get_figaxes()
+        fig, ax1 = self._canvas.get_figaxes(figsize=figsize)
 
         ax1 = sns.kdeplot(
             data=data,
@@ -758,6 +858,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         include: list = None,
         hue: str = None,
         title: str = None,
+        figsize: bool = (12, 4),
         **kwargs,
     ) -> sns.PairGrid:
         """Plot pairwise relationships in a dataset.
@@ -778,6 +879,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
             hue (str): Grouping variable that will produce lines with different colors. Can be
             either categorical or numeric, although color mapping will behave differently in latter case.
             title (str): Title for the plot. Optional
+            figsize (tuple): Size of figure in inches. Ignored if ax is provided.
 
 
         """
@@ -806,6 +908,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         y: str = None,
         hue: str = None,
         title: str = None,
+        figsize: bool = (12, 4),
         **kwargs,
     ) -> sns.JointGrid:
         """Draw a plot of two variables with bivariate and univariate graphs.
@@ -817,12 +920,14 @@ class Visualizer(VisualizerABC):  # pragma: no cover
             x,y (str): Keys in data.
             hue (str): Grouping variable that will produce lines with different colors. Can be either categorical or numeric, although color mapping will behave differently in latter case.
             title (str): Title for the plot. Optional
+            figsize (tuple): Size of figure in inches. Ignored if ax is provided.
 
 
         """
 
         palette = self._canvas.palette if hue is not None else "Blues_r"
         data = data if data is not None else self._data
+        title = title or self.autotitle(x, y)
 
         g = sns.jointplot(
             data=data,
@@ -846,6 +951,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         dof: int,
         alpha: float = 0.05,
         title: str = None,
+        figsize: bool = (12, 4),
         ax: plt.Axes = None,
         **kwargs,
     ) -> plt.Axes:
@@ -856,12 +962,13 @@ class Visualizer(VisualizerABC):  # pragma: no cover
             dof (int): Degrees of freedom
             alpha (float): The statistical significance. Default is 0.05.
             title (str): Title for the plot. Optional
+            figsize (tuple): Size of figure in inches. Ignored if ax is provided.
             ax: (plt.Axes): A matplotlib Axes object. Optional. If not provide, one will be obtained from the canvas.
 
 
         """
         if ax is None:
-            _, ax = self._canvas.get_figaxes()
+            _, ax = self._canvas.get_figaxes(figsize=figsize)
 
         # Render the probability distribution
         x = np.linspace(stats.t.ppf(0.001, dof), stats.t.ppf(0.999, dof), 500)
@@ -963,11 +1070,12 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         dof: int,
         alpha: float = 0.05,
         title: str = None,
+        figsize: bool = (12, 4),
         ax: plt.Axes = None,
         **kwargs,
     ) -> plt.Axes:
         if ax is None:
-            _, ax = self._canvas.get_figaxes()
+            _, ax = self._canvas.get_figaxes(figsize=figsize)
 
         # Render the probability distribution
         x = np.linspace(stats.chi2.ppf(0.01, dof), stats.chi2.ppf(0.99, dof), 100)
@@ -1045,6 +1153,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         n: int,
         alpha: float = 0.05,
         title: str = None,
+        figsize: bool = (12, 4),
         ax: plt.Axes = None,
         **kwargs,
     ) -> plt.Axes:
@@ -1055,12 +1164,13 @@ class Visualizer(VisualizerABC):  # pragma: no cover
             dof (int): Degrees of freedom
             alpha (float): The statistical significance. Default is 0.05.
             title (str): Title for the plot. Optional
+            figsize (tuple): Size of figure in inches. Ignored if ax is provided.
             ax: (plt.Axes): A matplotlib Axes object. Optional. If not provide, one will be obtained from the canvas.
 
 
         """
         if ax is None:
-            _, ax = self._canvas.get_figaxes()
+            _, ax = self._canvas.get_figaxes(figsize=figsize)
 
         # Render the probability distribution
         x = np.linspace(stats.kstwo.ppf(0.001, n), stats.kstwo.ppf(0.999, n), 500)
@@ -1175,6 +1285,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         mask: bool = None,
         ax: plt.Axes = None,
         title: str = None,
+        figsize: bool = (12, 4),
         **kwargs,
     ) -> plt.Axes:
         """Plot rectangular data as a color-encoded matrix.
@@ -1198,6 +1309,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
             mask (bool): If passed, data will not be shown in cells where mask is True. Cells with missing values are automatically masked.
             ax (matplotlib.Axes): Axes in which to draw the plot, otherwise use the currently-active Axes.
             title (str): Title for the plot. Optional
+            figsize (tuple): Size of figure in inches. Ignored if ax is provided.
             kwargs (dict): All other keyword arguments are passed to matplotlib.axes.Axes.pcolormesh().
 
         Returns: ax (matplotlib.Axes): Axes object with the heatmap.
@@ -1205,7 +1317,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         """
 
         if ax is None:
-            _, ax = self._canvas.get_figaxes()
+            _, ax = self._canvas.get_figaxes(figsize=figsize)
 
         _ = sns.heatmap(
             data=data,
@@ -1249,3 +1361,83 @@ class Visualizer(VisualizerABC):  # pragma: no cover
                 ax.tick_params(axis="y", labelsize=fontsize)
 
         return axes
+
+    def _annotate(
+        self, ax: plt.Axes, data: Union[pd.DataFrame, np.ndarray], x: str
+    ) -> plt.Axes:
+        """Annotates an axis with min, max, and mean lines and text annotations."""
+        # If x is not None, we assume a dataframe.
+        if x is not None:
+            x_min = np.min(data[x])
+            x_mean = np.mean(data[x])
+            x_max = np.max(data[x])
+        else:
+            x_min = np.min(data)
+            x_mean = np.mean(data)
+            x_max = np.max(data)
+
+        # Get y limits which will be used to designated
+        # Text position
+        bottom, top = ax.get_ylim()
+
+        # Get x_range and y_range, a we will be needed them to plot
+        # the text
+        x_range = x_max - x_min
+        y_range = top - bottom
+
+        # Determines distance between vertical line and left and right
+        # text positions. x_range is the distance between the max and min
+        # values. Text is positioned some fraction f of x_range
+        # to the right of the vertical line.
+        f = 1 / 60
+
+        text_shift_x_right = f * x_range
+
+        # The y-coordinates for Min, Mean, and Max will be 0.25, 0.5, and 0.75
+        # of the y_range, respectively
+        text_y_min_factor = 0.25
+        text_y_mean_factor = 0.5
+        text_y_max_factor = 0.75
+
+        # Set x, y values for min, max, and mean text annotations
+        text_min_x = x_min + text_shift_x_right
+        text_min_y = bottom + y_range * text_y_min_factor
+
+        text_mean_x = x_mean + text_shift_x_right
+        text_mean_y = bottom + y_range * text_y_mean_factor
+
+        text_max_x = x_max + text_shift_x_right
+        text_max_y = bottom + y_range * text_y_max_factor
+
+        # Draw min,mean, and max vertical lines
+        ax.axvline(x=x_min, ls=":", lw=2, color="black")
+        ax.axvline(x=x_mean, ls=":", lw=2, color="black")
+        ax.axvline(x=x_max, ls=":", lw=2, color="black")
+
+        # Draw text annotations
+        ax.text(
+            x=text_min_x,
+            y=text_min_y,
+            s=f"min: {round(x_min,1)}",
+            size=8,
+            color="black",
+            weight="bold",
+        )
+        ax.text(
+            x=text_mean_x,
+            y=text_mean_y,
+            s=f"mean: {round(x_mean,1)}",
+            size=8,
+            color="black",
+            weight="bold",
+        )
+        ax.text(
+            x=text_max_x,
+            y=text_max_y,
+            s=f"max: {round(x_max,1)}",
+            size=8,
+            color="black",
+            weight="bold",
+        )
+
+        return ax

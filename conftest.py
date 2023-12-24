@@ -11,18 +11,18 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Friday May 26th 2023 11:12:03 pm                                                    #
-# Modified   : Thursday October 19th 2023 07:02:46 pm                                              #
+# Modified   : Sunday December 24th 2023 01:42:30 pm                                               #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
 # ================================================================================================ #
-import pytest
-import pandas as pd
-from datetime import datetime
 import logging
 from dataclasses import dataclass
+from datetime import datetime
 
 import numpy as np
+import pandas as pd
+import pytest
 
 from studioai import DataClass
 
@@ -48,7 +48,7 @@ class TestDataClass(DataClass):
 
 
 # ------------------------------------------------------------------------------------------------ #
-#                                       DATASETS                                                   #
+#                                         CREDIT DATA                                              #
 # ------------------------------------------------------------------------------------------------ #
 @pytest.fixture(scope="function", autouse=False)
 def credit():
