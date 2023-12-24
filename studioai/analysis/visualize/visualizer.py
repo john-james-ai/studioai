@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Saturday August 26th 2023 06:25:27 am                                               #
-# Modified   : Friday December 22nd 2023 04:37:47 pm                                               #
+# Modified   : Sunday December 24th 2023 12:01:16 am                                               #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -183,7 +183,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
             **kwargs,
         )
         if title is not None:
-            ax.set_title(title)
+            _ = ax.set_title(title)
 
         return ax
 
@@ -235,7 +235,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
             **kwargs,
         )
         if title is not None:
-            ax.set_title(title)
+            _ = ax.set_title(title)
 
         return ax
 
@@ -296,7 +296,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
             **kwargs,
         )
         if title is not None:
-            ax.set_title(title)
+            _ = ax.set_title(title)
 
         return ax
 
@@ -347,7 +347,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
             **kwargs,
         )
         if title is not None:
-            ax.set_title(title)
+            _ = ax.set_title(title)
 
         return ax
 
@@ -437,7 +437,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
                     )
 
         if title is not None:
-            ax.set_title(title)
+            _ = ax.set_title(title)
 
         return ax
 
@@ -492,7 +492,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         )
 
         if title is not None:
-            ax.set_title(title)
+            _ = ax.set_title(title)
 
         if hue is not None:
             plt.legend(loc="upper right")
@@ -544,7 +544,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
             **kwargs,
         )
         if title is not None:
-            ax.set_title(title)
+            _ = ax.set_title(title)
 
         return ax
 
@@ -596,7 +596,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
             **kwargs,
         )
         if title is not None:
-            ax.set_title(title)
+            _ = ax.set_title(title)
 
         return ax
 
@@ -647,7 +647,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
             **kwargs,
         )
         if title is not None:
-            ax.set_title(title)
+            _ = ax.set_title(title)
 
         return ax
 
@@ -689,7 +689,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
             **kwargs,
         )
         if title is not None:
-            ax.set_title(title)
+            _ = ax.set_title(title)
 
         return ax
 
@@ -746,6 +746,8 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         ax1.legend(handles=h1 + h2, labels=l1 + l2, loc="upper left")
         fig.suptitle(title, fontsize=self._canvas.fontsize_title)
         fig.tight_layout()
+
+        plt.close()
 
         return fig
 
@@ -945,7 +947,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
             arrowprops={"width": 2, "headwidth": 4, "shrink": 0.05},
         )
 
-        ax.set_title(
+        _ = ax.set_title(
             f"{title}",
             fontsize=self._canvas.fontsize_title,
         )
@@ -1025,7 +1027,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
             arrowprops={"width": 2, "headwidth": 4, "shrink": 0.05},
         )
 
-        ax.set_title(
+        _ = ax.set_title(
             f"{title}",
             fontsize=self._canvas.fontsize_title,
         )
@@ -1144,7 +1146,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
             arrowprops={"width": 2, "headwidth": 4, "shrink": 0.05},
         )
 
-        ax.set_title(
+        _ = ax.set_title(
             f"{title}",
             fontsize=self._canvas.fontsize_title,
         )
@@ -1224,7 +1226,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
             ax=ax,
         )
         if title is not None:
-            ax.set_title(title)
+            _ = ax.set_title(title)
 
         return ax
 
