@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Saturday August 26th 2023 06:25:27 am                                               #
-# Modified   : Sunday December 24th 2023 03:49:00 pm                                               #
+# Modified   : Sunday December 24th 2023 04:31:56 pm                                               #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -255,6 +255,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         stat: str = "density",
         element: str = "bars",
         fill: bool = True,
+        annotate: bool = True,
         title: str = None,
         figsize: bool = (12, 4),
         ax: plt.Axes = None,
@@ -275,6 +276,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
                 that will be internally reshaped
             x,y (str): Keys in data.
             hue (str): Grouping variable that will produce lines with different colors. Can be either categorical or numeric, although color mapping will behave differently in latter case.
+            annotate (bool): Whether to annotate the plot with min, max, and mean values.
             title (str): Title for the plot. Optional
             figsize (tuple): Size of figure in inches. Ignored if ax is provided.
             stat (str): Aggregate statistics for each bin. Optional. Default is 'density'.
@@ -304,6 +306,10 @@ class Visualizer(VisualizerABC):  # pragma: no cover
             *args,
             **kwargs,
         )
+
+        if annotate:
+            ax = self._annotate(ax=ax, data=data, x=x)
+
         if title is not None:
             _ = ax.set_title(title)
 
