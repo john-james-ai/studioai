@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Tuesday August 22nd 2023 05:55:50 pm                                                #
-# Modified   : Thursday May 9th 2024 10:14:35 am                                                   #
+# Modified   : Thursday May 9th 2024 04:26:26 pm                                                   #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -51,6 +51,9 @@ NUMERIC_TYPES = [
     "float16",
     "float32",
     "float64",
+    "datetime",
+    "datetime64",
+    "datetime64[ns]",
     np.int16,
     np.int32,
     np.int64,
@@ -60,6 +63,7 @@ NUMERIC_TYPES = [
     np.float64,
     np.float128,
     np.number,
+    np.datetime64,
     int,
     float,
     complex,
