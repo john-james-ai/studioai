@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Tuesday August 22nd 2023 05:55:50 pm                                                #
-# Modified   : Thursday October 19th 2023 07:01:43 pm                                              #
+# Modified   : Thursday May 9th 2024 10:14:35 am                                                   #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -21,8 +21,8 @@ from abc import ABC
 from dataclasses import dataclass
 from datetime import datetime
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 
 # ------------------------------------------------------------------------------------------------ #
 IMMUTABLE_TYPES: tuple = (
@@ -66,7 +66,7 @@ NUMERIC_TYPES = [
 ]
 
 # ------------------------------------------------------------------------------------------------ #
-NON_NUMERIC_TYPES = ["category", "object"]
+NON_NUMERIC_TYPES = ["category", "object", "string"]
 
 
 # ------------------------------------------------------------------------------------------------ #

@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Saturday August 26th 2023 06:25:27 am                                               #
-# Modified   : Sunday December 24th 2023 04:31:56 pm                                               #
+# Modified   : Thursday May 9th 2024 09:26:13 am                                                   #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -255,7 +255,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         stat: str = "density",
         element: str = "bars",
         fill: bool = True,
-        annotate: bool = True,
+        annotate: bool = False,
         title: str = None,
         figsize: bool = (12, 4),
         ax: plt.Axes = None,
