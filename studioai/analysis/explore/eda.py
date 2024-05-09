@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Thursday August 10th 2023 08:29:08 pm                                               #
-# Modified   : Friday December 22nd 2023 04:39:10 pm                                               #
+# Modified   : Thursday May 9th 2024 08:12:38 am                                                   #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -47,6 +47,8 @@ class Explorer(ABC):
         self._visualizer = Visualizer(canvas=SeabornCanvas())
         self._inference = Inference()
         self._tests = {}
+        self._overview = None
+        self._info = None
 
     def __len__(self):
         """Returns the length of the dataset."""
@@ -96,38 +98,44 @@ class Explorer(ABC):
     def overview(self) -> pd.DataFrame:
         """Returns an overview of the dataset in terms of its shape and size."""
 
-        nvars = self._df.shape[1]
-        nrows = self._df.shape[0]
-        ncells = nvars * nrows
-        size = self._df.memory_usage(deep=True).sum().sum()
-        d = {
-            "Number of Observations": nrows,
-            "Number of Variables": nvars,
-            "Number of Cells": ncells,
-            "Size (Bytes)": size,
-        }
-        overview = pd.DataFrame.from_dict(data=d, orient="index").reset_index()
-        overview.columns = ["Characteristic", "Total"]
-        return self._format(df=overview)
+        if self._overview is None:
+            nvars = self._df.shape[1]
+            nrows = self._df.shape[0]
+            ncells = nvars * nrows
+            size = self._df.memory_usage(deep=True).sum().sum()
+            d = {
+                "Number of Observations": nrows,
+                "Number of Variables": nvars,
+                "Number of Cells": ncells,
+                "Size (Bytes)": size,
+            }
+            overview = pd.DataFrame.from_dict(data=d, orient="index").reset_index()
+            overview.columns = ["Characteristic", "Total"]
+            self._overview = overview.style.format(thousands=",")
+
+        return self._overview
 
     # ------------------------------------------------------------------------------------------- #
     @property
     def info(self) -> pd.DataFrame:
         """Returns a DataFrame with basic dataset quality statistics"""
 
-        info = self._df.dtypes.to_frame().reset_index()
-        info.columns = ["Column", "DataType"]
-        info["Complete"] = self._df.count().values
-        info["Null"] = self._df.isna().sum().values
-        info["Completeness"] = info["Complete"] / self._df.shape[0]
-        info["Unique"] = self._df.nunique().values
-        info["Duplicate"] = self._df.shape[0] - self._df.nunique().values
-        info["Uniqueness"] = self._df.nunique().values / self._df.shape[0]
-        info["Size"] = (
-            self._df.memory_usage(deep=True, index=False).to_frame().reset_index()[0]
-        )
-        info = round(info, 2)
-        return self._format(df=info)
+        if self._info is None:
+            info = self._df.dtypes.to_frame().reset_index()
+            info.columns = ["Column", "DataType"]
+            info["Complete"] = self._df.count().values
+            info["Null"] = self._df.isna().sum().values
+            info["Completeness"] = info["Complete"] / self._df.shape[0]
+            info["Unique"] = self._df.nunique().values
+            info["Duplicate"] = self._df.shape[0] - self._df.nunique().values
+            info["Uniqueness"] = self._df.nunique().values / self._df.shape[0]
+            info["Size"] = (
+                self._df.memory_usage(deep=True, index=False).to_frame().reset_index()[0]
+            )
+            info = round(info, 2)
+            self._info = info.style.format(thousands=",")
+
+        return self._info
 
     # ------------------------------------------------------------------------------------------- #
     def as_df(self) -> pd.DataFrame:
