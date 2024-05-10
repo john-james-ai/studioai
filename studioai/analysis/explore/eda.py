@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Thursday August 10th 2023 08:29:08 pm                                               #
-# Modified   : Thursday May 9th 2024 08:12:38 am                                                   #
+# Modified   : Friday May 10th 2024 02:22:10 am                                                    #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -309,7 +309,7 @@ class Explorer(ABC):
         return freq
 
     # ------------------------------------------------------------------------------------------- #
-    def countstats(self, x: str) -> pd.DataFrame:
+    def countstats(self, x: str, df: pd.DataFrame = None) -> pd.DataFrame:
         """Computes descriptive statistics of counts for a variable.
 
         The value counts of the x variable are obtained and descriptive statistics are
@@ -317,13 +317,17 @@ class Explorer(ABC):
 
         Args:
             x (str): Name of a variable in the dataset
+            df (pd.DataFrame): Optional dataframe from which counts will be taken.
 
         Returns:
             Value Counts: pd.DataFrame
             Count Statistics: pd.DataFrame
 
         """
-        counts = self._df[x].value_counts().to_frame().reset_index()
+        if df is None:
+            counts = self._df[x].value_counts().to_frame().reset_index()
+        else:
+            counts = df[x].value_counts().to_frame().reset_index()
         cs = counts["count"].describe().to_frame()
         cs.columns = [x]
         return counts, cs.T
