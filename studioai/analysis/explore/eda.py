@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Thursday August 10th 2023 08:29:08 pm                                               #
-# Modified   : Friday May 10th 2024 02:22:10 am                                                    #
+# Modified   : Tuesday May 21st 2024 04:13:48 am                                                   #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -328,9 +328,9 @@ class Explorer(ABC):
             counts = self._df[x].value_counts().to_frame().reset_index()
         else:
             counts = df[x].value_counts().to_frame().reset_index()
-        cs = counts["count"].describe().to_frame()
-        cs.columns = [x]
-        return counts, cs.T
+        stats = counts["count"].describe().to_frame().reset_index()
+        stats.columns = [x]
+        return counts, stats.T
 
     # ------------------------------------------------------------------------------------------- #
     #                                PRIVATE METHODS                                              #

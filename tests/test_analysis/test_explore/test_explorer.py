@@ -11,18 +11,18 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Tuesday August 15th 2023 05:59:13 pm                                                #
-# Modified   : Thursday October 19th 2023 07:58:49 pm                                              #
+# Modified   : Monday May 20th 2024 05:11:29 am                                                    #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
 # ================================================================================================ #
 import inspect
-from datetime import datetime
-import pytest
 import logging
+from datetime import datetime
 
-import pandas as pd
 import numpy as np
+import pandas as pd
+import pytest
 
 from studioai.analysis.explore.example import CreditScoreExplorer
 from studioai.analysis.stats.inferential.association import CramersV
@@ -34,8 +34,8 @@ double_line = f"\n{100 * '='}"
 single_line = f"\n{100 * '-'}"
 
 
-@pytest.mark.dataset
-class TestDataset:  # pragma: no cover
+@pytest.mark.explorer
+class TestExplorer:  # pragma: no cover
     # ============================================================================================ #
     def test_length(self, credit, caplog):
         start = datetime.now()
@@ -203,7 +203,7 @@ class TestDataset:  # pragma: no cover
         logger.info(double_line)
         # ---------------------------------------------------------------------------------------- #
         ds = CreditScoreExplorer(df=credit)
-        assert isinstance(ds.info, pd.DataFrame)
+        assert isinstance(ds.info, pd.io.formats.style.Styler)
         logger.debug(ds.info)
         # ---------------------------------------------------------------------------------------- #
         end = datetime.now()
@@ -234,7 +234,7 @@ class TestDataset:  # pragma: no cover
         logger.info(double_line)
         # ---------------------------------------------------------------------------------------- #
         ds = CreditScoreExplorer(df=credit)
-        assert isinstance(ds.overview, pd.DataFrame)
+        assert isinstance(ds.overview, pd.io.formats.style.Styler)
         logger.debug(ds.overview)
 
         # ---------------------------------------------------------------------------------------- #

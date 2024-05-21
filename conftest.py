@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Friday May 26th 2023 11:12:03 pm                                                    #
-# Modified   : Sunday December 24th 2023 01:42:30 pm                                               #
+# Modified   : Monday May 20th 2024 03:49:49 am                                                    #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -23,6 +23,7 @@ from datetime import datetime
 import numpy as np
 import pandas as pd
 import pytest
+from pyspark.sql import SparkSession
 
 from studioai import DataClass
 
@@ -79,3 +80,23 @@ def cases():
 @pytest.fixture(scope="module", autouse=False)
 def dataklass():
     return TestDataClass()
+
+
+# ------------------------------------------------------------------------------------------------ #
+#                                       SPARK SESSION                                              #
+# ------------------------------------------------------------------------------------------------ #
+@pytest.fixture(scope="module", autouse=False)
+def spark():
+    spark = SparkSession.builder \
+    .appName("AppInsight") \
+    .master("local[*]") \
+    .config("spark.driver.memory", "16G") \
+    .config("spark.executor.memory", "16G") \
+    .config("spark.serializer", "org.apache.spark.serializer.KryoSerializer") \
+    .config("spark.kryoserializer.buffer.max", "2000M") \
+    .config("spark.driver.maxResultSize", "0") \
+    .config("spark.jars.packages", "com.johnsnowlabs.nlp:spark-nlp_2.12:5.3.3") \
+    .config("spark.sql.legacy.parquet.nanosAsLong", "true") \
+    .getOrCreate()
+    spark.sparkContext.setLogLevel("ERROR")
+    return spark
