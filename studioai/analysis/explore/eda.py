@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Thursday August 10th 2023 08:29:08 pm                                               #
-# Modified   : Tuesday May 21st 2024 04:13:48 am                                                   #
+# Modified   : Wednesday May 22nd 2024 02:54:40 am                                                 #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -43,7 +43,7 @@ class Explorer(ABC):
     """
 
     def __init__(self, df: pd.DataFrame) -> None:
-        self._df = df
+        self.df = df
         self._visualizer = Visualizer(canvas=SeabornCanvas())
         self._inference = Inference()
         self._tests = {}
@@ -52,7 +52,7 @@ class Explorer(ABC):
 
     def __len__(self):
         """Returns the length of the dataset."""
-        return len(self._df)
+        return len(self.df)
 
     @property
     @abstractmethod
@@ -61,28 +61,28 @@ class Explorer(ABC):
 
     @property
     def plot(self) -> Visualizer:  # pragma: no cover
-        self._visualizer.data = self._df
+        self._visualizer.data = self.df
         return self._visualizer
 
     @property
     def stats(self) -> Visualizer:  # pragma: no cover
-        self._inference.data = self._df
+        self._inference.data = self.df
         return self._inference
 
     @property
     def columns(self) -> list:
         """Returns a list containing the names of the columns in the dataset."""
-        return self._df.columns
+        return self.df.columns
 
     @property
     def shape(self) -> list:
         """Returns the shape of the dataset"""
-        return self._df.shape
+        return self.df.shape
 
     @property
     def dtypes(self) -> list:
         """Returns the count of data types in the dataset."""
-        dtypes = self._df.dtypes.value_counts().reset_index()
+        dtypes = self.df.dtypes.value_counts().reset_index()
         dtypes.columns = ["Data Type", "Count"]
         dtypes["Data Type"] = dtypes["Data Type"].astype(str)
         dtypes = dtypes.groupby(by="Data Type").sum()
@@ -91,7 +91,7 @@ class Explorer(ABC):
     @property
     def size(self) -> int:
         """Returns the size of the Dataset in memory in bytes."""
-        return self._df.memory_usage(deep=True).sum()
+        return self.df.memory_usage(deep=True).sum()
 
     # ------------------------------------------------------------------------------------------- #
     @property
@@ -99,10 +99,10 @@ class Explorer(ABC):
         """Returns an overview of the dataset in terms of its shape and size."""
 
         if self._overview is None:
-            nvars = self._df.shape[1]
-            nrows = self._df.shape[0]
+            nvars = self.df.shape[1]
+            nrows = self.df.shape[0]
             ncells = nvars * nrows
-            size = self._df.memory_usage(deep=True).sum().sum()
+            size = self.df.memory_usage(deep=True).sum().sum()
             d = {
                 "Number of Observations": nrows,
                 "Number of Variables": nvars,
@@ -121,16 +121,16 @@ class Explorer(ABC):
         """Returns a DataFrame with basic dataset quality statistics"""
 
         if self._info is None:
-            info = self._df.dtypes.to_frame().reset_index()
+            info = self.df.dtypes.to_frame().reset_index()
             info.columns = ["Column", "DataType"]
-            info["Complete"] = self._df.count().values
-            info["Null"] = self._df.isna().sum().values
-            info["Completeness"] = info["Complete"] / self._df.shape[0]
-            info["Unique"] = self._df.nunique().values
-            info["Duplicate"] = self._df.shape[0] - self._df.nunique().values
-            info["Uniqueness"] = self._df.nunique().values / self._df.shape[0]
+            info["Complete"] = self.df.count().values
+            info["Null"] = self.df.isna().sum().values
+            info["Completeness"] = info["Complete"] / self.df.shape[0]
+            info["Unique"] = self.df.nunique().values
+            info["Duplicate"] = self.df.shape[0] - self.df.nunique().values
+            info["Uniqueness"] = self.df.nunique().values / self.df.shape[0]
             info["Size"] = (
-                self._df.memory_usage(deep=True, index=False).to_frame().reset_index()[0]
+                self.df.memory_usage(deep=True, index=False).to_frame().reset_index()[0]
             )
             info = round(info, 2)
             self._info = info.style.format(thousands=",")
@@ -140,7 +140,7 @@ class Explorer(ABC):
     # ------------------------------------------------------------------------------------------- #
     def as_df(self) -> pd.DataFrame:
         """Returns the dataset as a pandas DataFrame"""
-        return self._df
+        return self.df
 
     # ------------------------------------------------------------------------------------------- #
     def sample(
@@ -158,7 +158,7 @@ class Explorer(ABC):
             replace (bool): Whether to sample with replacement
             random_state (int): Pseudo random seed.
         """
-        df = self._df.sample(n=n, frac=frac, replace=replace, random_state=random_state)
+        df = self.df.sample(n=n, frac=frac, replace=replace, random_state=random_state)
         return self._format(df=df)
 
     # ------------------------------------------------------------------------------------------- #
@@ -174,12 +174,12 @@ class Explorer(ABC):
                 here.
         """
         if exclude is not None:
-            cols = [col for col in self._df.columns if col not in exclude]
+            cols = [col for col in self.df.columns if col not in exclude]
         elif include is not None:
-            cols = [col for col in self._df.columns if col in include]
+            cols = [col for col in self.df.columns if col in include]
         else:
-            cols = self._df.columns
-        df = self._df[cols]
+            cols = self.df.columns
+        df = self.df[cols]
         return self._format(df=df)
 
     # ------------------------------------------------------------------------------------------- #
@@ -192,7 +192,7 @@ class Explorer(ABC):
                 Example condition = lambda df: df['age'] > 18
         """
         try:
-            df = self._df[condition]
+            df = self.df[condition]
             return self._format(df=df)
         except Exception as e:
             msg = f"Exception of type {type(e)} occurred.\n{e}"
@@ -208,7 +208,7 @@ class Explorer(ABC):
             n (int): The top n observations to return.
         """
         try:
-            df = self._df.sort_values(by=x, ascending=False, axis=0)
+            df = self.df.sort_values(by=x, ascending=False, axis=0)
             return df.head(n)
         except KeyError as e:
             msg = f"{x} is not a valid variable in the dataset."
@@ -217,7 +217,7 @@ class Explorer(ABC):
 
     # ------------------------------------------------------------------------------------------- #
     def head(self, n: int = 5) -> pd.DataFrame:
-        return self._df.head(n)
+        return self.df.head(n)
 
     # ------------------------------------------------------------------------------------------- #
     def describe(
@@ -235,7 +235,7 @@ class Explorer(ABC):
             exclude (list[str]): List of data types to exclude from the analysis.
             groupby (str): Column used as a factor variable for descriptive statistics.
         """
-        df = self._df
+        df = self.df
         if x is not None:
             df = df[x]
 
@@ -251,9 +251,9 @@ class Explorer(ABC):
             columns (list): List of columns for which unique values are to be returned.
         """
         if columns is not None:
-            df = self._df[columns].drop_duplicates().reset_index(drop=True)
+            df = self.df[columns].drop_duplicates().reset_index(drop=True)
         else:
-            df = self._df.drop_duplicates().reset_index(drop=True)
+            df = self.df.drop_duplicates().reset_index(drop=True)
         return self._format(df=df)
 
     # ------------------------------------------------------------------------------------------- #
@@ -276,27 +276,27 @@ class Explorer(ABC):
 
         """
 
-        if isinstance(self._df[x], pd.Series):
+        if isinstance(self.df[x], pd.Series):
             abs = (
-                self._df[x]
+                self.df[x]
                 .value_counts(
                     normalize=False, sort=sort, bins=bins, ascending=ascending
                 )
                 .to_frame()
             )
             rel = (
-                self._df[x]
+                self.df[x]
                 .value_counts(normalize=True, sort=sort, bins=bins, ascending=ascending)
                 .to_frame()
             )
         else:
             abs = (
-                self._df[x]
+                self.df[x]
                 .value_counts(normalize=False, sort=sort, ascending=ascending)
                 .to_frame()
             )
             rel = (
-                self._df[x]
+                self.df[x]
                 .value_counts(normalize=True, sort=sort, ascending=ascending)
                 .to_frame()
             )
@@ -325,7 +325,7 @@ class Explorer(ABC):
 
         """
         if df is None:
-            counts = self._df[x].value_counts().to_frame().reset_index()
+            counts = self.df[x].value_counts().to_frame().reset_index()
         else:
             counts = df[x].value_counts().to_frame().reset_index()
         stats = counts["count"].describe().to_frame().reset_index()
