@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Thursday August 10th 2023 08:29:08 pm                                               #
-# Modified   : Wednesday May 22nd 2024 02:54:40 am                                                 #
+# Modified   : Friday June 7th 2024 02:16:21 pm                                                    #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -65,7 +65,7 @@ class Explorer(ABC):
         return self._visualizer
 
     @property
-    def stats(self) -> Visualizer:  # pragma: no cover
+    def stats(self) -> Inference:  # pragma: no cover
         self._inference.data = self.df
         return self._inference
 
@@ -255,6 +255,66 @@ class Explorer(ABC):
         else:
             df = self.df.drop_duplicates().reset_index(drop=True)
         return self._format(df=df)
+
+    # ------------------------------------------------------------------------------------------- #
+    def top_n_frequency_analysis(self, x: str, n: int, data: pd.DataFrame = None):
+        """Returns a dataframe with proportional and cumulative counts of one or more categorical variables.
+
+        Args:
+            x (Union[str,List[str]]): A string or list of strings indicating the variables included in the count.
+            n (int): Number of rows to include in top n.
+            data (pd.DataFrame). Data to analyze. Optional.
+
+        """
+
+        # Use instance variable df if data is None
+        data = data or self.df
+
+        # Calculate frequency distribution
+        freq = data[x].value_counts().reset_index()
+        freq.columns = [x, "Count"]
+
+        # Calculate cumulative count and proportions
+        freq["Cumulative Count"] = freq["Count"].cumsum()
+        total_count = freq["Count"].sum()
+        freq["Proportion"] = freq["Count"] / total_count
+        freq["Cumulative Proportion"] = freq["Proportion"].cumsum()
+
+        # Top N rows
+        top_n = freq.head(n).copy()
+
+        # Row for the rest of the dataset
+        if len(freq) > n:
+            rest_count = freq.iloc[n:]["Count"].sum()
+            rest_cumulative_count = top_n["Cumulative Count"].iloc[-1] + rest_count
+            rest_proportion = rest_count / total_count
+            rest_cumulative_proportion = (
+                1.0  # because it's the rest, it covers the remaining percentage
+            )
+            rest_row = pd.DataFrame(
+                {
+                    x: [f"Rest of {x}"],
+                    "Count": [rest_count],
+                    "Cumulative Count": [rest_cumulative_count],
+                    "Proportion": [rest_proportion],
+                    "Cumulative Proportion": [rest_cumulative_proportion],
+                }
+            )
+            top_n = pd.concat([top_n, rest_row], ignore_index=True)
+
+        # Total row
+        total_row = pd.DataFrame(
+            {
+                x: ["Total"],
+                "Count": [total_count],
+                "Cumulative Count": [total_count],
+                "Proportion": [1.0],
+                "Cumulative Proportion": [1.0],
+            }
+        )
+        top_n = pd.concat([top_n, total_row], ignore_index=True)
+
+        return top_n
 
     # ------------------------------------------------------------------------------------------- #
     def frequency(
