@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Saturday August 26th 2023 06:25:27 am                                               #
-# Modified   : Friday June 7th 2024 02:18:54 pm                                                    #
+# Modified   : Friday June 7th 2024 02:39:46 pm                                                    #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -22,7 +22,7 @@ from __future__ import annotations
 import logging
 import math
 from dataclasses import dataclass
-from typing import List, Union
+from typing import List, Tuple, Union
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -381,8 +381,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         plot_counts: bool = False,
         title: str = None,
         figsize: bool = (12, 4),
-        rotate_xticks: int = None,
-        rotate_yticks: int = None,
+        rotate_ticks: Tuple[str, int] = None,
         ax: plt.Axes = None,
         **kwargs,
     ) -> plt.Axes:
@@ -404,8 +403,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
             plot_counts (bool): If True, the bars are annotated with absolute and relative counts. Default = False
             title (str): Title for the plot. Optional
             figsize (tuple): Size of figure in inches. Ignored if ax is provided.
-            rotate_xticks (int): The degrees to rotate the x_ticks. None means no rotation.
-            rotate_yticks (int): The degrees to rotate the y_ticks. None means no rotation.
+            rotate_ticks (Tuple[str,int]): Tuple containing the axis and degrees of rotation. Default is None
             ax: (plt.Axes): A matplotlib Axes object. Optional. If not provide, one will be obtained from the canvas.
 
         """
@@ -441,21 +439,6 @@ class Visualizer(VisualizerABC):  # pragma: no cover
             **kwargs,
         )
 
-        if rotate_xticks is not None:
-            ax = ax.set_xticks(
-                ax.get_xticks(),
-                ax.get_xticklabels(),
-                rotation=rotate_xticks,
-                ha="right",
-            )
-        elif rotate_yticks is not None:
-            ax = ax.set_yticks(
-                ax.get_yticks(),
-                ax.get_yticklabels(),
-                rotation=rotate_yticks,
-                va="center",
-            )
-
         if plot_counts:
             if orient == "v":
                 for p in ax.patches:
@@ -477,6 +460,16 @@ class Visualizer(VisualizerABC):  # pragma: no cover
                         va="center",
                     )
 
+        if rotate_ticks is not None:
+            try:
+                ax = self._rotate_ticks(
+                    ax=ax, axis=rotate_ticks[0], rotate=rotate_ticks[1]
+                )
+            except IndexError as ie:
+                raise IndexError(
+                    f"rotate_ticks parameter is malformed. Must be Tuple[str,int]. \n{ie}"
+                )
+
         if title is not None:
             _ = ax.set_title(title)
 
@@ -492,8 +485,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
         orient: str = None,
         title: str = None,
         figsize: bool = (12, 4),
-        rotate_xticks: int = None,
-        rotate_yticks: int = None,
+        rotate_ticks: Tuple[str, int] = None,
         ax: plt.Axes = None,
         **kwargs,
     ) -> plt.Axes:
@@ -515,8 +507,7 @@ class Visualizer(VisualizerABC):  # pragma: no cover
                 when both x and y are numeric or when plotting wide-form data.
             title (str): Title for the plot. Optional
             figsize (tuple): Size of figure in inches. Ignored if ax is provided.
-            rotate_xticks (int): The degrees to rotate the x_ticks. None means no rotation.
-            rotate_yticks (int): The degrees to rotate the y_ticks. None means no rotation.
+            rotate_ticks (Tuple[str,int]): Tuple containing the axis and degrees of rotation. Default is None
             ax: (plt.Axes): A matplotlib Axes object. Optional. If not provide, one will be obtained from the canvas.
 
         """
@@ -539,20 +530,15 @@ class Visualizer(VisualizerABC):  # pragma: no cover
             **kwargs,
         )
 
-        if rotate_xticks is not None:
-            ax = ax.set_xticks(
-                ax.get_xticks(),
-                ax.get_xticklabels(),
-                rotation=rotate_xticks,
-                ha="right",
-            )
-        elif rotate_yticks is not None:
-            ax = ax.set_yticks(
-                ax.get_yticks(),
-                ax.get_yticklabels(),
-                rotation=rotate_yticks,
-                va="center",
-            )
+        if rotate_ticks is not None:
+            try:
+                ax = self._rotate_ticks(
+                    ax=ax, axis=rotate_ticks[0], rotate=rotate_ticks[1]
+                )
+            except IndexError as ie:
+                raise IndexError(
+                    f"rotate_ticks parameter is malformed. Must be Tuple[str,int]. \n{ie}"
+                )
 
         if title is not None:
             _ = ax.set_title(title)
@@ -1484,5 +1470,30 @@ class Visualizer(VisualizerABC):  # pragma: no cover
             color="black",
             weight="bold",
         )
+
+        return ax
+
+    def _rotate_ticks(
+        self, ax: plt.Axes, axis: str = "x", rotate: int = 45
+    ) -> plt.Axes:
+        """Rotates ticks on x or y axis."""
+        if axis == "x":
+            _ = ax.set_xticks(
+                ax.get_xticks(),
+                ax.get_xticklabels(),
+                rotation=rotate,
+                ha="right",
+            )
+        elif axis == "y":
+            _ = ax.set_yticks(
+                ax.get_yticks(),
+                ax.get_yticklabels(),
+                rotation=rotate,
+                va="center",
+            )
+        else:
+            raise ValueError(
+                f"Value for axis = {axis} is invalid. It must be 'x' or 'y'."
+            )
 
         return ax
