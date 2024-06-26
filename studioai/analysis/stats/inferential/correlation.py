@@ -11,7 +11,7 @@
 # URL        : https://github.com/john-james-ai/studioai                                           #
 # ------------------------------------------------------------------------------------------------ #
 # Created    : Wednesday June 7th 2023 08:15:08 pm                                                 #
-# Modified   : Thursday October 19th 2023 08:01:24 pm                                              #
+# Modified   : Wednesday June 26th 2024 07:10:27 pm                                                #
 # ------------------------------------------------------------------------------------------------ #
 # License    : MIT License                                                                         #
 # Copyright  : (c) 2023 John James                                                                 #
@@ -51,7 +51,9 @@ class PearsonCorrelationResult(StatTestResult):
     high_ci: float = (None,)
 
     @inject
-    def __post_init__(self, visualizer: Visualizer = Provide[AnalysisContainer.visualizer]) -> None:
+    def __post_init__(
+        self, visualizer: Visualizer = Provide[AnalysisContainer.visualizer]
+    ) -> None:
         self.visualizer = visualizer
 
     def plot(self) -> None:  # pragma: no cover
@@ -119,7 +121,9 @@ class PearsonCorrelationTest(StatisticalTest):
 
         try:
             pearson_result = stats.pearsonr(
-                x=self._data[self._a].values, y=self._data[self._b].values, alternative="two-sided"
+                x=self._data[self._a].values,
+                y=self._data[self._b].values,
+                alternative="two-sided",
             )
         except Exception as e:  # pragma: no cover
             msg = f"Unable to calculate pearson correlation.\n{e}"
@@ -194,7 +198,9 @@ class SpearmanCorrelationResult(StatTestResult):
     n: int = None
 
     @inject
-    def __post_init__(self, visualizer: Visualizer = Provide[AnalysisContainer.visualizer]) -> None:
+    def __post_init__(
+        self, visualizer: Visualizer = Provide[AnalysisContainer.visualizer]
+    ) -> None:
         self.visualizer = visualizer
 
     def plot(self) -> None:  # pragma: no cover
